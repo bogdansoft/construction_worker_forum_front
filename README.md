@@ -1,5 +1,6 @@
 # TO RUN :
-npm run dev
+TERMINAL : npm run dev
+WEBSTORM PLAY BUTTON : edit configuration -> + npm -> Command : run script : dev
 
 # Getting Started with Create React App
 
