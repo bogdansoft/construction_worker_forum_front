@@ -135,7 +135,9 @@ body {
   position: relative;
   top: -1px;
 }
-
+.form-control {
+  background-color: transparent;
+}
 .form-control-title {
   font-size: 2rem;
   font-weight: 500;
@@ -207,11 +209,11 @@ body {
 }
 
 .liveValidateMessage {
-  top: -6px;
+  top: -24px;
   position: absolute;
   z-index: 1;
   padding-top: 6px;
-  padding-bottom: 16px;
+  padding-bottom: 5px;
   padding-left: 0.8rem;
   padding-right: 0.8rem;
 }
@@ -667,4 +669,11 @@ textarea.tall-textarea {
   60% {
     opacity: 1;
   }
+}
+
+#create-account {
+  font-size: 16px;
+}
+#create-account span {
+  color: blue;
 }

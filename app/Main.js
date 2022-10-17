@@ -9,6 +9,8 @@ import Posts from "./components/Posts"
 import Footer from "./components/Footer"
 import Login from "./components/Login"
 import Search from "./components/Search"
+import SinglePost from "./components/SinglePost"
+import RegisterForm from "./components/RegisterForm"
 
 function Main() {
   //
@@ -40,6 +42,8 @@ function Main() {
           <Routes>
             <Route path="/" element={<Posts />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/post" element={<SinglePost />} />
+            <Route path="/create" element={<RegisterForm />} />
           </Routes>
           <Footer />
         </BrowserRouter>
