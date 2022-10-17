@@ -1,6 +1,7 @@
-import React, { useEffect } from "react"
-
+import React, { useEffect, useContext } from "react"
+import DispatchContext from "../DispatchContext"
 function Search() {
+  const appDispatch = useContext(DispatchContext)
   return (
     <>
       <div className="search-overlay">
@@ -10,8 +11,14 @@ function Search() {
               <i className="fas fa-search"></i>
             </label>
             <input autofocus type="text" autocomplete="off" id="live-search-field" className="live-search-field" placeholder="What are you interested in?" />
-            <span className="close-live-search">
-              <i className="fas fa-times-circle"></i>
+            <span
+              id="close-search-bar"
+              onClick={() => {
+                appDispatch({ type: "closeSearch" })
+              }}
+              class="material-symbols-outlined"
+            >
+              cancel
             </span>
           </div>
         </div>

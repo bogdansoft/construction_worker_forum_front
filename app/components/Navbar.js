@@ -1,6 +1,10 @@
-import React from "react"
+import React, { useState } from "react"
 import { Link } from "react-router-dom"
+import DispatchContext from "../DispatchContext"
+import { useContext } from "react"
 function Navbar() {
+  const appDispatch = useContext(DispatchContext)
+
   return (
     <div className="main container">
       <div className="navbar row mt-3">
@@ -10,7 +14,7 @@ function Navbar() {
               <Link to="/" className="mr-auto p-3">
                 <li>CONSTRUCTORS</li>
               </Link>
-              <li className="p-2 mr-4">
+              <li className="p-2 mr-4" onClick={() => appDispatch({ type: "openSearch" })}>
                 <span className="material-symbols-outlined"> search </span>
               </li>
               <li className="p-2 mr-4">

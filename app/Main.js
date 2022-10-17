@@ -1,22 +1,45 @@
-import React, { useState } from "react"
+import React, { useState, useReducer, useContext } from "react"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import ReactDOM from "react-dom/client"
+import DispatchContext from "./DispatchContext"
+import StateContext from "./StateContext"
 import Navbar from "./components/Navbar"
 import Posts from "./components/Posts"
 import Footer from "./components/Footer"
 import Login from "./components/Login"
 import Search from "./components/Search"
+
 function Main() {
+  //
+  const initialState = {
+    searchIsOpen: false
+  }
+
+  function ourReducer(state, action) {
+    switch (action.type) {
+      case "openSearch":
+        return { searchIsOpen: true }
+      case "closeSearch":
+        return { searchIsOpen: false }
+    }
+  }
+
+  const [state, dispatch] = useReducer(ourReducer, initialState)
+
   return (
-    <BrowserRouter>
-      <Navbar />
-      <Search />
-      <Routes>
-        <Route path="/" element={<Posts />} />
-        <Route path="/login" element={<Login />} />
-      </Routes>
-      <Footer />
-    </BrowserRouter>
+    <StateContext.Provider value={state}>
+      <DispatchContext.Provider value={dispatch}>
+        <BrowserRouter>
+          <Navbar />
+          {state.searchIsOpen ? <Search /> : ""}
+          <Routes>
+            <Route path="/" element={<Posts />} />
+            <Route path="/login" element={<Login />} />
+          </Routes>
+          <Footer />
+        </BrowserRouter>
+      </DispatchContext.Provider>
+    </StateContext.Provider>
   )
 }
 
