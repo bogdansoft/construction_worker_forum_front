@@ -86,7 +86,9 @@ a:hover {
 body {
   font-family: "Public Sans", sans-serif;
 }
-
+.search-overlay .material-symbols-outlined {
+  font-size: 40px;
+}
 .header-bar {
   background-color: #292929;
 }
