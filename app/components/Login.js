@@ -21,7 +21,7 @@ function Login() {
       <div className="p-1 ml-auto mr-auto container text-center">
         <p id="create-account">
           Not a member yet?{" "}
-          <Link to="/create">
+          <Link to="/user/create">
             <span>Create an account</span>
           </Link>
         </p>

@@ -677,3 +677,9 @@ textarea.tall-textarea {
 #create-account span {
   color: blue;
 }
+.post-body textarea {
+  border: 5px solid blue;
+}
+#post-text-area {
+  resize: none;
+}
