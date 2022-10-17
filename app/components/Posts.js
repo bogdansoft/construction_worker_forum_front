@@ -1,4 +1,5 @@
 import React, { useEffect } from "react"
+import ReactTooltip from "react-tooltip"
 
 function Posts() {
   return (
@@ -18,8 +19,14 @@ function Posts() {
           </div>
           <div className="post-right col-4 align-self-center">
             Comments : <strong>3</strong>
-            <span className="material-symbols-outlined ml-4"> edit </span>
-            <span className="material-symbols-outlined ml-2"> delete </span>
+            <ReactTooltip place="bottom" id="edit" className="custom-tooltip" />{" "}
+            <span data-for="edit" data-tip="Edit" className="material-symbols-outlined ml-4">
+              Edit
+            </span>
+            <ReactTooltip place="bottom" id="delete" className="custom-tooltip" />{" "}
+            <span data-for="delete" data-tip="Delete" className="material-symbols-outlined ml-2">
+              delete
+            </span>
           </div>
         </div>
         <div className="posts p-3 ml-5 mr-3 d-flex col-8 justify-content-between">
@@ -36,8 +43,14 @@ function Posts() {
           </div>
           <div className="post-right col-4 align-self-center">
             Comments : <strong>10</strong>
-            <span className="material-symbols-outlined ml-4"> edit </span>
-            <span className="material-symbols-outlined ml-2"> delete </span>
+            <ReactTooltip place="bottom" id="edit" className="custom-tooltip" />{" "}
+            <span data-for="edit" data-tip="Edit" className="material-symbols-outlined ml-4">
+              Edit
+            </span>
+            <ReactTooltip place="bottom" id="delete" className="custom-tooltip" />{" "}
+            <span data-for="delete" data-tip="Delete" className="material-symbols-outlined ml-2">
+              delete
+            </span>
           </div>
         </div>
         <div className="posts p-3 ml-5 mr-3 d-flex col-8 justify-content-between">
@@ -54,8 +67,14 @@ function Posts() {
           </div>
           <div className="post-right col-4 align-self-center">
             Comments : <strong>15</strong>
-            <span className="material-symbols-outlined ml-4"> edit </span>
-            <span className="material-symbols-outlined ml-2"> delete </span>
+            <ReactTooltip place="bottom" id="edit" className="custom-tooltip" />{" "}
+            <span data-for="edit" data-tip="Edit" className="material-symbols-outlined ml-4">
+              Edit
+            </span>
+            <ReactTooltip place="bottom" id="delete" className="custom-tooltip" />{" "}
+            <span data-for="delete" data-tip="Delete" className="material-symbols-outlined ml-2">
+              delete
+            </span>
           </div>
         </div>
         <div className="posts p-3 ml-5 mr-3 d-flex col-8 justify-content-between">
@@ -72,8 +91,14 @@ function Posts() {
           </div>
           <div className="post-right col-4 align-self-center">
             Comments : <strong>15</strong>
-            <span className="material-symbols-outlined ml-4"> edit </span>
-            <span className="material-symbols-outlined ml-2"> delete </span>
+            <ReactTooltip place="bottom" id="edit" className="custom-tooltip" />{" "}
+            <span data-for="edit" data-tip="Edit" className="material-symbols-outlined ml-4">
+              Edit
+            </span>
+            <ReactTooltip place="bottom" id="delete" className="custom-tooltip" />{" "}
+            <span data-for="delete" data-tip="Delete" className="material-symbols-outlined ml-2">
+              delete
+            </span>
           </div>
         </div>
       </div>
