@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { Link } from "react-router-dom"
 import DispatchContext from "../DispatchContext"
 import { useContext } from "react"
+import ReactTooltip from "react-tooltip"
 function Navbar() {
   const appDispatch = useContext(DispatchContext)
 
@@ -14,13 +15,16 @@ function Navbar() {
               <Link to="/" className="mr-auto p-3">
                 <li>CONSTRUCTORS</li>
               </Link>
-              <li className="p-2 mr-4" onClick={() => appDispatch({ type: "openSearch" })}>
+              <ReactTooltip place="bottom" id="search" className="custom-tooltip" />{" "}
+              <li data-for="search" data-tip="Search" className="p-2 mr-4" onClick={() => appDispatch({ type: "openSearch" })}>
                 <span className="material-symbols-outlined"> search </span>
               </li>
-              <li className="p-2 mr-4">
+              <ReactTooltip place="bottom" id="chat" className="custom-tooltip" />{" "}
+              <li data-for="chat" data-tip="Chat" className="p-2 mr-4">
                 <span className="material-symbols-outlined"> chat </span>
               </li>
-              <li className="p-2 mr-4">
+              <ReactTooltip place="bottom" id="settings" className="custom-tooltip" />{" "}
+              <li data-for="settings" data-tip="Settings" className="p-2 mr-4">
                 <span className="material-symbols-outlined"> settings </span>
               </li>
               <Link to="/login">

@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import ReactDOM from "react-dom/client"
 import DispatchContext from "./DispatchContext"
 import StateContext from "./StateContext"
+import { CSSTransition } from "react-transition-group"
 import Navbar from "./components/Navbar"
 import Posts from "./components/Posts"
 import Footer from "./components/Footer"
@@ -31,7 +32,11 @@ function Main() {
       <DispatchContext.Provider value={dispatch}>
         <BrowserRouter>
           <Navbar />
-          {state.searchIsOpen ? <Search /> : ""}
+          <CSSTransition timeout={330} in={state.searchIsOpen} classNames="search-overlay" unmountOnExit>
+            <div className="search-overlay">
+              <Search />
+            </div>
+          </CSSTransition>
           <Routes>
             <Route path="/" element={<Posts />} />
             <Route path="/login" element={<Login />} />

@@ -7,16 +7,16 @@ function Search() {
       <div className="search-overlay">
         <div className="search-overlay-top shadow-sm">
           <div className="container container--narrow">
-            <label for="live-search-field" className="search-overlay-icon">
+            <label htmlFor="live-search-field" className="search-overlay-icon">
               <i className="fas fa-search"></i>
             </label>
-            <input autofocus type="text" autocomplete="off" id="live-search-field" className="live-search-field" placeholder="What are you interested in?" />
+            <input autoFocus type="text" autoComplete="off" id="live-search-field" className="live-search-field" placeholder="What are you interested in?" />
             <span
               id="close-search-bar"
               onClick={() => {
                 appDispatch({ type: "closeSearch" })
               }}
-              class="material-symbols-outlined"
+              className="material-symbols-outlined"
             >
               cancel
             </span>
