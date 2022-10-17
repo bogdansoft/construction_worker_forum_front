@@ -5,20 +5,29 @@ function RegisterForm() {
     <div className=" login container col-3 ">
       <form>
         <div className="d-flex flex-column align-items-center ">
-          <div className="mt-3 mr-2 p-2 ">
-            Username : <input type="text" className="ml-4" placeholder="username" />
+          <div className="mt-3 mr-2 p-2 form-group">
+            <div className="form-control">
+              Username : <input type="text" className="ml-3" placeholder="username" />
+            </div>
+            <div className="alert alert-danger small liveValidateMessage">wrong username</div>
           </div>
-          <div className="mt-3 mr-2 p-2">
-            Password : <input type="password" className="ml-4" placeholder="*********" />
+          <div className="mt-3 mr-2 p-2 form-group">
+            <div className="form-control">
+              Password : <input type="text" className="ml-3" placeholder="*******" />
+            </div>
+            <div className="alert alert-danger small liveValidateMessage">wrong password</div>
           </div>
-          <div className="mt-3 mr-2 p-2 ">
-            First name : <input type="text" className="ml-4" placeholder="First Name" />
+          <div className="mt-3 mr-2 p-2 form-group">
+            <div className="form-control">
+              First name : <input type="text" className="ml-3" placeholder="John" />
+            </div>
+            <div className="alert alert-danger small liveValidateMessage">wrong</div>
           </div>
-          <div className="mt-3 mr-2 p-2 ">
-            Last name : <input type="text" className="ml-4" placeholder="Last Name" />
-          </div>
-          <div className="mt-2 align-self-center p-3">
-            <button className="btn btn-primary login-button">Create !</button>
+          <div className="mt-3 mr-2 p-2 form-group">
+            <div className="form-control">
+              Last name : <input type="text" className="ml-3" placeholder="Doe" />
+            </div>
+            <div className="alert alert-danger small liveValidateMessage">wrong username</div>
           </div>
         </div>
       </form>
