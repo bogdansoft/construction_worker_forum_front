@@ -12,7 +12,8 @@ function CreatePost() {
     async function fetchData() {
       try {
         await Axios.post("http://localhost:8080/api/post/add", { title, content }, { cancelToken: ourRequest.token })
-        navigate(`http://localhost:8080/api/post/${response.data.id}`)
+        //navigate(`http://localhost:8080/api/post/${response.data.id}`)
+        navigate("/")
       } catch (e) {
         console.log("There was a problem creating post")
       }
