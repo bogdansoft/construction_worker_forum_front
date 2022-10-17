@@ -668,3 +668,10 @@ textarea.tall-textarea {
     opacity: 1;
   }
 }
+
+#create-account {
+  font-size: 16px;
+}
+#create-account span {
+  color: blue;
+}
