@@ -25,7 +25,7 @@ function Post(props) {
       }
     }
   }, [state.delete])
-
+  const date = new Date(props.post.createdAt).toLocaleDateString("utc", { year: "numeric", month: "short", day: "numeric" })
   return (
     <div className="posts p-3 ml-5 mr-3 d-flex col-8">
       <div className="avatar mr-3 col-2">
@@ -35,7 +35,7 @@ function Post(props) {
         <div>
           <h1>{props.post.title}</h1>
           <p>
-            Created by <strong>Robur</strong> 10 october 2022 • bugs other
+            Created by <strong>Robur</strong> {date} • bugs other
           </p>
         </div>
       </div>

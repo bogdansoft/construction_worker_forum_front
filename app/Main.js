@@ -11,7 +11,7 @@ import Login from "./components/Login"
 import Search from "./components/Search"
 import SinglePost from "./components/SinglePost"
 import RegisterForm from "./components/RegisterForm"
-
+import CreatePostForm from "./components/CreatePostForm"
 function Main() {
   //
   const initialState = {
@@ -43,7 +43,8 @@ function Main() {
             <Route path="/" element={<Posts />} />
             <Route path="/login" element={<Login />} />
             <Route path="/post" element={<SinglePost />} />
-            <Route path="/create" element={<RegisterForm />} />
+            <Route path="/user/create" element={<RegisterForm />} />
+            <Route path="/post/create" element={<CreatePostForm />} />
           </Routes>
           <Footer />
         </BrowserRouter>

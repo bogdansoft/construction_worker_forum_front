@@ -15,6 +15,10 @@ function Navbar() {
               <Link to="/" className="mr-auto p-3">
                 <li>CONSTRUCTORS</li>
               </Link>
+              <ReactTooltip place="bottom" id="add" className="custom-tooltip" />{" "}
+              <Link to="/post/create" data-for="add" data-tip="Add Post" className="p-2 mr-4">
+                <span className="material-symbols-outlined"> add </span>
+              </Link>
               <ReactTooltip place="bottom" id="search" className="custom-tooltip" />{" "}
               <li data-for="search" data-tip="Search" className="p-2 mr-4" onClick={() => appDispatch({ type: "openSearch" })}>
                 <span className="material-symbols-outlined"> search </span>
