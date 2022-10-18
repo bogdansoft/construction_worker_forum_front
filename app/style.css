@@ -137,6 +137,7 @@ body {
 }
 .form-control {
   background-color: transparent;
+  border: none;
 }
 .form-control-title {
   font-size: 2rem;
@@ -153,12 +154,6 @@ body {
 .body-content ul,
 .body-content ol {
   margin-bottom: 1.75rem;
-}
-
-.input-dark {
-  background-color: #444;
-  border-color: transparent;
-  color: #ffffff;
 }
 
 .input-dark:focus {
