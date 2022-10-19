@@ -681,4 +681,9 @@ textarea.tall-textarea {
 .comment-date {
   font-size: 12px;
   opacity: 0.8;
+.btn-round {
+  border-radius: 10px;
+}
+.pointer {
+  cursor: pointer;
 }

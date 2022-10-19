@@ -42,7 +42,7 @@ function Post(props) {
       <div className="post-right col-4 align-self-center">
         Comments : <strong>3</strong>
         <ReactTooltip place="bottom" id="edit" className="custom-tooltip" />{" "}
-        <span data-for="edit" data-tip="Edit" className="material-symbols-outlined ml-4">
+        <span data-for="edit" data-tip="Edit" className="material-symbols-outlined pointer ml-4">
           Edit
         </span>
         <ReactTooltip place="bottom" id="delete" className="custom-tooltip" />{" "}
@@ -54,7 +54,7 @@ function Post(props) {
           }}
           data-for="delete"
           data-tip="Delete"
-          className="material-symbols-outlined ml-2"
+          className="material-symbols-outlined ml-2 pointer"
         >
           delete
         </span>
