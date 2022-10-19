@@ -1,6 +1,10 @@
 import React, { useEffect } from "react"
 
 function Post() {
+  function handleSubmit(e) {
+    e.preventDefault()
+  }
+
   return (
     <div className="d-flex flex-column">
       <div className="single-post container mt-3 d-flex flex-row">
@@ -28,7 +32,25 @@ function Post() {
       </div>
       <div className="comments mt-5 container">
         <hr className="mb-5" />
-        <div className="comment d-flex flex-row align-items-center ml-auto mr-auto">
+        <form onSubmit={handleSubmit}>
+          <div className="col-6 ml-auto mr-auto d-flex flex-column comment-box">
+            <div className="d-flex flex-row">
+              <div className="mr-3 col-2 text-center">
+                <img src="https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png" />
+                <p className="font-weight-bold mt-2">USER</p>
+              </div>
+              <div>
+                <textarea rows="4" cols="50" className="no-resize"></textarea>
+              </div>
+            </div>
+            <div className="align-self-end mt-2">
+              <button className="btn btn-primary" type="submit">
+                Comment
+              </button>
+            </div>
+          </div>
+        </form>
+        <div className="comment mt-5 d-flex flex-row align-items-center ml-auto mr-auto">
           <div className="mr-3 col-2 text-center">
             <img src="https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png" />
             <p className="font-weight-bold mt-2">Robur</p>
