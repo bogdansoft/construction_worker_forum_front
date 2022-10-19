@@ -58,9 +58,12 @@ function Post() {
           <div className="comment-body">
             <p>Hey ! Nice article. I really needed this. Have a nice day !</p>
           </div>
-          <div className="ml-auto">
-            <span className="material-symbols-outlined"> edit </span>
-            <span className="material-symbols-outlined"> delete </span>
+          <div className="ml-auto d-flex flex-column align-self-start">
+            <div className="align-items-start comment-date">Oct 19, 2022</div>
+            <div className="align-self-end mt-4">
+              <span className="material-symbols-outlined"> edit </span>
+              <span className="material-symbols-outlined"> delete </span>
+            </div>
           </div>
         </div>
         <div className="mt-4"></div>
@@ -72,9 +75,12 @@ function Post() {
           <div className="comment-body">
             <p>Your article sucks. I will report you. Get banned</p>
           </div>
-          <div className="ml-auto">
-            <span className="material-symbols-outlined"> edit </span>
-            <span className="material-symbols-outlined"> delete </span>
+          <div className="ml-auto d-flex flex-column align-self-start">
+            <div className="align-items-start comment-date">Oct 19, 2022</div>
+            <div className="align-self-end mt-4">
+              <span className="material-symbols-outlined"> edit </span>
+              <span className="material-symbols-outlined"> delete </span>
+            </div>
           </div>
         </div>
       </div>
