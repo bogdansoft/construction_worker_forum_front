@@ -44,7 +44,6 @@ function Post(props) {
         Comments : <strong>3</strong>
         <ReactTooltip place="bottom" id="edit" className="custom-tooltip" />{" "}
         <Link to={`/post/edit/${props.post.id}`} data-for="edit" data-tip="Edit" className="material-symbols-outlined ml-4">
-        <span data-for="edit" data-tip="Edit" className="material-symbols-outlined pointer ml-4">
           Edit
         </Link>
         <ReactTooltip place="bottom" id="delete" className="custom-tooltip" />{" "}
