@@ -12,6 +12,7 @@ import Search from "./components/Search"
 import SinglePost from "./components/SinglePost"
 import RegisterForm from "./components/RegisterForm"
 import CreatePostForm from "./components/CreatePostForm"
+import UserProfile from "./components/UserProfile"
 function Main() {
   //
   const initialState = {
@@ -41,6 +42,7 @@ function Main() {
           </CSSTransition>
           <Routes>
             <Route path="/" element={<Posts />} />
+            <Route path="/profile/:username/*" element={<UserProfile />} />
             <Route path="/login" element={<Login />} />
             <Route path="/post" element={<SinglePost />} />
             <Route path="/user/create" element={<RegisterForm />} />
