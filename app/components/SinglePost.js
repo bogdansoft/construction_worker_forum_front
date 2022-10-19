@@ -20,7 +20,7 @@ function Post() {
             <span className="material-symbols-outlined ml-auto align-self-center"> edit </span>
             <span className="material-symbols-outlined ml-2 align-self-center"> delete </span>
           </div>
-          <p className="mt-3">
+          <p className="mt-3 col-10">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Commodo ullamcorper a lacus vestibulum sed arcu non odio euismod. Scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique senectus et. <br />
             <br />
             Tincidunt vitae semper quis lectus nulla at. Vitae tempus quam pellentesque nec nam aliquam sem. In ornare quam viverra orci sagittis eu.
