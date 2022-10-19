@@ -1,12 +1,9 @@
-import React, { useEffect, useContext } from "react"
-import { Link, useParams, useNavigate } from "react-router-dom"
+import React, { useEffect } from "react"
+import { Link, useParams } from "react-router-dom"
 import { useImmerReducer } from "use-immer"
 import Axios from "axios"
-import DispatchContext from "../DispatchContext"
 
 function EditPost() {
-  const appDispatch = useContext(DispatchContext)
-
   const originalState = {
     title: "",
     content: "",
