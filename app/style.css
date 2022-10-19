@@ -678,3 +678,9 @@ textarea.tall-textarea {
 #post-text-area {
   resize: none;
 }
+.btn-round {
+  border-radius: 10px;
+}
+.pointer {
+  cursor: pointer;
+}
