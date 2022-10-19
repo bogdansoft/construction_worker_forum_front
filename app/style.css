@@ -681,3 +681,6 @@ textarea.tall-textarea {
 .btn-round {
   border-radius: 10px;
 }
+.pointer {
+  cursor: pointer;
+}
