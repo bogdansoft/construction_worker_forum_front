@@ -13,6 +13,7 @@ import SinglePost from "./components/SinglePost"
 import RegisterForm from "./components/RegisterForm"
 import CreatePostForm from "./components/CreatePostForm"
 import UserProfile from "./components/UserProfile"
+import ChangeBIO from "./components/ChangeBIO"
 function Main() {
   //
   const initialState = {
@@ -47,6 +48,7 @@ function Main() {
             <Route path="/post" element={<SinglePost />} />
             <Route path="/user/create" element={<RegisterForm />} />
             <Route path="/post/create" element={<CreatePostForm />} />
+            <Route path="/profile/changebio/:username" element={<ChangeBIO />} />
           </Routes>
           <Footer />
         </BrowserRouter>
