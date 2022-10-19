@@ -4,6 +4,7 @@ import ReactDOM from "react-dom/client"
 import DispatchContext from "./DispatchContext"
 import StateContext from "./StateContext"
 import { CSSTransition } from "react-transition-group"
+
 import Navbar from "./components/Navbar"
 import Posts from "./components/Posts"
 import Footer from "./components/Footer"
@@ -12,10 +13,12 @@ import Search from "./components/Search"
 import SinglePost from "./components/SinglePost"
 import RegisterForm from "./components/RegisterForm"
 import CreatePostForm from "./components/CreatePostForm"
+import EditPost from "./components/EditPost"
+
 function Main() {
   //
   const initialState = {
-    searchIsOpen: false
+    searchIsOpen: false,
   }
 
   function ourReducer(state, action) {
@@ -45,6 +48,7 @@ function Main() {
             <Route path="/post" element={<SinglePost />} />
             <Route path="/user/create" element={<RegisterForm />} />
             <Route path="/post/create" element={<CreatePostForm />} />
+            <Route path="/post/edit/:id" element={<EditPost />} />
           </Routes>
           <Footer />
         </BrowserRouter>
