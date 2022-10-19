@@ -675,9 +675,12 @@ textarea.tall-textarea {
 .post-body textarea {
   border: 5px solid blue;
 }
-#post-text-area {
+.no-resize {
   resize: none;
 }
+.comment-date {
+  font-size: 12px;
+  opacity: 0.8;
 .btn-round {
   border-radius: 10px;
 }
