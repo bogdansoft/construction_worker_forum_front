@@ -48,7 +48,7 @@ function Main() {
             <Route path="/post" element={<SinglePost />} />
             <Route path="/user/create" element={<RegisterForm />} />
             <Route path="/post/create" element={<CreatePostForm />} />
-            <Route path="/edit/:id" element={<EditPost />} />
+            <Route path="/post/edit/:id" element={<EditPost />} />
           </Routes>
           <Footer />
         </BrowserRouter>

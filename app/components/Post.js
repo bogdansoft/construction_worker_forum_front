@@ -43,7 +43,7 @@ function Post(props) {
       <div className="post-right col-4 align-self-center">
         Comments : <strong>3</strong>
         <ReactTooltip place="bottom" id="edit" className="custom-tooltip" />{" "}
-        <Link to={`/edit/${props.post.id}`} data-for="edit" data-tip="Edit" className="material-symbols-outlined ml-4">
+        <Link to={`/post/edit/${props.post.id}`} data-for="edit" data-tip="Edit" className="material-symbols-outlined ml-4">
           Edit
         </Link>
         <ReactTooltip place="bottom" id="delete" className="custom-tooltip" />{" "}
