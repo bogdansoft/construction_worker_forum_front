@@ -7,8 +7,7 @@ import Axios from "axios"
 function UserProfile() {
   const { username } = useParams()
   const [state, setState] = useState({
-    username: "...",
-    avatar: "https://gravatar.com/avatar/placeholder?s=128",
+    avatar: "https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png",
     bio: "..."
   })
 
@@ -17,7 +16,7 @@ function UserProfile() {
 
     async function fetchData() {
       try {
-        const response = await Axios.get(`/profile/${username}`, { token: appState.user.token }, { cancelToken: ourRequest.token })
+        const response = await Axios.get(`/api/user?username=${username}`, { cancelToken: ourRequest.token })
         setState(response.data)
         console.log(response.data)
       } catch {
@@ -42,7 +41,7 @@ function UserProfile() {
         <button className="btn btn-danger">Delete account</button>
       </div>
       <div className="col-lg-7 py-3 py-md-5">
-        <h1 className="display-3">Jacek</h1>
+        <h1 className="display-3">{username}</h1>
         <p className="lead text-muted">Z wyksztalcenia technik informatyk. Pracuje jako operator maszyn CNC. Moje zainteresowania to kino, podroze i zona kolegi Darka.</p>
       </div>
       <div className="profile-nav nav nav-tabs pt-2 mb-4">
