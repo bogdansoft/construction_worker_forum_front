@@ -3,7 +3,7 @@ import {BrowserRouter, Routes, Route} from "react-router-dom"
 import ReactDOM from "react-dom/client"
 import DispatchContext from "./DispatchContext"
 import StateContext from "./StateContext"
-import {CSSTransition} from "react-transition-group"
+import { CSSTransition } from "react-transition-group"
 import Navbar from "./components/Navbar"
 import Posts from "./components/Posts"
 import Footer from "./components/Footer"
@@ -12,13 +12,15 @@ import Search from "./components/Search"
 import SinglePost from "./components/SinglePost"
 import RegisterForm from "./components/RegisterForm"
 import CreatePostForm from "./components/CreatePostForm"
-import ViewSinglePost from "./components/ViewSinglePost";
+import UserProfile from "./components/UserProfile"
+import ChangeBIO from "./components/ChangeBIO"
+import EditPost from "./components/EditPost"
 
 function Main() {
-    //
-    const initialState = {
-        searchIsOpen: false
-    }
+  //
+  const initialState = {
+    searchIsOpen: false,
+  }
 
     function ourReducer(state, action) {
         switch (action.type) {
@@ -31,29 +33,33 @@ function Main() {
 
     const [state, dispatch] = useReducer(ourReducer, initialState)
 
-    return (
-        <StateContext.Provider value={state}>
-            <DispatchContext.Provider value={dispatch}>
-                <BrowserRouter>
-                    <Navbar/>
-                    <CSSTransition timeout={330} in={state.searchIsOpen} classNames="search-overlay" unmountOnExit>
-                        <div className="search-overlay">
-                            <Search/>
-                        </div>
-                    </CSSTransition>
-                    <Routes>
-                        <Route path="/" element={<Posts/>}/>
-                        <Route path="/login" element={<Login/>}/>
-                        <Route path="/post" element={<SinglePost/>}/>
-                        <Route path="/user/create" element={<RegisterForm/>}/>
-                        <Route path="/post/create" element={<CreatePostForm/>}/>
-                        <Route path="/post/:id" element={<ViewSinglePost/>}/>
-                    </Routes>
-                    <Footer/>
-                </BrowserRouter>
-            </DispatchContext.Provider>
-        </StateContext.Provider>
-    )
+
+  return (
+    <StateContext.Provider value={state}>
+      <DispatchContext.Provider value={dispatch}>
+        <BrowserRouter>
+          <Navbar />
+          <CSSTransition timeout={330} in={state.searchIsOpen} classNames="search-overlay" unmountOnExit>
+            <div className="search-overlay">
+              <Search />
+            </div>
+          </CSSTransition>
+          <Routes>
+            <Route path="/" element={<Posts />} />
+            <Route path="/profile/:username/*" element={<UserProfile />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/post" element={<SinglePost />} />
+            <Route path="/user/create" element={<RegisterForm />} />
+            <Route path="/post/create" element={<CreatePostForm />} />
+            <Route path="/profile/changebio/:username" element={<ChangeBIO />} />
+            <Route path="/post/edit/:id" element={<EditPost />} />
+            <Route path="/post/:id" element={<ViewSinglePost/>}/>
+          </Routes>
+          <Footer />
+        </BrowserRouter>
+      </DispatchContext.Provider>
+    </StateContext.Provider>
+  )
 }
 
 const root = ReactDOM.createRoot(document.querySelector("#app"))
