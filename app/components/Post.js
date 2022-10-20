@@ -2,11 +2,11 @@ import React, { useEffect } from "react"
 import ReactTooltip from "react-tooltip"
 import { useImmer } from "use-immer"
 import Axios from "axios"
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom"
 
 function Post(props) {
   const [state, setState] = useImmer({
-    delete: 0
+    delete: 0,
   })
 
   useEffect(() => {
@@ -46,13 +46,13 @@ function Post(props) {
       <div className="post-right col-4 align-self-center">
         Comments : <strong>3</strong>
         <ReactTooltip place="bottom" id="edit" className="custom-tooltip" />{" "}
-        <span data-for="edit" data-tip="Edit" className="material-symbols-outlined pointer ml-4">
+        <Link to={`/post/edit/${props.post.id}`} data-for="edit" data-tip="Edit" className="material-symbols-outlined ml-4">
           Edit
-        </span>
+        </Link>
         <ReactTooltip place="bottom" id="delete" className="custom-tooltip" />{" "}
         <span
           onClick={() => {
-            setState(draft => {
+            setState((draft) => {
               draft.delete += 1
             })
           }}
