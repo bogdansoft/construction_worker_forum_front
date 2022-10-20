@@ -43,7 +43,7 @@ function CreatePost() {
               <span className="col-3">Title: </span> <input onChange={e => setTitle(e.target.value)} type="text" className="col-9" placeholder="title" />
             </div>
             <div className=" col-10 mt-4 post-body ">
-              <textarea onChange={e => setContent(e.target.value)} className="no-resize" cols="100" rows="10" type="text" className="" placeholder="" />
+              <textarea onChange={e => setContent(e.target.value)} className="no-resize" cols="100" rows="10" type="text" placeholder="" />
             </div>
             <div className=" col-10 mt-4 post-body ">
               <p>
