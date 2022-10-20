@@ -34,7 +34,6 @@ function Post(props) {
       </div>
       <div className="post-left col-8">
         <div>
-          <div className="floating-alert">LOL</div>
           <h1>{props.post.title}</h1>
           <p>
             Created by <strong>Robur</strong> {date} • bugs other
