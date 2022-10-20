@@ -2,6 +2,7 @@ import React, { useEffect } from "react"
 import ReactTooltip from "react-tooltip"
 import { useImmer } from "use-immer"
 import Axios from "axios"
+import {Link} from "react-router-dom";
 
 function Post(props) {
   const [state, setState] = useImmer({
@@ -25,6 +26,7 @@ function Post(props) {
       }
     }
   }, [state.delete])
+
   const date = new Date(props.post.createdAt).toLocaleDateString("utc", { year: "numeric", month: "short", day: "numeric" })
   return (
     <div className="posts p-3 ml-5 mr-3 d-flex col-8">
@@ -33,7 +35,9 @@ function Post(props) {
       </div>
       <div className="post-left col-8">
         <div>
-          <h1>{props.post.title}</h1>
+          <Link to={`post/${props.post.id}`}>
+            <h1>{props.post.title}</h1>
+          </Link>
           <p>
             Created by <strong>Robur</strong> {date} • bugs other
           </p>
