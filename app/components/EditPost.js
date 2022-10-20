@@ -93,20 +93,23 @@ function EditPost() {
 
   return (
     <div className="container">
-      <Link className="medium font-weight-bold" to={`/post`}>
+      <Link className="text-primary medium font-weight-bold" to={`/post`}>
         &laquo; Back to post permalink
       </Link>
 
       <form onSubmit={handleSubmit}>
-        <div className="">
-          <div className="form-group container mt-4 row justify-content-center ">
-            <div className="col-6 p-2">
-              <span className="col-3">Title: </span> <input onChange={(e) => dispatch({ type: "titleChange", value: e.target.value })} value={state.title} type="text" className="col-9" placeholder="title" />
-            </div>
-            <div className=" col-10 mt-4 post-body ">
-              <textarea onChange={(e) => dispatch({ type: "contentChange", value: e.target.value })} id="post-text-area" cols="100" rows="10" type="text" className="" placeholder="" value={state.content} />
-            </div>
-            <button className="col-3 mt-4 btn btn-primary" type="submit">
+        <div className="form-group container mt-4 justify-content-center">
+          <div className="row justify-content-center mt-4">
+            <span className="d-flex justify-content-center col-2">
+              <h3>Title:</h3>{" "}
+            </span>{" "}
+            <input onChange={(e) => dispatch({ type: "titleChange", value: e.target.value })} value={state.title} type="text" className="justify-content-end col-7" placeholder="title" />
+          </div>
+          <div className="row justify-content-center mt-4">
+            <textarea onChange={(e) => dispatch({ type: "contentChange", value: e.target.value })} id="post-text-area" cols="100" rows="10" type="text" className="" placeholder="" value={state.content} />
+          </div>
+          <div className="row justify-content-center mt-4">
+            <button className="row justify-content-center col-3  btn btn-success btn-rounded" type="submit">
               Edit
             </button>
           </div>
