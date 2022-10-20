@@ -1,0 +1,93 @@
+Index: app/components/Post.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React, { useEffect } from \"react\"\r\nimport ReactTooltip from \"react-tooltip\"\r\nimport { useImmer } from \"use-immer\"\r\nimport Axios from \"axios\"\r\n\r\nfunction Post(props) {\r\n  const [state, setState] = useImmer({\r\n    delete: 0\r\n  })\r\n\r\n  useEffect(() => {\r\n    if (state.delete) {\r\n      const ourRequest = Axios.CancelToken.source()\r\n      async function fetchData() {\r\n        try {\r\n          await Axios.delete(`http://localhost:8080/api/post/${props.post.id}`, { cancelToken: ourRequest.token })\r\n          window.location.reload(true)\r\n        } catch (e) {\r\n          console.log(\"there was a problem deleting post\")\r\n        }\r\n      }\r\n      fetchData()\r\n      return () => {\r\n        ourRequest.cancel()\r\n      }\r\n    }\r\n  }, [state.delete])\r\n  const date = new Date(props.post.createdAt).toLocaleDateString(\"utc\", { year: \"numeric\", month: \"short\", day: \"numeric\" })\r\n  return (\r\n    <div className=\"posts p-3 ml-5 mr-3 d-flex col-8\">\r\n      <div className=\"avatar mr-3 col-2\">\r\n        <img src=\"https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png\" />\r\n      </div>\r\n      <div className=\"post-left col-8\">\r\n        <div>\r\n          <h1>{props.post.title}</h1>\r\n          <p>\r\n            Created by <strong>Robur</strong> {date} • bugs other\r\n          </p>\r\n        </div>\r\n      </div>\r\n      <div className=\"post-right col-4 align-self-center\">\r\n        Comments : <strong>3</strong>\r\n        <ReactTooltip place=\"bottom\" id=\"edit\" className=\"custom-tooltip\" />{\" \"}\r\n        <span data-for=\"edit\" data-tip=\"Edit\" className=\"material-symbols-outlined pointer ml-4\">\r\n          Edit\r\n        </span>\r\n        <ReactTooltip place=\"bottom\" id=\"delete\" className=\"custom-tooltip\" />{\" \"}\r\n        <span\r\n          onClick={() => {\r\n            setState(draft => {\r\n              draft.delete += 1\r\n            })\r\n          }}\r\n          data-for=\"delete\"\r\n          data-tip=\"Delete\"\r\n          className=\"material-symbols-outlined ml-2 pointer\"\r\n        >\r\n          delete\r\n        </span>\r\n      </div>\r\n    </div>\r\n  )\r\n}\r\n\r\nexport default Post\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/components/Post.js b/app/components/Post.js
+--- a/app/components/Post.js	(revision 3456087d73f9061a2e3009849d73bc2bd818eca3)
++++ b/app/components/Post.js	(date 1666261484353)
+@@ -25,6 +25,7 @@
+       }
+     }
+   }, [state.delete])
++
+   const date = new Date(props.post.createdAt).toLocaleDateString("utc", { year: "numeric", month: "short", day: "numeric" })
+   return (
+     <div className="posts p-3 ml-5 mr-3 d-flex col-8">
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"4537d9ea-a222-49fc-bce8-0379dcf912aa\" name=\"Changes\" comment=\"\">\r\n      <change afterPath=\"$PROJECT_DIR$/app/components/ViewSinglePost.js\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/node_modules/.package-lock.json\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/node_modules/.package-lock.json\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/package-lock.json\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/package-lock.json\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/package.json\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/package.json\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"JavaScript File\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\r\n      <map>\r\n        <entry key=\"$PROJECT_DIR$\" value=\"dev\" />\r\n      </map>\r\n    </option>\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"MarkdownSettingsMigration\">\r\n    <option name=\"stateVersion\" value=\"1\" />\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"2G7wtbx82dL6CaK7WFKH6UskUqC\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"RunOnceActivity.OpenProjectViewOnStart\": \"true\",\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"WebServerToolWindowFactoryState\": \"false\",\r\n    \"last_opened_file_path\": \"C:/Users/rmicha/Desktop/test/construction_worker_forum_front\",\r\n    \"nodejs_package_manager_path\": \"npm\",\r\n    \"ts.external.directory.path\": \"C:\\\\Program Files\\\\JetBrains\\\\WebStorm 2022.2.2\\\\plugins\\\\JavaScriptLanguage\\\\jsLanguageServicesImpl\\\\external\",\r\n    \"vue.rearranger.settings.migration\": \"true\"\r\n  }\r\n}]]></component>\r\n  <component name=\"RunManager\">\r\n    <configuration name=\"run dev\" type=\"js.build_tools.npm\">\r\n      <package-json value=\"$PROJECT_DIR$/package.json\" />\r\n      <command value=\"run\" />\r\n      <scripts>\r\n        <script value=\"dev\" />\r\n      </scripts>\r\n      <node-interpreter value=\"project\" />\r\n      <envs />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"4537d9ea-a222-49fc-bce8-0379dcf912aa\" name=\"Changes\" comment=\"\" />\r\n      <created>1665753145513</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1665753145513</updated>\r\n      <workItem from=\"1665753147054\" duration=\"28000\" />\r\n      <workItem from=\"1665753176722\" duration=\"6000\" />\r\n      <workItem from=\"1665753195531\" duration=\"2000\" />\r\n      <workItem from=\"1665753481459\" duration=\"703000\" />\r\n      <workItem from=\"1666182800474\" duration=\"15932000\" />\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 3456087d73f9061a2e3009849d73bc2bd818eca3)
++++ b/.idea/workspace.xml	(date 1666261405095)
+@@ -2,11 +2,8 @@
+ <project version="4">
+   <component name="ChangeListManager">
+     <list default="true" id="4537d9ea-a222-49fc-bce8-0379dcf912aa" name="Changes" comment="">
+-      <change afterPath="$PROJECT_DIR$/app/components/ViewSinglePost.js" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/node_modules/.package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.package-lock.json" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/components/Post.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/components/Post.js" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -28,6 +25,13 @@
+     </option>
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+   </component>
++  <component name="GithubProjectSettings">
++    <option name="branchProtectionPatterns">
++      <list>
++        <option value="dev" />
++      </list>
++    </option>
++  </component>
+   <component name="MarkdownSettingsMigration">
+     <option name="stateVersion" value="1" />
+   </component>
+@@ -36,17 +40,17 @@
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent"><![CDATA[{
+-  "keyToString": {
+-    "RunOnceActivity.OpenProjectViewOnStart": "true",
+-    "RunOnceActivity.ShowReadmeOnStart": "true",
+-    "WebServerToolWindowFactoryState": "false",
+-    "last_opened_file_path": "C:/Users/rmicha/Desktop/test/construction_worker_forum_front",
+-    "nodejs_package_manager_path": "npm",
+-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2022.2.2\\plugins\\JavaScriptLanguage\\jsLanguageServicesImpl\\external",
+-    "vue.rearranger.settings.migration": "true"
++  <component name="PropertiesComponent">{
++  &quot;keyToString&quot;: {
++    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
++    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
++    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
++    &quot;last_opened_file_path&quot;: &quot;C:/Users/rmicha/Desktop/test/construction_worker_forum_front&quot;,
++    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
++    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\WebStorm 2022.2.2\\plugins\\JavaScriptLanguage\\jsLanguageServicesImpl\\external&quot;,
++    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+   }
+-}]]></component>
++}</component>
+   <component name="RunManager">
+     <configuration name="run dev" type="js.build_tools.npm">
+       <package-json value="$PROJECT_DIR$/package.json" />
+@@ -89,4 +93,8 @@
+       </map>
+     </option>
+   </component>
++  <component name="VcsManagerConfiguration">
++    <MESSAGE value="added ViewSinglePost component" />
++    <option name="LAST_COMMIT_MESSAGE" value="added ViewSinglePost component" />
++  </component>
+ </project>
+\ No newline at end of file

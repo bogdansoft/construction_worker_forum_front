@@ -1,0 +1,44 @@
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"4537d9ea-a222-49fc-bce8-0379dcf912aa\" name=\"Changes\" comment=\"added ViewSinglePost component\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/app/Main.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/app/Main.js\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/app/components/Post.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/app/components/Post.js\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/app/components/ViewSinglePost.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/app/components/ViewSinglePost.js\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"JavaScript File\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\r\n      <map>\r\n        <entry key=\"$PROJECT_DIR$\" value=\"dev\" />\r\n      </map>\r\n    </option>\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"GithubProjectSettings\">\r\n    <option name=\"branchProtectionPatterns\">\r\n      <list>\r\n        <option value=\"dev\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"MarkdownSettingsMigration\">\r\n    <option name=\"stateVersion\" value=\"1\" />\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"2G7wtbx82dL6CaK7WFKH6UskUqC\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">{\r\n  &quot;keyToString&quot;: {\r\n    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\r\n    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,\r\n    &quot;last_opened_file_path&quot;: &quot;C:/Users/rmicha/Desktop/test/construction_worker_forum_front&quot;,\r\n    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,\r\n    &quot;ts.external.directory.path&quot;: &quot;C:\\\\Program Files\\\\JetBrains\\\\WebStorm 2022.2.2\\\\plugins\\\\JavaScriptLanguage\\\\jsLanguageServicesImpl\\\\external&quot;,\r\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\r\n  }\r\n}</component>\r\n  <component name=\"RunManager\">\r\n    <configuration name=\"run dev\" type=\"js.build_tools.npm\">\r\n      <package-json value=\"$PROJECT_DIR$/package.json\" />\r\n      <command value=\"run\" />\r\n      <scripts>\r\n        <script value=\"dev\" />\r\n      </scripts>\r\n      <node-interpreter value=\"project\" />\r\n      <envs />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"4537d9ea-a222-49fc-bce8-0379dcf912aa\" name=\"Changes\" comment=\"\" />\r\n      <created>1665753145513</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1665753145513</updated>\r\n      <workItem from=\"1665753147054\" duration=\"28000\" />\r\n      <workItem from=\"1665753176722\" duration=\"6000\" />\r\n      <workItem from=\"1665753195531\" duration=\"2000\" />\r\n      <workItem from=\"1665753481459\" duration=\"703000\" />\r\n      <workItem from=\"1666182800474\" duration=\"15932000\" />\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"added ViewSinglePost component\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"added ViewSinglePost component\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision c2d503debb2b730cfe853d1db79bc06fef00bee0)
++++ b/.idea/workspace.xml	(date 1666267536954)
+@@ -1,7 +1,7 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="ChangeListManager">
+-    <list default="true" id="4537d9ea-a222-49fc-bce8-0379dcf912aa" name="Changes" comment="added ViewSinglePost component">
++    <list default="true" id="4537d9ea-a222-49fc-bce8-0379dcf912aa" name="Changes" comment="added ViewSinglePost component done">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/app/Main.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/Main.js" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/app/components/Post.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/components/Post.js" afterDir="false" />
+@@ -79,6 +79,14 @@
+       <workItem from="1665753481459" duration="703000" />
+       <workItem from="1666182800474" duration="15932000" />
+     </task>
++    <task id="LOCAL-00001" summary="added ViewSinglePost component done">
++      <created>1666267528741</created>
++      <option name="number" value="00001" />
++      <option name="presentableId" value="LOCAL-00001" />
++      <option name="project" value="LOCAL" />
++      <updated>1666267528741</updated>
++    </task>
++    <option name="localTasksCounter" value="2" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -97,6 +105,7 @@
+   </component>
+   <component name="VcsManagerConfiguration">
+     <MESSAGE value="added ViewSinglePost component" />
+-    <option name="LAST_COMMIT_MESSAGE" value="added ViewSinglePost component" />
++    <MESSAGE value="added ViewSinglePost component done" />
++    <option name="LAST_COMMIT_MESSAGE" value="added ViewSinglePost component done" />
+   </component>
+ </project>
+\ No newline at end of file
