@@ -9,7 +9,7 @@ function ChangeBIO() {
   async function handleSubmit(e) {
     e.preventDefault()
     try {
-      //const response = await Axios.post("/api/user/changebio", { body, token: appState.user.token })
+      const response = await Axios.post(`/api/user/${username}/changebio`, { body, token: appState.user.token })
       navigate(`/profile/${username}`)
       console.log("New post was created")
     } catch {
