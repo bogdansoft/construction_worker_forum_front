@@ -15,6 +15,7 @@ import CreatePostForm from "./components/CreatePostForm"
 import UserProfile from "./components/UserProfile"
 import ChangeBIO from "./components/ChangeBIO"
 import EditPost from "./components/EditPost"
+import ViewSinglePost from "./components/ViewSinglePost";
 
 function Main() {
   //
