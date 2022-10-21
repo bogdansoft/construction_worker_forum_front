@@ -24,7 +24,7 @@ import NavbarLoggedOut from "./components/NavbarLoggedOut";
 function Main() {
   //
   const initialState = {
-    loggedIn: true,
+    loggedIn: Boolean(localStorage.getItem("constructionForumUserId")),
     searchIsOpen: false,
     user: {
       id: localStorage.getItem("constructionForumId"),
