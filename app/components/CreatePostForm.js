@@ -1,19 +1,21 @@
-import React, { useEffect, useState } from "react"
+import React, {useContext, useState} from "react"
 import Axios from "axios"
-import { useNavigate } from "react-router-dom"
-import { useImmer } from "use-immer"
+import {useNavigate} from "react-router-dom"
+import StateContext from "../StateContext";
 
 function CreatePost() {
   const [title, setTitle] = useState()
   const [content, setContent] = useState()
   const navigate = useNavigate()
   const [tags, setTags] = useState([])
+  const appState = useContext(StateContext)
+
   const handleSubmit = e => {
     e.preventDefault()
     const ourRequest = Axios.CancelToken.source()
     async function fetchData() {
       try {
-        await Axios.post("http://localhost:8080/api/post/add", { title, content }, { cancelToken: ourRequest.token })
+        await Axios.post("/api/post", { title, content, "userId": 1 }, { headers: {"Authorization": `Bearer ${appState.user.token}`} })
         //navigate(`http://localhost:8080/api/post/${response.data.id}`)
         navigate("/")
       } catch (e) {
