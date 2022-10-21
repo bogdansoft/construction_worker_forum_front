@@ -1,9 +1,12 @@
 import React, { useState, useReducer, useContext } from "react"
+import { useImmerReducer } from "use-immer";
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import ReactDOM from "react-dom/client"
 import DispatchContext from "./DispatchContext"
 import StateContext from "./StateContext"
 import { CSSTransition } from "react-transition-group"
+import Axios from "axios";
+Axios.defaults.baseURL = "http://localhost:8080";
 
 import Navbar from "./components/Navbar"
 import Posts from "./components/Posts"
@@ -16,11 +19,12 @@ import CreatePostForm from "./components/CreatePostForm"
 import UserProfile from "./components/UserProfile"
 import ChangeBIO from "./components/ChangeBIO"
 import EditPost from "./components/EditPost"
+import NavbarLoggedOut from "./components/NavbarLoggedOut";
 
 function Main() {
   //
   const initialState = {
-    loggedIn: Boolean(localStorage.getItem("constructionForumId")),
+    loggedIn: true,
     searchIsOpen: false,
     user: {
       id: localStorage.getItem("constructionForumId"),
@@ -34,6 +38,9 @@ function Main() {
         state.loggedIn = true
         state.user = action.data
         break
+      case "logout":
+        state.loggedIn = false;
+        break;
       case "openSearch":
         return { searchIsOpen: true }
       case "closeSearch":
@@ -41,7 +48,7 @@ function Main() {
     }
   }
 
-  const [state, dispatch] = useReducer(ourReducer, initialState)
+  const [state, dispatch] = useImmerReducer(ourReducer, initialState)
 
   return (
     <StateContext.Provider value={state}>
