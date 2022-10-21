@@ -20,11 +20,20 @@ import EditPost from "./components/EditPost"
 function Main() {
   //
   const initialState = {
+    loggedIn: Boolean(localStorage.getItem("constructionForumId")),
     searchIsOpen: false,
+    user: {
+      id: localStorage.getItem("constructionForumId"),
+      username: localStorage.getItem("constructionForumUsername")
+    }
   }
 
   function ourReducer(state, action) {
     switch (action.type) {
+      case "login":
+        state.loggedIn = true
+        state.user = action.data
+        break
       case "openSearch":
         return { searchIsOpen: true }
       case "closeSearch":
