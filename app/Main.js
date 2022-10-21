@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useContext } from "react"
+import React, { useState, useReducer, useContext, useEffect } from "react"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import ReactDOM from "react-dom/client"
 import DispatchContext from "./DispatchContext"
@@ -20,11 +20,12 @@ import EditPost from "./components/EditPost"
 function Main() {
   //
   const initialState = {
-    loggedIn: Boolean(localStorage.getItem("constructionForumId")),
+    loggedIn: Boolean(localStorage.getItem("constructionForumUserId")),
     searchIsOpen: false,
     user: {
-      id: localStorage.getItem("constructionForumId"),
-      username: localStorage.getItem("constructionForumUsername")
+      id: localStorage.getItem("constructionForumUserId"),
+      username: localStorage.getItem("constructionForumUsername"),
+      token: localStorage.getItem("constructionForumUserToken")
     }
   }
 
@@ -42,6 +43,18 @@ function Main() {
   }
 
   const [state, dispatch] = useReducer(ourReducer, initialState)
+
+  useEffect(() => {
+    if (state.loggedIn) {
+      localStorage.setItem("constructionForumUserId", state.user.id)
+      localStorage.setItem("constructionForumUsername", state.user.username)
+      localStorage.setItem("constructionForumUserToken", state.user.token)
+    } else {
+      localStorage.removeItem("constructionForumUserId")
+      localStorage.removeItem("constructionForumUsername")
+      localStorage.removeItem("constructionForumUserToken")
+    }
+  }, [state.loggedIn])
 
   return (
     <StateContext.Provider value={state}>

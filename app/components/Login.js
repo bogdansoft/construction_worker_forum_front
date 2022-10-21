@@ -1,18 +1,44 @@
-import React, { useEffect } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
+import Axios from "axios"
+import DispatchContext from "../DispatchContext"
 
 function Login() {
+  const [username, setUsername] = useState()
+  const [password, setPassword] = useState()
+
+  const appDispatch = useContext(DispatchContext)
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+
+    try {
+      const response = await Axios.post("http://localhost:8080/api/login", { username, password })
+
+      if (response.data) {
+        console.log(response.data)
+        appDispatch({ type: "login", data: response.data })
+      }
+    } catch (e) {
+      if (e.response.status === 401) {
+        console.log("Incorrect user credentials!")
+      } else {
+        console.log("There was a problem")
+      }
+    }
+  }
+
   return (
     <div className=" login container col-3 ">
-      <form>
+      <form onSubmit={handleSubmit} className="mb-0 pt-2 pt-md-0">
         <div className="d-flex flex-column align-items-center ">
           <div className="mt-3 mr-2 p-2 ">
             <span className="material-symbols-outlined mr-2"> account_circle </span>
-            <input type="text" placeholder="username" />
+            <input onChange={e => setUsername(e.target.value)} type="text" placeholder="username" />
           </div>
           <div className="mt-3 mr-2 p-2">
             <span className="material-symbols-outlined mr-2"> lock </span>
-            <input type="password" placeholder="*********" />
+            <input onChange={e => setPassword(e.target.value)} type="password" placeholder="*********" />
           </div>
           <div className="mt-2 align-self-center p-3">
             <button className="btn btn-primary login-button">Login</button>
