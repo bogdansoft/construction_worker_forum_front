@@ -1,12 +1,25 @@
 import React, { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import Axios from "axios"
+import { useImmer } from "use-immer"
 import SingleComment from "./SingleComment"
+import { CSSTransition } from "react-transition-group"
 
 function ViewSinglePost() {
   const { id } = useParams()
   const [post, setPost] = useState([])
   const [comments, setComments] = useState([])
+
+  const [state, setState] = useImmer({
+    commentToAdd: {
+      content: "",
+      userId: "",
+      postId: id,
+      listener: 0,
+      hasErrors: false,
+      message: ""
+    }
+  })
 
   useEffect(() => {
     const ourRequest = Axios.CancelToken.source()
@@ -19,7 +32,6 @@ function ViewSinglePost() {
         console.log("There was a problem or the request was cancelled.")
       }
     }
-
     fetchPost()
     return () => {
       ourRequest.cancel()
@@ -33,7 +45,6 @@ function ViewSinglePost() {
       try {
         const response = await Axios.get(`http://localhost:8080/api/comment/post/${id}`, { cancelToken: ourRequest.token })
         setComments(response.data)
-        console.log(response.data)
       } catch (e) {
         console.log("There was a problem or the request was cancelled.")
       }
@@ -45,7 +56,37 @@ function ViewSinglePost() {
     }
   }, [id])
 
-  function handleSubmit() {}
+  useEffect(() => {
+    if (state.commentToAdd.listener) {
+      const ourRequest = Axios.CancelToken.source()
+      async function postComment() {
+        try {
+          const response = await Axios.post(`http://localhost:8080/api/comment`, { content: state.commentToAdd.content, postId: state.commentToAdd.postId, userId: state.commentToAdd.userId }, { cancelToken: ourRequest.token })
+
+          setComments(comments.concat(response.data))
+          console.log(state.commentToAdd)
+        } catch (e) {
+          console.log("There was a problem or the request was cancelled.")
+        }
+      }
+      setState(draft => {
+        draft.commentToAdd.content = ""
+      })
+      postComment()
+      return () => {
+        ourRequest.cancel()
+      }
+    }
+  }, [state.commentToAdd.listener])
+
+  function handleSubmit(e) {
+    e.preventDefault()
+
+    setState(draft => {
+      draft.commentToAdd.userId = 1
+      draft.commentToAdd.listener++
+    })
+  }
 
   return (
     <div className="d-flex flex-column">
@@ -78,8 +119,24 @@ function ViewSinglePost() {
                 <img src="https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png" />
                 <p className="font-weight-bold mt-2">USER</p>
               </div>
-              <div>
-                <textarea rows="4" cols="50" className="no-resize"></textarea>
+              <div className="form-grup">
+                <div className="form-control">
+                  <textarea
+                    onChange={e =>
+                      setState(draft => {
+                        draft.commentToAdd.hasErrors = false
+                        draft.commentToAdd.content = e.target.value
+                      })
+                    }
+                    value={state.commentToAdd.content}
+                    rows="4"
+                    cols="50"
+                    className="no-resize"
+                  ></textarea>
+                </div>
+                <CSSTransition in={state.commentToAdd.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+                  <div className="alert alert-danger small liveValidateMessage ml-2">{state.commentToAdd.message}</div>
+                </CSSTransition>
               </div>
             </div>
             <div className="align-self-end mt-2">
