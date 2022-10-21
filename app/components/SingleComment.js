@@ -34,8 +34,8 @@ function SingleComment(props) {
       <div className="ml-auto d-flex flex-column align-self-start">
         <div className="align-items-start comment-date">{date}</div>
         <div className="align-self-end mt-4">
-          <span className="material-symbols-outlined"> edit </span>
-          <span onClick={handleDelete} className="material-symbols-outlined">
+          <span className="material-symbols-outlined "> edit </span>
+          <span onClick={handleDelete} className="material-symbols-outlined pointer ml-2">
             {" "}
             delete{" "}
           </span>
