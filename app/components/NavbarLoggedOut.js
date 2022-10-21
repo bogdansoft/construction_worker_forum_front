@@ -1,8 +1,6 @@
-import React, { useEffect, useState, useContext } from "react";
-import Axios from "axios";
+import React, {useContext} from "react";
 import DispatchContext from "../DispatchContext";
 import {Link} from "react-router-dom";
-import ReactTooltip from "react-tooltip";
 
 function NavbarLoggedOut() {
     const appDispatch = useContext(DispatchContext)

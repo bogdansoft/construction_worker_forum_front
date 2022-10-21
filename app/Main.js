@@ -1,13 +1,11 @@
-import React, { useState, useReducer, useContext, useEffect } from "react"
-import { useImmerReducer } from "use-immer"
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import React, {useEffect} from "react"
+import {useImmerReducer} from "use-immer"
+import {BrowserRouter, Route, Routes} from "react-router-dom"
 import ReactDOM from "react-dom/client"
 import DispatchContext from "./DispatchContext"
 import StateContext from "./StateContext"
-import { CSSTransition } from "react-transition-group"
+import {CSSTransition} from "react-transition-group"
 import Axios from "axios"
-Axios.defaults.baseURL = "http://localhost:8080"
-
 import Navbar from "./components/Navbar"
 import Posts from "./components/Posts"
 import Footer from "./components/Footer"
@@ -19,7 +17,8 @@ import CreatePostForm from "./components/CreatePostForm"
 import UserProfile from "./components/UserProfile"
 import ChangeBIO from "./components/ChangeBIO"
 import EditPost from "./components/EditPost"
-import NavbarLoggedOut from "./components/NavbarLoggedOut"
+
+Axios.defaults.baseURL = "http://localhost:8080"
 
 function Main() {
   //
