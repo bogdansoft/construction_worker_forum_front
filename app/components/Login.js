@@ -13,7 +13,7 @@ function Login() {
     e.preventDefault()
 
     try {
-      const response = await Axios.post("http://localhost:8080/api/login", { username, password })
+      const response = await Axios.post("/api/login", { username, password })
 
       if (response.data) {
         console.log(response.data)
