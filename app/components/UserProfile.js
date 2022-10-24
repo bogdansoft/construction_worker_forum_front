@@ -20,7 +20,7 @@ function UserProfile() {
         setState(response.data)
         console.log(response.data)
         if (state.bio != "") {
-          setIsBioPresent = true
+          setIsBioPresent(true)
         }
       } catch {
         console.log("There was a problem")
