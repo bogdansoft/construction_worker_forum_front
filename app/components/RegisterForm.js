@@ -130,7 +130,7 @@ function RegisterForm() {
       const ourRequest = Axios.CancelToken.source()
       async function register() {
         try {
-          const response = await Axios.post("http://localhost:8080/api/user", { username: state.username.value, password: state.password.value, email: state.email.value, firstName: state.firstName.value, lastName: state.lastName.value }, { cancelToken: ourRequest.token })
+          const response = await Axios.post("/api/user", { username: state.username.value, password: state.password.value, email: state.email.value, firstName: state.firstName.value, lastName: state.lastName.value }, { cancelToken: ourRequest.token })
           //here logic for message after success
         } catch (e) {
           console.log("There was a problem creating an account")

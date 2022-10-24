@@ -11,7 +11,7 @@ function SingleComment(props) {
   async function handleDelete() {
     const ourRequest = Axios.CancelToken.source()
     try {
-      const response = await Axios.delete(`http://localhost:8080/api/comment/${props.comment.id}`, { cancelToken: ourRequest.token })
+      const response = await Axios.delete(`/api/comment/${props.comment.id}`, { cancelToken: ourRequest.token })
       window.location.reload(true)
     } catch (e) {
       console.log("There was a problem or the request was cancelled.")
