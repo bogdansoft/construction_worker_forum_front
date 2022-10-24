@@ -1,15 +1,15 @@
-import React, { useEffect, useContext } from "react"
+import React, {useEffect, useContext} from "react"
 import ReactTooltip from "react-tooltip"
 import {useImmer} from "use-immer"
 import Axios from "axios"
-import { Link } from "react-router-dom"
+import {Link} from "react-router-dom"
 import StateContext from "../StateContext"
 
 function Post(props) {
-  const appState = useContext(StateContext)
-  const [state, setState] = useImmer({
-    delete: 0
-  })
+    const appState = useContext(StateContext)
+    const [state, setState] = useImmer({
+        delete: 0
+    })
 
     useEffect(() => {
         if (state.delete) {
@@ -17,7 +17,7 @@ function Post(props) {
 
             async function fetchData() {
                 try {
-                    await Axios.delete(`http://localhost:8080/api/post/${props.post.id}`, {cancelToken: ourRequest.token})
+                    await Axios.delete(`/api/post/${props.post.id}`, {headers: {Authorization: `Bearer ${appState.user.token}`}})
                     window.location.reload(true)
                 } catch (e) {
                     console.log("there was a problem deleting post")
@@ -30,6 +30,7 @@ function Post(props) {
             }
         }
     }, [state.delete])
+
     const date = new Date(props.post.createdAt).toLocaleDateString("utc", {
         year: "numeric",
         month: "short",
@@ -68,9 +69,9 @@ function Post(props) {
                 >
           delete
         </span>
-      </div>
-    </div>
-  )
+            </div>
+        </div>
+    )
 }
 
 export default Post
