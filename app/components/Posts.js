@@ -11,7 +11,7 @@ function Posts() {
     const ourRequest = Axios.CancelToken.source()
     async function fetchData() {
       try {
-        const response = await Axios.get("http://localhost:8080/api/post", { cancelToken: ourRequest.token })
+        const response = await Axios.get("/api/post", { cancelToken: ourRequest.token })
         setState(draft => {
           draft.feed = response.data
         })
