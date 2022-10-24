@@ -17,6 +17,7 @@ import CreatePostForm from "./components/CreatePostForm"
 import UserProfile from "./components/UserProfile"
 import ChangeBIO from "./components/ChangeBIO"
 import EditPost from "./components/EditPost"
+import ViewSinglePost from "./components/ViewSinglePost"
 
 Axios.defaults.baseURL = "http://localhost:8080"
 
@@ -81,6 +82,7 @@ function Main() {
             <Route path="/post/create" element={<CreatePostForm />} />
             <Route path="/profile/changebio/:username" element={<ChangeBIO />} />
             <Route path="/post/edit/:id" element={<EditPost />} />
+            <Route path="/post/:id" element={<ViewSinglePost />} />
           </Routes>
           <Footer />
         </BrowserRouter>
