@@ -6,11 +6,11 @@ import Axios from "axios"
 
 function UserProfile() {
   const { username } = useParams()
+  const [isBioPresent, setIsBioPresent] = useState(false)
   const [state, setState] = useState({
     avatar: "https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png",
-    bio: "..."
+    bio: ""
   })
-
   useEffect(() => {
     const ourRequest = Axios.CancelToken.source()
 
@@ -19,6 +19,9 @@ function UserProfile() {
         const response = await Axios.get(`/api/user?username=${username}`, { cancelToken: ourRequest.token })
         setState(response.data)
         console.log(response.data)
+        if (state.bio != "") {
+          setIsBioPresent = true
+        }
       } catch {
         console.log("There was a problem")
       }
@@ -29,6 +32,17 @@ function UserProfile() {
     }
   }, [username])
 
+  async function handleDelete(e) {
+    e.preventDefault()
+    try {
+      Axios.delete(`/api/user?username=${username}`)
+      navigate(`/`)
+      console.log("Account deleted")
+    } catch {
+      console.log("There was a problem")
+    }
+  }
+
   return (
     <div className={"container py-md-5"}>
       <h2>
@@ -38,11 +52,13 @@ function UserProfile() {
         <Link className="btn btn-primary" to={`/profile/changebio/${username}`}>
           Change BIO
         </Link>{" "}
-        <button className="btn btn-danger">Delete account</button>
+        <button onClick={handleDelete} className="btn btn-danger">
+          Delete account
+        </button>
       </div>
       <div className="col-lg-7 py-3 py-md-5">
         <h1 className="display-3">{username}</h1>
-        <p className="lead text-muted">Z wyksztalcenia technik informatyk. Pracuje jako operator maszyn CNC. Moje zainteresowania to kino, podroze i zona kolegi Darka.</p>
+        <p className="lead text-muted">{isBioPresent ? state.bio : "There is no BIO yet"} </p>
       </div>
       <div className="profile-nav nav nav-tabs pt-2 mb-4">
         <NavLink to="" end className="nav-item nav-link">
