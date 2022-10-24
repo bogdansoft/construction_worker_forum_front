@@ -6,6 +6,7 @@ import SingleComment from "./SingleComment"
 import {CSSTransition} from "react-transition-group"
 
 function ViewSinglePost() {
+
     const {id} = useParams()
     const [post, setPost] = useState([])
     const [comments, setComments] = useState([])

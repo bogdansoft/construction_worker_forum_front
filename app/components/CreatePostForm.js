@@ -1,20 +1,22 @@
-import React, { useEffect, useState } from "react"
+import React, { useContext, useState } from "react"
 import Axios from "axios"
 import { useNavigate, Link } from "react-router-dom"
-import { useImmer } from "use-immer"
+import StateContext from "../StateContext"
 
 function CreatePost() {
   const [title, setTitle] = useState()
   const [content, setContent] = useState()
   const navigate = useNavigate()
   const [tags, setTags] = useState([])
-  const handleSubmit = (e) => {
+  const appState = useContext(StateContext)
+
+  const handleSubmit = e => {
     e.preventDefault()
     const ourRequest = Axios.CancelToken.source()
+
     async function fetchData() {
       try {
-        await Axios.post("http://localhost:8080/api/post/add", { title, content }, { cancelToken: ourRequest.token })
-        //navigate(`http://localhost:8080/api/post/${response.data.id}`)
+        await Axios.post("/api/post", { title, content, userId: appState.user.id }, { headers: { Authorization: `Bearer ${appState.user.token}` } })
         navigate("/")
       } catch (e) {
         console.log("There was a problem creating post")

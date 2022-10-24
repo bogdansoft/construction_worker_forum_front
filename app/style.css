@@ -62,10 +62,34 @@ p {
   padding-bottom: 5px;
   background-color: lightblue;
 }
+
 .login-button {
+  border-radius: 10px;
+  width: 90px;
+}
+
+.signup-button:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+  color: rgba(0, 0, 0, 1)
+}
+
+.signup-button {
+  background-color: #000;
+  color: #f0f0f0;
   border-radius: 10px;
   width: 130px;
 }
+
+.login-barbutton {
+    border-radius: 10px;
+    width: 120px;
+}
+
+.login-barbutton:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+    color: rgba(0, 0, 0, 1)
+}
+
 .login input:focus {
   border-bottom: 1px solid black;
 }
