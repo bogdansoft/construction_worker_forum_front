@@ -25,7 +25,7 @@ function Login() {
       if (e.response.status === 401) {
         console.log("Incorrect user credentials!")
       } else {
-        console.log("There was a problem")
+        console.log("There was a problem!")
       }
     }
   }
