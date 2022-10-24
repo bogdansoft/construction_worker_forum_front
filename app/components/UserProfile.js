@@ -61,7 +61,7 @@ function UserProfile() {
         <p className="lead text-muted">{isBioPresent ? state.bio : "There is no BIO yet"} </p>
       </div>
       <div className="profile-nav nav nav-tabs pt-2 mb-4">
-        <NavLink to="" end className="nav-item nav-link">
+        <NavLink to="posts" end className="nav-item nav-link">
           Posts:
         </NavLink>
         <NavLink to="comments" className="nav-item nav-link">
@@ -70,7 +70,7 @@ function UserProfile() {
       </div>
 
       <Routes>
-        <Route path="" element={<UserProfilePosts />} />
+        <Route path="posts" element={<UserProfilePosts />} />
         <Route path="comments" element={<UserProfileComments />} />
       </Routes>
     </div>
