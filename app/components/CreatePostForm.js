@@ -1,7 +1,7 @@
-import React, {useContext, useState} from "react"
+import React, { useContext, useState } from "react"
 import Axios from "axios"
-import {useNavigate} from "react-router-dom"
-import StateContext from "../StateContext";
+import { useNavigate } from "react-router-dom"
+import StateContext from "../StateContext"
 
 function CreatePost() {
   const [title, setTitle] = useState()
@@ -13,9 +13,10 @@ function CreatePost() {
   const handleSubmit = e => {
     e.preventDefault()
     const ourRequest = Axios.CancelToken.source()
+
     async function fetchData() {
       try {
-        await Axios.post("/api/post", { title, content, "userId": 1 }, { headers: {"Authorization": `Bearer ${appState.user.token}`} })
+        await Axios.post("/api/post", { title, content, userId: appState.user.id }, { headers: { Authorization: `Bearer ${appState.user.token}` } })
         //navigate(`http://localhost:8080/api/post/${response.data.id}`)
         navigate("/")
       } catch (e) {
