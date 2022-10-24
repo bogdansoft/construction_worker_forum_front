@@ -1,16 +1,20 @@
-import React, { useEffect } from "react"
-import { Link, useParams } from "react-router-dom"
+import React, { useEffect, useContext } from "react"
+import { Link, useParams, useNavigate } from "react-router-dom"
 import { useImmerReducer } from "use-immer"
 import Axios from "axios"
+import StateContext from "../StateContext"
 
 function EditPost() {
+  const appState = useContext(StateContext)
+  const navigate = useNavigate()
   const originalState = {
     title: "",
     content: "",
     isFetching: true,
     isSaving: false,
     id: useParams().id,
-    sendCount: 0,
+    userId: null,
+    sendCount: 0
   }
 
   function ourReducer(draft, action) {
@@ -19,6 +23,7 @@ function EditPost() {
         draft.title = action.value.title
         draft.content = action.value.content
         draft.isFetching = false
+        draft.userId = appState.user.id
         return
       case "titleChange":
         draft.title = action.value
@@ -53,7 +58,7 @@ function EditPost() {
 
     async function fetchPost() {
       try {
-        const response = await Axios.get(`http://localhost:8080/api/post/${state.id}`, { cancelToken: ourRequest.token })
+        const response = await Axios.get(`/api/post/${state.id}`, { cancelToken: ourRequest.token })
         if (response.data) {
           dispatch({ type: "fetchComplete", value: response.data })
         } else {
@@ -77,8 +82,9 @@ function EditPost() {
       async function fetchPost() {
         try {
           console.log(state)
-          const response = await Axios.post(`http://localhost:8080/api/post/${state.id}`, { title: state.title, content: state.content }, { cancelToken: ourRequest.token })
+          const response = await Axios.put(`/api/post/${state.id}`, { title: state.title, content: state.content, userId: state.userId }, { headers: { Authorization: `Bearer ${appState.user.token}` } })
           console.log(response)
+          navigate("/post")
           dispatch({ type: "saveRequestFinished" })
         } catch (e) {
           console.log("There was a problem or the request was cancelled.")
@@ -101,10 +107,10 @@ function EditPost() {
         <div className="">
           <div className="form-group container mt-4 row justify-content-center ">
             <div className="col-6 p-2">
-              <span className="col-3">Title: </span> <input onChange={(e) => dispatch({ type: "titleChange", value: e.target.value })} value={state.title} type="text" className="col-9" placeholder="title" />
+              <span className="col-3">Title: </span> <input onChange={e => dispatch({ type: "titleChange", value: e.target.value })} value={state.title} type="text" className="col-9" placeholder="title" />
             </div>
             <div className=" col-10 mt-4 post-body ">
-              <textarea onChange={(e) => dispatch({ type: "contentChange", value: e.target.value })} id="post-text-area" cols="100" rows="10" type="text" className="" placeholder="" value={state.content} />
+              <textarea onChange={e => dispatch({ type: "contentChange", value: e.target.value })} id="post-text-area" cols="100" rows="10" type="text" className="" placeholder="" value={state.content} />
             </div>
             <button className="col-3 mt-4 btn btn-primary" type="submit">
               Edit
