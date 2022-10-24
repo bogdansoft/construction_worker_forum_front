@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import Axios from "axios"
 import DispatchContext from "../DispatchContext"
 
 function Login() {
   const [username, setUsername] = useState()
   const [password, setPassword] = useState()
+  const navigate = useNavigate()
 
   const appDispatch = useContext(DispatchContext)
 
@@ -18,6 +19,7 @@ function Login() {
       if (response.data) {
         console.log(response.data)
         appDispatch({ type: "login", data: response.data })
+        navigate("/")
       }
     } catch (e) {
       if (e.response.status === 401) {
