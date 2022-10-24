@@ -19,7 +19,7 @@ function UserProfile() {
         const response = await Axios.get(`/api/user?username=${username}`, { cancelToken: ourRequest.token })
         setState(response.data)
         console.log(response.data)
-        if (state.bio != "") {
+        if (state.bio !== "") {
           setIsBioPresent(true)
         }
       } catch {

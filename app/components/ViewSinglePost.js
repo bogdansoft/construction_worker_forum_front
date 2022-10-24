@@ -26,7 +26,7 @@ function ViewSinglePost() {
 
     async function fetchPost() {
       try {
-        const response = await Axios.get(`http://localhost:8080/api/post/${id}`, { cancelToken: ourRequest.token })
+        const response = await Axios.get(`/api/post/${id}`, { cancelToken: ourRequest.token })
         setPost(response.data)
       } catch (e) {
         console.log("There was a problem or the request was cancelled.")
@@ -43,7 +43,7 @@ function ViewSinglePost() {
 
     async function fetchPost() {
       try {
-        const response = await Axios.get(`http://localhost:8080/api/comment/post/${id}`, { cancelToken: ourRequest.token })
+        const response = await Axios.get(`/api/comment/post/${id}`, { cancelToken: ourRequest.token })
         setComments(response.data)
       } catch (e) {
         console.log("There was a problem or the request was cancelled.")
@@ -61,7 +61,7 @@ function ViewSinglePost() {
       const ourRequest = Axios.CancelToken.source()
       async function postComment() {
         try {
-          const response = await Axios.post(`http://localhost:8080/api/comment`, { content: state.commentToAdd.content, postId: state.commentToAdd.postId, userId: state.commentToAdd.userId }, { cancelToken: ourRequest.token })
+          const response = await Axios.post(`/api/comment`, { content: state.commentToAdd.content, postId: state.commentToAdd.postId, userId: state.commentToAdd.userId }, { cancelToken: ourRequest.token })
 
           setComments(comments.concat(response.data))
           console.log(state.commentToAdd)
