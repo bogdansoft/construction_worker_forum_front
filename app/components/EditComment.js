@@ -9,7 +9,7 @@ function EditComment(props) {
         console.log(content);
         const ourRequest = Axios.CancelToken.source()
         try {
-            const response = await Axios.put(`http://localhost:8080/api/comment/${props.id}`, {
+            const response = await Axios.put(`/api/comment/${props.id}`, {
                 userId: props.userId,
                 content,
                 postId: props.postId
