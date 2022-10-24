@@ -1,19 +1,20 @@
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import Axios from "axios"
 import { useImmer } from "use-immer"
 import SingleComment from "./SingleComment"
 import { CSSTransition } from "react-transition-group"
+import StateContext from "../StateContext"
 
 function ViewSinglePost() {
   const { id } = useParams()
   const [post, setPost] = useState([])
   const [comments, setComments] = useState([])
-
+  const appState = useContext(StateContext)
   const [state, setState] = useImmer({
     commentToAdd: {
       content: "",
-      userId: "",
+      userId: localStorage.getItem("constructionForumUserId"),
       postId: id,
       listener: 0,
       hasErrors: false,
@@ -43,7 +44,7 @@ function ViewSinglePost() {
 
     async function fetchPost() {
       try {
-        const response = await Axios.get(`/api/comment/post/${id}`, { cancelToken: ourRequest.token })
+        const response = await Axios.get(`/api/comment/post/${id}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
         setComments(response.data)
       } catch (e) {
         console.log("There was a problem or the request was cancelled.")
@@ -61,8 +62,7 @@ function ViewSinglePost() {
       const ourRequest = Axios.CancelToken.source()
       async function postComment() {
         try {
-          const response = await Axios.post(`/api/comment`, { content: state.commentToAdd.content, postId: state.commentToAdd.postId, userId: state.commentToAdd.userId }, { cancelToken: ourRequest.token })
-
+          const response = await Axios.post(`/api/comment`, { content: state.commentToAdd.content, postId: state.commentToAdd.postId, userId: state.commentToAdd.userId }, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
           setComments(comments.concat(response.data))
           console.log(state.commentToAdd)
         } catch (e) {
@@ -83,7 +83,6 @@ function ViewSinglePost() {
     e.preventDefault()
 
     setState(draft => {
-      draft.commentToAdd.userId = 1
       draft.commentToAdd.listener++
     })
   }

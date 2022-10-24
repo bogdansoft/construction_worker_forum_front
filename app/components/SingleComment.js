@@ -1,7 +1,10 @@
-import React, { useEffect } from "react"
+import React, { useContext, useEffect } from "react"
 import { Link } from "react-router-dom"
 import Axios from "axios"
+import StateContext from "../StateContext"
 function SingleComment(props) {
+  const appState = useContext(StateContext)
+
   const date = new Date(props.comment.createdAt).toLocaleDateString("utc", {
     year: "numeric",
     month: "short",
@@ -11,7 +14,7 @@ function SingleComment(props) {
   async function handleDelete() {
     const ourRequest = Axios.CancelToken.source()
     try {
-      const response = await Axios.delete(`/api/comment/${props.comment.id}`, { cancelToken: ourRequest.token })
+      await Axios.delete(`/api/comment/${props.comment.id}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
       window.location.reload(true)
     } catch (e) {
       console.log("There was a problem or the request was cancelled.")
