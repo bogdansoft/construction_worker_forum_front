@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react"
 import Axios from "axios"
 import { useNavigate, Link } from "react-router-dom"
 import StateContext from "../StateContext"
+import DispatchContext from "../DispatchContext"
 
 function CreatePost() {
   const [title, setTitle] = useState()
@@ -9,6 +10,7 @@ function CreatePost() {
   const navigate = useNavigate()
   const [tags, setTags] = useState([])
   const appState = useContext(StateContext)
+  const appDispatch = useContext(DispatchContext)
 
   const handleSubmit = e => {
     e.preventDefault()
@@ -17,6 +19,7 @@ function CreatePost() {
     async function fetchData() {
       try {
         await Axios.post("/api/post", { title, content, userId: appState.user.id }, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+        appDispatch({ type: "flashMessage", value: "Post succesfully created !", messageType: "message-green" })
         navigate("/")
       } catch (e) {
         console.log("There was a problem creating post")

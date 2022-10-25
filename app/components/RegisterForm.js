@@ -3,9 +3,10 @@ import DispatchContext from "../DispatchContext"
 import { useImmerReducer } from "use-immer"
 import { CSSTransition } from "react-transition-group"
 import Axios from "axios"
+import { useNavigate } from "react-router-dom"
 function RegisterForm() {
   const appDispatch = useContext(DispatchContext)
-
+  const navigate = useNavigate()
   const initialState = {
     submitCount: 0,
     username: {
@@ -131,7 +132,8 @@ function RegisterForm() {
       async function register() {
         try {
           const response = await Axios.post("/api/user", { username: state.username.value, password: state.password.value, email: state.email.value, firstName: state.firstName.value, lastName: state.lastName.value }, { cancelToken: ourRequest.token })
-          //here logic for message after success
+          appDispatch({ type: "flashMessage", value: "Account succesfully created !", messageType: "message-green" })
+          navigate("/login")
         } catch (e) {
           console.log("There was a problem creating an account")
         }

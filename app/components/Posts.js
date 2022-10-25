@@ -5,7 +5,8 @@ import Axios from "axios"
 import Post from "./Post"
 function Posts() {
   const [state, setState] = useImmer({
-    feed: []
+    feed: [],
+    reloadCounter: 0
   })
   useEffect(() => {
     const ourRequest = Axios.CancelToken.source()
@@ -23,13 +24,20 @@ function Posts() {
     return () => {
       ourRequest.cancel()
     }
-  }, [])
+  }, [state.reloadCounter])
+
+  function reload() {
+    setState(draft => {
+      draft.reloadCounter++
+    })
+  }
+
   return (
     <div className="main container">
       <div className="forum-content d-flex flex-column">
         <div className="list-group">
           {state.feed.map(post => {
-            return <Post post={post} key={post.id} />
+            return <Post post={post} key={post.id} reload={reload} />
           })}
         </div>
       </div>

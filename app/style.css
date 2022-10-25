@@ -70,7 +70,7 @@ p {
 
 .signup-button:hover {
   background-color: rgba(0, 0, 0, 0.3);
-  color: rgba(0, 0, 0, 1)
+  color: rgba(0, 0, 0, 1);
 }
 
 .signup-button {
@@ -81,13 +81,13 @@ p {
 }
 
 .login-barbutton {
-    border-radius: 10px;
-    width: 120px;
+  border-radius: 10px;
+  width: 120px;
 }
 
 .login-barbutton:hover {
-    background-color: rgba(0, 0, 0, 0.3);
-    color: rgba(0, 0, 0, 1)
+  background-color: rgba(0, 0, 0, 0.3);
+  color: rgba(0, 0, 0, 1);
 }
 
 .login input:focus {
@@ -546,10 +546,10 @@ textarea.tall-textarea {
   top: 38px;
   left: 50%;
   transform: translateX(-50%);
-  -moz-animation: floatingAlert ease-in 5s forwards;
-  -webkit-animation: floatingAlert ease-in 5s forwards;
-  -o-animation: floatingAlert ease-in 5s forwards;
-  animation: floatingAlert ease-in 5s forwards;
+  -moz-animation: floatingAlert ease-in-out 3s forwards;
+  -webkit-animation: floatingAlert ease-in-out 3s forwards;
+  -o-animation: floatingAlert ease-in-out 3s forwards;
+  animation: floatingAlert ease-in-out 3s forwards;
   -webkit-animation-fill-mode: forwards;
   animation-fill-mode: forwards;
 }
@@ -711,4 +711,12 @@ textarea.tall-textarea {
 }
 .pointer {
   cursor: pointer;
+}
+.message-green {
+  background-color: green;
+  color: white;
+}
+.message-red {
+  background-color: red;
+  color: white;
 }
