@@ -58,7 +58,7 @@ function EditPost() {
 
     async function fetchPost() {
       try {
-        const response = await Axios.get(`/api/post/${state.id}`, { cancelToken: ourRequest.token })
+        const response = await Axios.get(`/api/post/${state.id}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
         if (response.data) {
           dispatch({ type: "fetchComplete", value: response.data })
         } else {
@@ -109,10 +109,10 @@ function EditPost() {
             <span className="d-flex justify-content-center col-2">
               <h3>Title:</h3>{" "}
             </span>{" "}
-            <input onChange={(e) => dispatch({ type: "titleChange", value: e.target.value })} value={state.title} type="text" className="justify-content-end col-7" placeholder="title" />
+            <input onChange={e => dispatch({ type: "titleChange", value: e.target.value })} value={state.title} type="text" className="justify-content-end col-7" placeholder="title" />
           </div>
           <div className="row justify-content-center mt-4">
-            <textarea onChange={(e) => dispatch({ type: "contentChange", value: e.target.value })} id="post-text-area" cols="100" rows="10" type="text" className="" placeholder="" value={state.content} />
+            <textarea onChange={e => dispatch({ type: "contentChange", value: e.target.value })} id="post-text-area" cols="100" rows="10" type="text" className="" placeholder="" value={state.content} />
           </div>
           <div className="row justify-content-center mt-4">
             <button className="row justify-content-center col-3  btn btn-success btn-rounded" type="submit">
