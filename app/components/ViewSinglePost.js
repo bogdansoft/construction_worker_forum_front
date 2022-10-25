@@ -5,12 +5,15 @@ import { useImmer } from "use-immer"
 import SingleComment from "./SingleComment"
 import { CSSTransition } from "react-transition-group"
 import StateContext from "../StateContext"
+import DispatchContext from "../DispatchContext"
 
 function ViewSinglePost() {
   const { id } = useParams()
   const [post, setPost] = useState([])
   const [comments, setComments] = useState([])
   const appState = useState(StateContext)
+  const appDispatch = useState(DispatchContext)
+
   const [state, setState] = useImmer({
     commentToAdd: {
       content: "",

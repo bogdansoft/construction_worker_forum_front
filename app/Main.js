@@ -1,10 +1,10 @@
-import React, {useEffect} from "react"
-import {useImmerReducer} from "use-immer"
-import {BrowserRouter, Route, Routes} from "react-router-dom"
+import React, { useEffect, useState } from "react"
+import { useImmerReducer } from "use-immer"
+import { BrowserRouter, Route, Routes } from "react-router-dom"
 import ReactDOM from "react-dom/client"
 import DispatchContext from "./DispatchContext"
 import StateContext from "./StateContext"
-import {CSSTransition} from "react-transition-group"
+import { CSSTransition } from "react-transition-group"
 import Axios from "axios"
 import Navbar from "./components/Navbar"
 import Posts from "./components/Posts"
@@ -18,6 +18,7 @@ import UserProfile from "./components/UserProfile"
 import ChangeBIO from "./components/ChangeBIO"
 import EditPost from "./components/EditPost"
 import ViewSinglePost from "./components/ViewSinglePost"
+import FlashMessages from "./components/FlashMessages"
 
 Axios.defaults.baseURL = "http://localhost:8080"
 
@@ -30,7 +31,8 @@ function Main() {
       id: localStorage.getItem("constructionForumUserId"),
       username: localStorage.getItem("constructionForumUsername"),
       token: localStorage.getItem("constructionForumUserToken")
-    }
+    },
+    flashMessages: []
   }
 
   function ourReducer(state, action) {
@@ -46,6 +48,9 @@ function Main() {
         return { searchIsOpen: true }
       case "closeSearch":
         return { searchIsOpen: false }
+      case "flashMessage":
+        state.flashMessages.push({ value: action.value, messageType: action.messageType })
+        return
     }
   }
 
@@ -67,6 +72,7 @@ function Main() {
     <StateContext.Provider value={state}>
       <DispatchContext.Provider value={dispatch}>
         <BrowserRouter>
+          <FlashMessages messages={state.flashMessages} />
           <Navbar />
           <CSSTransition timeout={330} in={state.searchIsOpen} classNames="search-overlay" unmountOnExit>
             <div className="search-overlay">
