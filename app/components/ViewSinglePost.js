@@ -16,6 +16,7 @@ function ViewSinglePost() {
   const appDispatch = useState(DispatchContext)
 
   const [state, setState] = useImmer({
+    author: "",
     commentToAdd: {
       content: "",
       userId: localStorage.getItem("constructionForumUserId"),
@@ -39,6 +40,7 @@ function ViewSinglePost() {
         const response = await Axios.get(`/api/post/${id}`, { cancelToken: ourRequest.token })
         setPost(response.data)
         setState(draft => {
+          draft.author = response.data.user
           draft.isLoading = false
         })
       } catch (e) {
@@ -54,7 +56,6 @@ function ViewSinglePost() {
 
   useEffect(() => {
     const ourRequest = Axios.CancelToken.source()
-
     async function fetchPost() {
       try {
         const response = await Axios.get(`/api/comment/post/${id}`, { headers: { Authorization: `Bearer ${state.commentToAdd.token}` } }, { cancelToken: ourRequest.token })
@@ -71,7 +72,6 @@ function ViewSinglePost() {
   }, [id])
 
   useEffect(() => {
-    console.log(appState)
     if (state.commentToAdd.listener) {
       const ourRequest = Axios.CancelToken.source()
 
@@ -111,6 +111,7 @@ function ViewSinglePost() {
       draft.commentToAdd.listener++
     })
   }
+
   if (state.isLoading) return <Loading />
   return (
     <div className="d-flex flex-column">
@@ -118,7 +119,7 @@ function ViewSinglePost() {
         <div className="mr-3 col-2 text-center">
           <img src="https://th.bing.com/th/id/OIP.SOJ-Oat9i6WjYQ8SoFoe4AHaHa?pid=ImgDet&rs=1" />
           <p>
-            by <span className="mt-2 font-weight-bold">Robur</span>
+            by <span className="mt-2 font-weight-bold">{state.author.username}</span>
           </p>
         </div>
         <div className="post container">

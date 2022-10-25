@@ -39,13 +39,13 @@ function Posts() {
   }
 
   if (state.isLoading) return <Loading />
-
+  // state.feed.forEach(n => console.log(n.user.username))
   return (
     <div className="main container">
       <div className="forum-content d-flex flex-column">
         <div className="list-group">
           {state.feed.map(post => {
-            return <Post post={post} key={post.id} reload={reload} />
+            return <Post post={post} key={post.id} author={post.user} reload={reload} />
           })}
         </div>
       </div>

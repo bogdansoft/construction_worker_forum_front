@@ -50,7 +50,7 @@ function Post(props) {
             <h1>{props.post.title}</h1>
           </Link>
           <p>
-            Created by <strong>Robur</strong> {date} • bugs other
+            Created by <strong>{props.post.user.username}</strong> {date} • bugs other
           </p>
         </div>
       </div>
