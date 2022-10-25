@@ -45,9 +45,11 @@ function Main() {
         state.loggedIn = false
         break
       case "openSearch":
-        return { searchIsOpen: true }
+        state.searchIsOpen = true
+        return
       case "closeSearch":
-        return { searchIsOpen: false }
+        state.searchIsOpen = false
+        return
       case "flashMessage":
         state.flashMessages.push({ value: action.value, messageType: action.messageType })
         return

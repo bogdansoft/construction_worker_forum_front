@@ -6,6 +6,7 @@ import SingleComment from "./SingleComment"
 import { CSSTransition } from "react-transition-group"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
+import Loading from "./Loading"
 
 function ViewSinglePost() {
   const { id } = useParams()
@@ -23,7 +24,8 @@ function ViewSinglePost() {
       listener: 0,
       hasErrors: false,
       message: ""
-    }
+    },
+    isLoading: false
   })
 
   useEffect(() => {
@@ -31,8 +33,14 @@ function ViewSinglePost() {
 
     async function fetchPost() {
       try {
+        setState(draft => {
+          draft.isLoading = true
+        })
         const response = await Axios.get(`/api/post/${id}`, { cancelToken: ourRequest.token })
         setPost(response.data)
+        setState(draft => {
+          draft.isLoading = false
+        })
       } catch (e) {
         console.log("There was a problem or the request was cancelled.")
       }
@@ -103,7 +111,7 @@ function ViewSinglePost() {
       draft.commentToAdd.listener++
     })
   }
-
+  if (state.isLoading) return <Loading />
   return (
     <div className="d-flex flex-column">
       <div className="single-post container mt-3 d-flex flex-row">
