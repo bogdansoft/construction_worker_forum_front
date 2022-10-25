@@ -12,7 +12,7 @@ function UserProfileComments() {
 
     async function fetchPosts() {
       try {
-        const response = await Axios.get(`/api/${username}/comments`, { cancelToken: ourRequest.token })
+        const response = await Axios.get(`/api/${username}/comments`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
         setComments(response.data)
       } catch {
         console.log("There was a problem")
