@@ -8,7 +8,7 @@ function NavbarLoggedIn() {
 
   function handleLoggedOut() {
     appDispatch({ type: "logout" })
-    appDispatch({ type: "flashMessage", value: "Succesfully logged out !", messageType: "message-green" })
+    appDispatch({ type: "flashMessage", value: "Succesfully logged in !", messageType: "message-green" })
   }
 
   return (
