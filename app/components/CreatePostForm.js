@@ -18,7 +18,7 @@ function CreatePost() {
 
     async function fetchData() {
       try {
-        await Axios.post("/api/post", { title, content, userId: appState.user.id }, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+        const response = await Axios.post("/api/post", { title, content, userId: appState.user.id }, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
         appDispatch({ type: "flashMessage", value: "Post succesfully created !", messageType: "message-green" })
         navigate("/")
       } catch (e) {
