@@ -157,58 +157,69 @@ function RegisterForm() {
   }
 
   return (
-    <div className=" login container col-3 ">
-      <form onSubmit={handleSubmit}>
-        <div className="d-flex flex-column">
-          <div className="mt-3 mr-2 p-2 form-group">
-            <div className="form-control">
-              Username : <input onChange={e => dispatch({ type: "usernameImmediately", value: e.target.value })} type="text" className="ml-3" placeholder="username" />
+    <div className="main d-flex flex-column container">
+      <div className="content d-flex mt-4">
+        <div className="d-flex flex-column col-6 align-items-center">
+          <form onSubmit={handleSubmit}>
+            <div className="mt-4">
+              <h6 className="input-text text-center">Sign into Construction Worker forum</h6>
             </div>
-            <CSSTransition in={state.username.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-              <div className="alert alert-danger small liveValidateMessage">{state.username.message}</div>
-            </CSSTransition>
-          </div>
-          <div className="mr-2 p-2 form-group">
-            <div className="form-control">
-              Password : <input onChange={e => dispatch({ type: "passwordImmediately", value: e.target.value })} type="password" className="ml-3" placeholder="*******" />
+            <div className="form-label mt-4">
+              <div className="mt-3 mr-2 p-2 form-group">
+                <span className="ml-3">Username</span>
+                <br />
+                <input onChange={e => dispatch({ type: "usernameImmediately", value: e.target.value })} type="text" className="ml-3" placeholder="username" />
+                <CSSTransition in={state.username.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+                  <div className="alert alert-danger small liveValidateMessage ml-3">{state.username.message}</div>
+                </CSSTransition>
+              </div>
+              <div className="mt-3 mr-2 p-2 form-group">
+                <span className="ml-3">Password</span>
+                <br />
+                <input onChange={e => dispatch({ type: "passwordImmediately", value: e.target.value })} type="password" className="ml-3" placeholder="username" />
+                <CSSTransition in={state.password.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+                  <div className="alert alert-danger small liveValidateMessage ml-3">{state.password.message}</div>
+                </CSSTransition>
+              </div>
+              <div className="mt-3 mr-2 p-2 form-group">
+                <span className="ml-3">Email</span>
+                <br />
+                <input onChange={e => dispatch({ type: "emailImmediately", value: e.target.value })} type="text" className="ml-3" placeholder="username" />
+                <CSSTransition in={state.email.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+                  <div className="alert alert-danger small liveValidateMessage ml-3">{state.email.message}</div>
+                </CSSTransition>
+              </div>
+              <div className="mt-3 mr-2 p-2 form-group">
+                <span className="ml-3">First name</span>
+                <br />
+                <input onChange={e => dispatch({ type: "firstNameImmediately", value: e.target.value })} type="text" className="ml-3" placeholder="username" />
+                <CSSTransition in={state.firstName.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+                  <div className="alert alert-danger small liveValidateMessage ml-3">{state.firstName.message}</div>
+                </CSSTransition>
+              </div>
+              <div className="mt-3 mr-2 p-2 form-group">
+                <span className="ml-3">Last name</span>
+                <br />
+                <input onChange={e => dispatch({ type: "lastNameImmediately", value: e.target.value })} type="text" className="ml-3" placeholder="username" />
+                <CSSTransition in={state.lastName.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+                  <div className="alert alert-danger small liveValidateMessage ml-3">{state.lastName.message}</div>
+                </CSSTransition>
+              </div>
             </div>
-            <CSSTransition in={state.password.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-              <div className="alert alert-danger small liveValidateMessage">{state.password.message}</div>
-            </CSSTransition>
-          </div>
-          <div className="mr-2 p-2 form-group">
-            <div className="form-control">
-              Email : <input onChange={e => dispatch({ type: "emailImmediately", value: e.target.value })} type="text" className="ml-5" placeholder="johndoe@gmail.com" />
+            <div className="mt-4 align-self-center mr-5">
+              <button className="nav-button">REGISTER</button>
             </div>
-            <CSSTransition in={state.email.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-              <div className="alert alert-danger small liveValidateMessage">{state.email.message}</div>
-            </CSSTransition>
-          </div>
-          <div className="mr-2 p-2 form-group">
-            <div className="form-control">
-              First name : <input onChange={e => dispatch({ type: "firstNameImmediately", value: e.target.value })} type="text" className="ml-3" placeholder="John" />
+            <div className="mt-3 form-label">
+              <span id="login-white">
+                No Account? Sign Up <span id="login-blue">Here</span>
+              </span>
             </div>
-            <CSSTransition in={state.firstName.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-              <div className="alert alert-danger small liveValidateMessage">{state.firstName.message}</div>
-            </CSSTransition>
-          </div>
-          <div className="mr-2 p-2 form-group">
-            <div className="form-control">
-              Last name : <input onChange={e => dispatch({ type: "lastNameImmediately", value: e.target.value })} type="text" className="ml-3" placeholder="Doe" />
-            </div>
-            <CSSTransition in={state.lastName.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-              <div className="alert alert-danger small liveValidateMessage">{state.lastName.message}</div>
-            </CSSTransition>
-          </div>
-          <div className="mr-2 p-2 form-group ml-auto mr-auto">
-            <div className="form-control">
-              <button type="submit" className="btn btn-primary">
-                Register
-              </button>
-            </div>
-          </div>
+          </form>
         </div>
-      </form>
+        <div className="col-6 align-self-center">
+          <img src="https://static.timesofisrael.com/www/uploads/2017/12/managers.jpg" />
+        </div>
+      </div>
     </div>
   )
 }

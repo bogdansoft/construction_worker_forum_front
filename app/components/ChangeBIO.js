@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react"
-import { useParams, NavLink, Routes, Route, useNavigate, Link } from "react-router-dom"
+import React, { useContext, useEffect } from "react"
+import { useParams, useNavigate, Link } from "react-router-dom"
 import { CSSTransition } from "react-transition-group"
 import { useImmerReducer } from "use-immer"
 import Axios from "axios"
+import StateContext from "../StateContext"
 
 function ChangeBIO() {
   const navigate = useNavigate()
   const { username } = useParams()
-
+  const appState = useContext(StateContext)
   const originalState = {
     body: {
       value: "",
@@ -60,12 +61,12 @@ function ChangeBIO() {
 
     async function fetchPost() {
       try {
-        const response = await Axios.get(`/api/user?username=${username}`, { cancelToken: ourRequest.token })
+        const response = await Axios.get(`/api/user?username=${username}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
         if (response.data) {
           dispatch({ type: "fetchComplete", value: response.data })
         }
-      } catch {
-        console.log("There was a problem or the request was cancelled")
+      } catch (e) {
+        console.log("There was a problem or the request was cancelled" + e)
       }
     }
     fetchPost()
@@ -81,7 +82,7 @@ function ChangeBIO() {
 
       async function fetchPost() {
         try {
-          const response = await Axios.post(`/api/user/${username}/changebio`, { newBio: state.body.value }, { cancelToken: ourRequest.token })
+          const response = await Axios.post(`/api/user/${username}/changebio`, { newBio: state.body.value }, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
           dispatch({ type: "saveRequestFinished" })
           navigate(`/profile/${username}`)
         } catch {
