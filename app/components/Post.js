@@ -9,7 +9,6 @@ import DispatchContext from "../DispatchContext"
 function Post(props) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
-  const navigate = useNavigate()
   const [state, setState] = useImmer({
     delete: 0
   })
@@ -40,39 +39,20 @@ function Post(props) {
     day: "numeric"
   })
   return (
-    <div className="posts p-3 ml-5 mr-3 d-flex col-8">
-      <div className="avatar mr-3 col-2">
-        <img src="https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png" />
+    <div className="single-topic container d-flex mt-4">
+      <div className="avatar">
+        <span className="material-symbols-outlined"> person </span>
       </div>
-      <div className="post-left col-8">
-        <div>
-          <Link to={`post/${props.post.id}`}>
-            <h1>{props.post.title}</h1>
-          </Link>
-          <p>
-            Created by <strong>{props.post.user.username}</strong> {date} • bugs other
-          </p>
+      <div className="single-topic-content container d-flex ml-3 p-2 align-items-center">
+        <div id="topic-name">
+          <Link to={`post/${props.post.id}`}>{props.post.title}</Link>
         </div>
-      </div>
-      <div className="post-right col-4 align-self-center">
-        Comments : <strong>3</strong>
-        <ReactTooltip place="bottom" id="edit" className="custom-tooltip" />{" "}
-        <Link to={`/post/edit/${props.post.id}`} data-for="edit" data-tip="Edit" className="material-symbols-outlined ml-4">
-          Edit
-        </Link>
-        <ReactTooltip place="bottom" id="delete" className="custom-tooltip" />{" "}
-        <span
-          onClick={() => {
-            setState(draft => {
-              draft.delete += 1
-            })
-          }}
-          data-for="delete"
-          data-tip="Delete"
-          className="material-symbols-outlined ml-2 pointer"
-        >
-          delete
-        </span>
+        <div className="ml-auto mr-5">
+          Comments: 21{" "}
+          <span className="ml-3">
+            Created: {date} By {props.post.user.username}
+          </span>
+        </div>
       </div>
     </div>
   )

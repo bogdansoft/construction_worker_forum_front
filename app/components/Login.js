@@ -33,29 +33,44 @@ function Login() {
   }
 
   return (
-    <div className=" login container col-3 ">
-      <form onSubmit={handleSubmit} className="mb-0 pt-2 pt-md-0">
-        <div className="d-flex flex-column align-items-center ">
-          <div className="mt-3 mr-2 p-2 ">
-            <span className="material-symbols-outlined mr-2"> account_circle </span>
-            <input onChange={e => setUsername(e.target.value)} type="text" placeholder="username" />
+    <div className="main d-flex flex-column container">
+      <div className="content d-flex mt-4">
+        <div className="d-flex flex-column col-6 align-items-center">
+          <div className="mt-4">
+            <h6 className="input-text text-center">
+              Log into Construction
+              <br />
+              Worker forum
+            </h6>
           </div>
-          <div className="mt-3 mr-2 p-2">
-            <span className="material-symbols-outlined mr-2"> lock </span>
-            <input onChange={e => setPassword(e.target.value)} type="password" placeholder="*********" />
-          </div>
-          <div className="mt-2 align-self-center p-3">
-            <button className="btn btn-primary login-button">Login</button>
+          <form onSubmit={handleSubmit} className="d-flex flex-column container">
+            <div className="ml-5 form-label mt-4">
+              <span>Username</span>
+              <br />
+              <input onChange={e => setUsername(e.target.value)} type="text" className="form-button" />
+              <br />
+              <span>Password</span>
+              <br />
+              <input onChange={e => setPassword(e.target.value)} type="password" className="form-button" />
+            </div>
+            <div className="mt-4 align-self-end mr-5">
+              <button type="submit" className="nav-button">
+                LOGIN
+              </button>
+            </div>
+          </form>
+          <div className="mt-3 form-label">
+            <span id="login-white">
+              No Account? Sign Up{" "}
+              <Link to="/user/create">
+                <span id="login-blue">Here</span>
+              </Link>
+            </span>
           </div>
         </div>
-      </form>
-      <div className="p-1 ml-auto mr-auto container text-center">
-        <p id="create-account">
-          Not a member yet?{" "}
-          <Link to="/user/create">
-            <span>Create an account</span>
-          </Link>
-        </p>
+        <div className="col-6 align-self-center">
+          <img src="https://static.timesofisrael.com/www/uploads/2017/12/managers.jpg" />
+        </div>
       </div>
     </div>
   )
