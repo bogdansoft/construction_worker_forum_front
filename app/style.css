@@ -805,3 +805,61 @@ textarea.tall-textarea {
     transform: scale(1.5);
   }
 }
+
+/* CHAT */
+.main {
+  background-color: var(--ultra-light-blue);
+  padding: 0px 50px;
+}
+
+.content {
+  background-color: var(--orange);
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.chat .material-symbols-outlined {
+  font-size: 3em;
+}
+
+.sender {
+  background-color: var(--dark-violet);
+  border-radius: 15px;
+  border: 2px solid black;
+  color: white;
+  padding: 10px 20px;
+  text-align: right;
+}
+
+.recipient {
+  background-color: var(--light-blue);
+  color: white;
+  border-radius: 15px;
+  border: 2px solid black;
+  padding: 10px 20px;
+  text-align: left;
+}
+
+.chat-input {
+  background-color: var(--light-brown);
+  color: black;
+  border-radius: 10px;
+  border: 2px solid black;
+}
+
+.chat-field {
+  background-color: var(--light-brown);
+  border-top-style: hidden;
+  border-right-style: hidden;
+  border-left-style: hidden;
+  border-bottom-style: groove;
+}
+
+.no-outline:focus {
+  outline: none;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: black;
+  opacity: 0.6; /* Firefox */
+}

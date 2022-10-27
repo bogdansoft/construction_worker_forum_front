@@ -35,9 +35,10 @@
                 <div class="align-self-end sender mt-2">What's up?</div>
             </div>
             <div class="container chat d-flex align-items-center mt-4">
-                <div class="container p-3 chat-input mr-4">
-                    I'm typing currently...
-                </div>
+                <form id="chatForm" class="container p-2 chat-input mr-4">
+                    <input type="text" size="95" class="no-outline chat-field" id="chatField"
+                           placeholder="Type a message..." autocomplete="off"/>
+                </form>
                 <div class="mt-2 ml-auto">
                     <span class="material-symbols-outlined">
                         send

@@ -333,3 +333,20 @@ img {
     border-radius: 10px;
     border: 2px solid black;
 }
+
+.chat-field {
+    background-color: var(--light-brown);
+    border-top-style: hidden;
+    border-right-style: hidden;
+    border-left-style: hidden;
+    border-bottom-style: groove;
+}
+
+.no-outline:focus {
+    outline: none;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: black;
+    opacity: 0.6; /* Firefox */
+}
