@@ -2,7 +2,7 @@ import React from "react";
 
 function SingleChat() {
     return (
-        <div className="main d-flex flex-column">
+        <div className="container main d-flex flex-column">
             <div className="content d-flex mt-4 flex-column">
                 <div className="container flex-column d-flex">
                     <div className="align-self-center font-weight-bold">data</div>
@@ -16,9 +16,9 @@ function SingleChat() {
                                placeholder="Type a message..." autoComplete="off"/>
                     </form>
                     <div className="mt-2 ml-auto">
-                        <span className="material-symbols-outlined">
+                        <button className="material-symbols-outlined">
                             send
-                        </span>
+                        </button>
                     </div>
                 </div>
             </div>

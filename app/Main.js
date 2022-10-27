@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react"
-import { useImmerReducer } from "use-immer"
-import { BrowserRouter, Route, Routes } from "react-router-dom"
+import React, {useEffect} from "react"
+import {useImmerReducer} from "use-immer"
+import {BrowserRouter, Route, Routes} from "react-router-dom"
 import ReactDOM from "react-dom/client"
 import DispatchContext from "./DispatchContext"
 import StateContext from "./StateContext"
-import { CSSTransition } from "react-transition-group"
+import {CSSTransition} from "react-transition-group"
 import Axios from "axios"
 import Navbar from "./components/Navbar"
 import Posts from "./components/Posts"
@@ -19,6 +19,7 @@ import ChangeBIO from "./components/ChangeBIO"
 import EditPost from "./components/EditPost"
 import ViewSinglePost from "./components/ViewSinglePost"
 import FlashMessages from "./components/FlashMessages"
+import SingleChat from "./components/SingleChat";
 
 Axios.defaults.baseURL = "http://localhost:8080"
 
@@ -90,7 +91,8 @@ function Main() {
             <Route path="/post/create" element={<CreatePostForm />} />
             <Route path="/profile/changebio/:username" element={<ChangeBIO />} />
             <Route path="/post/edit/:id" element={<EditPost />} />
-            <Route path="/post/:id" element={<ViewSinglePost />} />
+            <Route path="/post/:id" element={<ViewSinglePost/>}/>
+            <Route path="/chat" element={<SingleChat/>}/>
           </Routes>
           <Footer />
         </BrowserRouter>
