@@ -806,6 +806,7 @@ textarea.tall-textarea {
 }
 
 .chat-input {
+    height: 40px;
     background-color: var(--light-brown);
     color: black;
     border-radius: 10px;
