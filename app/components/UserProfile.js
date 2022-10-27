@@ -36,6 +36,7 @@ function UserProfile() {
     e.preventDefault()
     try {
       Axios.delete(`/api/user?username=${username}`)
+
       navigate(`/`)
       console.log("Account deleted")
     } catch {
