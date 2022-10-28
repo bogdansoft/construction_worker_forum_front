@@ -6,11 +6,12 @@ import { Link, useNavigate } from "react-router-dom"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 
-function Post(props) {
+function Topic(props) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
   const [state, setState] = useImmer({
-    delete: 0
+    delete: 0,
+    postsSize: props.topic.posts.length
   })
 
   useEffect(() => {
@@ -19,11 +20,12 @@ function Post(props) {
 
       async function fetchData() {
         try {
-          await Axios.delete(`/api/post/${props.post.id}`, { headers: { Authorization: `Bearer ${appState.user.token}` } })
-          appDispatch({ type: "flashMessage", value: "Post succesfully deleted !", messageType: "message-green" })
+          await Axios.delete(`/api/topic/${props.topic.id}`, { headers: { Authorization: `Bearer ${appState.user.token}` } })
+          appDispatch({ type: "flashMessage", value: "Topic succesfully deleted !", messageType: "message-green" })
+          console.log("IM DELETING TOPIC")
           props.reload()
         } catch (e) {
-          console.log("there was a problem deleting post")
+          console.log("There was a problem while deleting the topic!")
         }
       }
       fetchData()
@@ -33,29 +35,29 @@ function Post(props) {
     }
   }, [state.delete])
 
-  const date = new Date(props.post.createdAt).toLocaleDateString("utc", {
+  const date = new Date(props.topic.createdAt).toLocaleDateString("utc", {
     year: "numeric",
     month: "short",
     day: "numeric"
   })
+
   return (
     <div className="single-topic container d-flex mt-4">
       <div className="avatar">
         <span className="material-symbols-outlined"> person </span>
+        <div>Topic Avatar?</div>
       </div>
       <div className="single-topic-content container d-flex ml-3 p-2 align-items-center">
         <div id="topic-name">
-          <Link to={`/post/${props.post.id}`}>{props.post.title}</Link>
+          <Link to={`topic/${props.topic.id}`}>{props.topic.name}</Link>
         </div>
         <div className="ml-auto mr-5">
-          Comments: {props.post.comments.length}{" "}
-          <span className="ml-3">
-            Created: {date} By {props.author.username}
-          </span>
+          Posts: {state.postsSize}
+          <span className="ml-3">Created: {date} By AUTHOR </span>
         </div>
       </div>
     </div>
   )
 }
 
-export default Post
+export default Topic
