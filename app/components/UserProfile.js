@@ -5,6 +5,8 @@ import UserProfilePosts from "./UserProfilePosts"
 import Axios from "axios"
 import StateContext from "../StateContext"
 import { useImmerReducer } from "use-immer"
+import SinglePostProfile from "./SinglePostProfile"
+import SingleCommentProfile from "./SingleCommentProfile"
 
 function UserProfile() {
   const { username } = useParams()
@@ -14,7 +16,9 @@ function UserProfile() {
   const originalState = {
     user: {
       username: "",
-      bio: ""
+      bio: "",
+      posts: [],
+      comments: []
     },
     body: {
       value: "",
@@ -59,6 +63,8 @@ function UserProfile() {
       case "getData":
         draft.user.username = action.value.username
         draft.user.bio = action.value.bio
+        draft.user.posts = action.value.userPosts
+        draft.user.comments = action.value.userComments
         return
     }
   }
@@ -70,7 +76,6 @@ function UserProfile() {
     async function fetchData() {
       try {
         const response = await Axios.get(`/api/user?username=${username}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
-        console.log("tutaj ")
         console.log(response.data)
         dispatch({ type: "getData", value: response.data })
         if (state.bio !== "") {
@@ -154,50 +159,14 @@ function UserProfile() {
               <input id="tab2" type="radio" name="tabs" />
               <label htmlFor="tab2">Comments</label>
               <section id="content1">
-                {/* map(comments -> coment) */}
-                <div className="single-item-profile container d-flex mt-3 ml-3 p-2 align-items-center">
-                  <div id="topic-name">Post number one</div>
-                  <div className="ml-auto mr-3">
-                    Comments: 21 <span className="ml-3">Created: 01-01-2021</span>
-                  </div>
-                  <div className="icon-black">
-                    <span className="material-symbols-outlined"> edit </span>
-                    <span className="material-symbols-outlined"> delete </span>
-                  </div>
-                </div>
-                <div className="single-item-profile container d-flex mt-3 ml-3 p-2 align-items-center">
-                  <div id="topic-name">Post number one</div>
-                  <div className="ml-auto mr-3">
-                    Comments: 21 <span className="ml-3">Created: 01-01-2021</span>
-                  </div>
-                  <div className="icon-black">
-                    <span className="material-symbols-outlined"> edit </span>
-                    <span className="material-symbols-outlined"> delete </span>
-                  </div>
-                </div>
+                {state.user.posts.map(post => {
+                  return <SinglePostProfile post={post} key={post.id} />
+                })}
               </section>
               <section id="content2">
-                {/* map(post -> post) */}
-                <div className="single-item-profile container d-flex mt-3 ml-3 p-2 align-items-center">
-                  <div id="topic-name">Comment number one</div>
-                  <div className="ml-auto mr-3">
-                    <span className="ml-3">Created: 01-01-2021</span>
-                  </div>
-                  <div className="icon-black">
-                    <span className="material-symbols-outlined"> edit </span>
-                    <span className="material-symbols-outlined"> delete </span>
-                  </div>
-                </div>
-                <div className="single-item-profile container d-flex mt-3 ml-3 p-2 align-items-center">
-                  <div id="topic-name">Comment number one</div>
-                  <div className="ml-auto mr-3">
-                    <span className="ml-3">Created: 01-01-2021</span>
-                  </div>
-                  <div className="icon-black">
-                    <span className="material-symbols-outlined"> edit </span>
-                    <span className="material-symbols-outlined"> delete </span>
-                  </div>
-                </div>
+                {state.user.comments.map(comment => {
+                  return <SingleCommentProfile comment={comment} key={comment.id} />
+                })}
               </section>
             </main>
           </div>
