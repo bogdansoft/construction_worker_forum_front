@@ -7,11 +7,13 @@ import StateContext from "../StateContext"
 import { useImmerReducer } from "use-immer"
 import SinglePostProfile from "./SinglePostProfile"
 import SingleCommentProfile from "./SingleCommentProfile"
+import DispatchContext from "../DispatchContext"
 
 function UserProfile() {
   const { username } = useParams()
   const [isBioPresent, setIsBioPresent] = useState(false)
   const appState = useContext(StateContext)
+  const appDispatch = useContext(DispatchContext)
   const navigate = useNavigate()
   const originalState = {
     user: {
@@ -111,6 +113,7 @@ function UserProfile() {
         try {
           const response = await Axios.post(`/api/user/${username}/changebio`, { newBio: state.user.bio }, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
           dispatch({ type: "saveRequestFinished" })
+          appDispatch({ type: "flashMessage", value: "Bio changed !", messageType: "message-green" })
           navigate(`/profile/${username}`)
         } catch (e) {
           console.log("There was a problem or the request was cancelled" + e)

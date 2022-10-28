@@ -48,7 +48,7 @@ function Post(props) {
           <Link to={`post/${props.post.id}`}>{props.post.title}</Link>
         </div>
         <div className="ml-auto mr-5">
-          Comments: 21{" "}
+          Comments: {props.post.comments.length}
           <span className="ml-3">
             Created: {date} By {props.post.user.username}
           </span>
