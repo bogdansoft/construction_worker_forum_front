@@ -2,20 +2,19 @@ import React, { useEffect, useState, useContext } from "react"
 import { Link, useParams, useNavigate } from "react-router-dom"
 import Axios from "axios"
 import { useImmer } from "use-immer"
-import SingleComment from "./SingleComment"
-import { CSSTransition } from "react-transition-group"
-import StateContext from "../StateContext"
-import DispatchContext from "../DispatchContext"
 import Loading from "./Loading"
 import Post from "./Post"
+import StateContext from "../StateContext"
+import DispatchContext from "../DispatchContext"
 
 function ViewSingleTopic(props) {
+  const appState = useContext(StateContext)
+  const appDispatch = useContext(DispatchContext)
   const navigate = useNavigate()
   const { id } = useParams()
   const [topic, setTopic] = useState([])
   const [posts, setPosts] = useState([])
   const loggedIn = Boolean(localStorage.getItem("constructionForumUserToken"))
-  const appDispatch = useContext(DispatchContext)
   const [state, setState] = useImmer({
     isLoading: false,
     reloadCounter: 0,
@@ -70,18 +69,77 @@ function ViewSingleTopic(props) {
     })
   }
 
+  useEffect(() => {
+    if (state.delete) {
+      const ourRequest = Axios.CancelToken.source()
+
+      async function handleDeleteTopic() {
+        const ourRequest = Axios.CancelToken.source()
+        try {
+          await Axios.delete(`/api/topic/${id}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+          appDispatch({ type: "flashMessage", value: "Topic successfully deleted!", messageType: "message-green" })
+          navigate("/")
+        } catch (e) {
+          console.log("There was a problem while deleting the topic", e)
+        }
+      }
+      handleDeleteTopic()
+
+      return () => {
+        ourRequest.cancel()
+      }
+    }
+  }, [state.delete])
+
+  function showContext() {
+    if (appState.user.isAdmin || appState.user.isSupport) {
+      return (
+        <div className="font-weight-bold text-left">
+          <span className="mr-4" style={{ fontSize: "40px" }}>
+            {topic.name}
+          </span>{" "}
+          <Link to={`/topic/edit/${id}`} data-tip="Edit" data-for="edit" className="text-primary mr-2">
+            <span className="material-symbols-outlined link-black mr-2"> edit </span>
+          </Link>
+          <span
+            onClick={() =>
+              setState(draft => {
+                draft.delete++
+              })
+            }
+            className="material-symbols-outlined link-black"
+          >
+            delete
+          </span>
+        </div>
+      )
+    }
+    return (
+      <div className="font-weight-bold text-left">
+        <span className="mr-4" style={{ fontSize: "40px" }}>
+          {topic.name}
+        </span>{" "}
+      </div>
+    )
+  }
+
   if (state.isLoading) return <Loading />
   return (
     <div className="main container d-flex flex-column">
-      <div className="mt-5">
-        <h3 className="font-weight-bold text-left">{topic.name}</h3>
-      </div>
+      <div className="mt-5"></div>
+      {showContext()}
+      <div className="content mt-2 mr-auto p-4">{topic.description}</div>
       <div className="content container d-flex flex-column mt-4">
         <div className="d-flex flex-row">
           <div className="ml-4">
             <h4 className="font-weight-bold">Posts</h4>
           </div>
           <div className="ml-auto d-flex flex-row align-items-center">
+            {loggedIn ? (
+              <button className="single-topic-content p-1 mr-3" style={{ backgroundColor: "DarkBlue" }} onClick={() => navigate(`/post/create`, { state: { topic: topic } })}>
+                <text>New Post</text>
+              </button>
+            ) : null}
             <select className="mr-3" name="Pagination" id="pagination">
               <option>Pagination</option>
               <option>10</option>
@@ -102,7 +160,7 @@ function ViewSingleTopic(props) {
           </div>
         </div>
         {posts.length == 0 ? (
-          <span className="font-weight-bold text-center">There are no posts for this topic yet. Feel free to create one!</span>
+          <span className="font-weight-bold text-center p-5">There are no posts for this topic yet. Feel free to create one!</span>
         ) : (
           posts.map(post => {
             return <Post post={post} key={post.id} author={post.user} reload={reload} />

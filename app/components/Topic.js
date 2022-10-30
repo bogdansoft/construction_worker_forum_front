@@ -22,7 +22,6 @@ function Topic(props) {
         try {
           await Axios.delete(`/api/topic/${props.topic.id}`, { headers: { Authorization: `Bearer ${appState.user.token}` } })
           appDispatch({ type: "flashMessage", value: "Topic succesfully deleted !", messageType: "message-green" })
-          console.log("IM DELETING TOPIC")
           props.reload()
         } catch (e) {
           console.log("There was a problem while deleting the topic!")
@@ -45,7 +44,6 @@ function Topic(props) {
     <div className="single-topic container d-flex mt-4">
       <div className="avatar">
         <span className="material-symbols-outlined"> person </span>
-        <div>Topic Avatar?</div>
       </div>
       <div className="single-topic-content container d-flex ml-3 p-2 align-items-center">
         <div id="topic-name">
@@ -53,7 +51,9 @@ function Topic(props) {
         </div>
         <div className="ml-auto mr-5">
           Posts: {state.postsSize}
-          <span className="ml-3">Created: {date} By AUTHOR </span>
+          <span className="ml-3">
+            Created: {date} By {props.author.username}{" "}
+          </span>
         </div>
       </div>
     </div>

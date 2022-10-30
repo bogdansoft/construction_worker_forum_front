@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import { useImmerReducer } from "use-immer"
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 import jwtDecode from "jwt-decode"
@@ -8,7 +8,6 @@ import StateContext from "./StateContext"
 import { CSSTransition } from "react-transition-group"
 import Axios from "axios"
 import Navbar from "./components/Navbar"
-import Posts from "./components/Posts"
 import Topics from "./components/Topics"
 import Footer from "./components/Footer"
 import Login from "./components/Login"
@@ -16,9 +15,11 @@ import Search from "./components/Search"
 import SinglePost from "./components/SinglePost"
 import RegisterForm from "./components/RegisterForm"
 import CreatePostForm from "./components/CreatePostForm"
+import CreateTopicForm from "./components/CreateTopicForm"
 import UserProfile from "./components/UserProfile"
 import ChangeBIO from "./components/ChangeBIO"
 import EditPost from "./components/EditPost"
+import EditTopic from "./components/EditTopic"
 import ViewSinglePost from "./components/ViewSinglePost"
 import FlashMessages from "./components/FlashMessages"
 import ViewSingleTopic from "./components/ViewSingleTopic"
@@ -75,6 +76,9 @@ function Main() {
       localStorage.setItem("constructionForumUserId", state.user.id)
       localStorage.setItem("constructionForumUsername", state.user.username)
       localStorage.setItem("constructionForumUserToken", state.user.token)
+      initialState.user.roles = jwtDecode(localStorage.getItem("constructionForumUserToken")).roles
+      initialState.user.isAdmin = initialState.user.roles.includes("ADMINISTRATOR") ? true : false
+      initialState.user.isSupport = initialState.user.roles.includes("SUPPORT") ? true : false
     } else {
       localStorage.removeItem("constructionForumUserId")
       localStorage.removeItem("constructionForumUsername")
@@ -100,8 +104,10 @@ function Main() {
             <Route path="/post" element={<SinglePost />} />
             <Route path="/user/create" element={<RegisterForm />} />
             <Route path="/post/create" element={<CreatePostForm />} />
+            <Route path="/topic/create" element={<CreateTopicForm />} />
             <Route path="/profile/changebio/:username" element={<ChangeBIO />} />
             <Route path="/post/edit/:id" element={<EditPost />} />
+            <Route path="/topic/edit/:id" element={<EditTopic />} />
             <Route path="/post/:id" element={<ViewSinglePost />} />
             <Route path="/topic/:id" element={<ViewSingleTopic />} />
           </Routes>

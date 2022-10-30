@@ -17,7 +17,6 @@ function Login() {
       const response = await Axios.post("/api/login", { username, password })
 
       if (response.data) {
-        console.log(response.data)
         appDispatch({ type: "login", data: response.data })
         appDispatch({ type: "flashMessage", value: "Succesfully logged in !", messageType: "message-green" })
         navigate("/")
