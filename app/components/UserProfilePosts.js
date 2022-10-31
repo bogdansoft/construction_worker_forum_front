@@ -12,7 +12,7 @@ function UserProfilePosts() {
 
     async function fetchPosts() {
       try {
-        const response = await Axios.get(`/api/${username}/posts`, { cancelToken: ourRequest.token })
+        const response = await Axios.get(`/api/post/all_by_username/${username}`, { cancelToken: ourRequest.token })
         setPosts(response.data)
       } catch {
         console.log("There was a problem")

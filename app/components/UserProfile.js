@@ -3,6 +3,7 @@ import { useParams, NavLink, Routes, Route, useNavigate, Link } from "react-rout
 import UserProfileComments from "./UserProfileComments"
 import UserProfilePosts from "./UserProfilePosts"
 import Axios from "axios"
+import RenderAvatar from "./Avatar"
 
 function UserProfile() {
   const { username } = useParams()
@@ -47,7 +48,7 @@ function UserProfile() {
   return (
     <div className={"container py-md-5"}>
       <h2>
-        <img className="avatar" src="https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png" />
+        <RenderAvatar />
       </h2>
       <div className="float-right">
         <Link className="btn btn-primary" to={`/profile/changebio/${username}`}>
