@@ -33,7 +33,15 @@ function NavbarLoggedIn() {
           <Link to="/post/create" className="mr-auto p-3">
             <span className="material-symbols-outlined"> add </span>
           </Link>
-          <span className="material-symbols-outlined mr-3"> search </span>
+          <span
+            onClick={() => {
+              appDispatch({ type: "searchOpen" })
+            }}
+            className="material-symbols-outlined mr-3"
+          >
+            {" "}
+            search{" "}
+          </span>
           <span className="material-symbols-outlined mr-3"> chat </span>
           <div class="relative">
             <span onClick={toggleOptions} className="material-symbols-outlined mr-3">

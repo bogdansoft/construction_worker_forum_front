@@ -19,7 +19,15 @@ function NavbarLoggedOut() {
           </div>
         </div>
         <div className="nav-right d-flex ml-auto align-items-center">
-          <span className="material-symbols-outlined mr-3"> search </span>
+          <span
+            onClick={() => {
+              appDispatch({ type: "openSearch" })
+            }}
+            className="material-symbols-outlined mr-3"
+          >
+            {" "}
+            search{" "}
+          </span>
           <Link to="/user/create">
             <button className="nav-button mr-4">Sign up</button>
           </Link>
