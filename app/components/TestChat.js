@@ -47,8 +47,7 @@ const TestChat = (props) => {
 
         if (active.id === notification.senderId) {
             findChatMessage(notification.id).then((message) => {
-                const newMessages = JSON.parse(sessionStorage.getItem("recoil-persist"))
-                    .chatMessages;
+                const newMessages = JSON.parse(sessionStorage.getItem("recoil-persist")).chatMessages;
                 newMessages.push(message);
                 setMessages(newMessages);
             });
