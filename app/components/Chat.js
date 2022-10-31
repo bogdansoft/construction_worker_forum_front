@@ -1,6 +1,6 @@
 import React from "react";
 
-function SingleChat() {
+function Chat() {
     return (
         <div className="container main d-flex flex-column">
             <div className="content d-flex mt-4 flex-column">
@@ -28,4 +28,4 @@ function SingleChat() {
     );
 }
 
-export default SingleChat;
+export default Chat;
