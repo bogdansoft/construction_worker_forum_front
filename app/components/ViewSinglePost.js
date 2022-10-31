@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react"
-import { Link, useParams } from "react-router-dom"
+import React, { useEffect, useState, useContext } from "react"
+import { Link, useParams, useNavigate } from "react-router-dom"
 import Axios from "axios"
 import { useImmer } from "use-immer"
 import SingleComment from "./SingleComment"
@@ -9,12 +9,12 @@ import DispatchContext from "../DispatchContext"
 import Loading from "./Loading"
 
 function ViewSinglePost() {
+  const navigate = useNavigate()
   const { id } = useParams()
   const [post, setPost] = useState([])
   const [comments, setComments] = useState([])
-  const appState = useState(StateContext)
-  const appDispatch = useState(DispatchContext)
-
+  const loggedIn = Boolean(localStorage.getItem("constructionForumUserToken"))
+  const appDispatch = useContext(DispatchContext)
   const [state, setState] = useImmer({
     author: "",
     commentToAdd: {
@@ -26,12 +26,13 @@ function ViewSinglePost() {
       hasErrors: false,
       message: ""
     },
-    isLoading: false
+    isLoading: false,
+    reloadCounter: 0,
+    delete: 0
   })
 
   useEffect(() => {
     const ourRequest = Axios.CancelToken.source()
-
     async function fetchPost() {
       try {
         setState(draft => {
@@ -69,7 +70,7 @@ function ViewSinglePost() {
     return () => {
       ourRequest.cancel()
     }
-  }, [id])
+  }, [id, state.reloadCounter])
 
   useEffect(() => {
     if (state.commentToAdd.listener) {
@@ -104,6 +105,25 @@ function ViewSinglePost() {
     }
   }, [state.commentToAdd.listener])
 
+  useEffect(() => {
+    if (state.delete) {
+      const ourRequest = Axios.CancelToken.source()
+      async function fetchData() {
+        try {
+          await Axios.delete(`/api/post/${id}`, { headers: { Authorization: `Bearer ${localStorage.getItem("constructionForumUserToken")}` } })
+          appDispatch({ type: "flashMessage", value: "Post succesfully deleted !", messageType: "message-green" })
+          navigate("/")
+        } catch (e) {
+          console.log("there was a problem deleting post" + e)
+        }
+      }
+      fetchData()
+      return () => {
+        ourRequest.cancel()
+      }
+    }
+  }, [state.delete])
+
   function handleSubmit(e) {
     e.preventDefault()
 
@@ -112,69 +132,86 @@ function ViewSinglePost() {
     })
   }
 
+  function reload() {
+    setState(draft => {
+      draft.reloadCounter++
+    })
+  }
+
   if (state.isLoading) return <Loading />
   return (
-    <div className="d-flex flex-column">
-      <div className="single-post container mt-3 d-flex flex-row">
-        <div className="mr-3 col-2 text-center">
-          <img src="https://th.bing.com/th/id/OIP.SOJ-Oat9i6WjYQ8SoFoe4AHaHa?pid=ImgDet&rs=1" />
-          <p>
-            by <span className="mt-2 font-weight-bold">{state.author.username}</span>
-          </p>
-        </div>
-        <div className="post container">
-          <div className="d-flex">
-            <h2>{post.title}</h2>
-            <Link to={`/post/${id}/edit`} data-tip="Edit" data-for="edit" className="text-primary mr-2"></Link>
-            <span className="material-symbols-outlined ml-auto align-self-center"> edit </span>
-            <span className="material-symbols-outlined ml-2 align-self-center"> delete </span>
+    <div class="main d-flex flex-column container">
+      <div class="content d-flex flex-column mt-4">
+        <div class="content d-flex flex-row">
+          <div class="mr-4 d-flex flex-column text-center" id="post-avatar">
+            <span class="material-symbols-outlined"> person </span>
+            <span> {state.author.username} </span>
           </div>
-          <p className="mt-3 col-10">{post.content}</p>
-          <span className="material-symbols-outlined mt-3"> thumb_up </span>
-          <span className="material-symbols-outlined ml-3"> share </span>
-          <span className="material-symbols-outlined ml-3"> report </span>
-        </div>
-      </div>
-      <div className="comments mt-5 container">
-        <hr className="mb-5" />
-        <form onSubmit={handleSubmit}>
-          <div className="col-6 ml-auto mr-auto d-flex flex-column comment-box">
-            <div className="d-flex flex-row">
-              <div className="mr-3 col-2 text-center">
-                <img src="https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png" />
-                <p className="font-weight-bold mt-2">USER</p>
-              </div>
-              <div className="form-grup">
-                <div className="form-control">
-                  <textarea
-                    onChange={e =>
-                      setState(draft => {
-                        draft.commentToAdd.hasErrors = false
-                        draft.commentToAdd.content = e.target.value
-                      })
-                    }
-                    value={state.commentToAdd.content}
-                    rows="4"
-                    cols="50"
-                    className="no-resize"
-                  ></textarea>
-                </div>
-                <CSSTransition in={state.commentToAdd.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-                  <div className="alert alert-danger small liveValidateMessage ml-2">{state.commentToAdd.message}</div>
-                </CSSTransition>
-              </div>
-            </div>
-            <div className="align-self-end mt-2">
-              <button className="btn btn-primary" type="submit">
-                Comment
-              </button>
+          <div class="post-content container mr-5">
+            <div class="ml-4">
+              <h5>{post.title}</h5>
+              <p>{post.content}</p>
             </div>
           </div>
-        </form>
-        {comments.map(comment => (
-          <SingleComment comment={comment} key={comment.id} />
-        ))}
+          <div class="d-flex flex-row ml-auto">
+            <Link to={`/post/edit/${id}`} data-tip="Edit" data-for="edit" className="text-primary mr-2">
+              <span class="material-symbols-outlined link-black mr-2"> edit </span>
+            </Link>
+            <span
+              onClick={() =>
+                setState(draft => {
+                  draft.delete++
+                })
+              }
+              class="material-symbols-outlined link-black"
+            >
+              {" "}
+              delete{" "}
+            </span>
+          </div>
+        </div>
+        <div>
+          <div class="d-flex flex-row">
+            <div class="ml-auto"></div>
+            <span class="material-symbols-outlined mr-3"> chat </span>
+            <span class="material-symbols-outlined mr-3"> thumb_up </span>
+            <span class="material-symbols-outlined mr-3"> share </span>
+            <span class="material-symbols-outlined mr-3"> report </span>
+            <span class="material-symbols-outlined mr-3"> bookmark </span>
+          </div>
+        </div>
       </div>
+      {loggedIn ? (
+        <>
+          <div class="comments d-flex col-11 ml-auto mr-auto mt-3 align-items-center">
+            <form onSubmit={handleSubmit} className="d-flex ml-auto mr-auto align-items-center container">
+              <div class="container mt-3">
+                <input
+                  onChange={e =>
+                    setState(draft => {
+                      draft.commentToAdd.hasErrors = false
+                      draft.commentToAdd.content = e.target.value
+                    })
+                  }
+                  value={state.commentToAdd.content}
+                  type="text"
+                  className="container single-topic-content p-2"
+                ></input>
+              </div>
+              <div className="ml-auto mr-4 mt-4">
+                <button type="submit" class="material-symbols-outlined">
+                  send
+                </button>
+              </div>
+            </form>
+          </div>
+          <div class="comments d-flex flex-column ml-auto mr-auto col-11 mt-5">
+            {comments.map(comment => (
+              <SingleComment comment={comment} key={comment.id} reload={reload} />
+            ))}
+          </div>
+        </>
+      ) : null}
     </div>
   )
 }

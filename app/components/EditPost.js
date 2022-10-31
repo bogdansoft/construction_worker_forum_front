@@ -82,9 +82,8 @@ function EditPost() {
       async function fetchPost() {
         try {
           console.log(state)
-          const response = await Axios.put(`/api/post/${state.id}`, { title: state.title, content: state.content, userId: state.userId }, { headers: { Authorization: `Bearer ${appState.user.token}` } })
-          console.log(response)
-          navigate("/post")
+          await Axios.put(`/api/post/${state.id}`, { title: state.title, content: state.content, userId: state.userId }, { headers: { Authorization: `Bearer ${appState.user.token}` } })
+          navigate(`/post/${state.id}`)
           dispatch({ type: "saveRequestFinished" })
         } catch (e) {
           console.log("There was a problem or the request was cancelled.")
@@ -98,30 +97,68 @@ function EditPost() {
   }, [state.sendCount])
 
   return (
-    <div className="container">
-      <Link className="text-primary medium font-weight-bold" to={`/post`}>
-        &laquo; Back to post permalink
-      </Link>
-
-      <form onSubmit={handleSubmit}>
-        <div className="form-group container mt-4 justify-content-center">
-          <div className="row justify-content-center mt-4">
-            <span className="d-flex justify-content-center col-2">
-              <h3>Title:</h3>{" "}
-            </span>{" "}
-            <input onChange={e => dispatch({ type: "titleChange", value: e.target.value })} value={state.title} type="text" className="justify-content-end col-7" placeholder="title" />
+    <form onSubmit={handleSubmit}>
+      <div className="main d-flex flex-column container">
+        <div className="content d-flex flex-column mt-4">
+          <Link className="text-primary medium font-weight-bold mb-3" to={`/post`}>
+            &laquo; Back to post permalink
+          </Link>
+          <div className="d-flex flex-row">
+            <div className="ml-3 add-post-title">
+              Title: <input onChange={e => dispatch({ type: "titleChange", value: e.target.value })} value={state.title} className="p-2 ml-3" type="text" />
+            </div>
+            <div className="ml-auto mr-5 col-2">
+              <select className="mr-3" name="Topics" id="topics">
+                <option>Topics</option>
+                <option>Work</option>
+                <option>Work</option>
+                <option>Work</option>
+                <option>Sandbox</option>
+              </select>
+            </div>
           </div>
-          <div className="row justify-content-center mt-4">
-            <textarea onChange={e => dispatch({ type: "contentChange", value: e.target.value })} id="post-text-area" cols="100" rows="10" type="text" className="" placeholder="" value={state.content} />
+          <div className="mt-3 ml-auto mr-auto">
+            <textarea onChange={e => dispatch({ type: "contentChange", value: e.target.value })} value={state.content} className="post-textarea p-2 ml-5" rows="10" cols="100"></textarea>
           </div>
-          <div className="row justify-content-center mt-4">
-            <button className="row justify-content-center col-3  btn btn-success btn-rounded" type="submit">
-              Edit
-            </button>
+          <div className="d-flex align-items-center mt-3">
+            <div className="d-flex mt-3">
+              <span className="mr-4">Tags: </span>
+              <div className="ml-2">
+                <input type="checkbox" id="tag1" name="tag1" checked />
+                <label htmlFor="scales">tag1</label>
+              </div>
+              <div className="ml-2">
+                <input type="checkbox" id="tag2" name="tag2" checked />
+                <label htmlFor="scales">tag2</label>
+              </div>
+              <div className="ml-2">
+                <input type="checkbox" id="tag2" name="tag2" checked />
+                <label htmlFor="scales">tag2</label>
+              </div>
+              <div className="ml-2">
+                <input type="checkbox" id="tag3" name="tag3" checked />
+                <label htmlFor="scales">tag3</label>
+              </div>
+              <div className="ml-2">
+                <input type="checkbox" id="tag4" name="tag4" checked />
+                <label htmlFor="scales">tag4</label>
+              </div>
+              <div className="ml-2">
+                <input type="checkbox" id="tag5" name="tag5" checked />
+                <label htmlFor="scales">tag5</label>
+              </div>
+              <div className="ml-2">
+                <input type="checkbox" id="tag6" name="tag6" checked />
+                <label htmlFor="scales">tag6</label>
+              </div>
+            </div>
+            <div className="ml-auto">
+              <button className="nav-button">Create</button>
+            </div>
           </div>
         </div>
-      </form>
-    </div>
+      </div>
+    </form>
   )
 }
 

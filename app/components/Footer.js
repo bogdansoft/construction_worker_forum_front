@@ -3,12 +3,14 @@ import React, { useEffect } from "react"
 function Footer() {
   return (
     <>
-      <div className="main container">
-        <footer className="text-center mt-5">
-          <hr />
-          <p>2Agile2bTrue &copy; {new Date().getFullYear()} </p>
-        </footer>
-      </div>
+      <footer className="container">
+        <ul className="d-flex flex-row justify-content-center">
+          <li className="p-2">About us</li>
+          <li className="p-2">Contact</li>
+          <li className="p-2">Regulations</li>
+          <li className="p-2">Privacy policy</li>
+        </ul>
+      </footer>
     </>
   )
 }
