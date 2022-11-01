@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from "react"
 import { Link, useParams, useNavigate } from "react-router-dom"
+import ReactTooltip from "react-tooltip"
 import Axios from "axios"
 import { useImmer } from "use-immer"
 import Loading from "./Loading"
@@ -16,7 +17,7 @@ function ViewSingleTopic(props) {
   const [posts, setPosts] = useState([])
   const loggedIn = Boolean(localStorage.getItem("constructionForumUserToken"))
   const [state, setState] = useImmer({
-    isLoading: false,
+    isLoading: true,
     reloadCounter: 0,
     delete: 0
   })
@@ -26,9 +27,6 @@ function ViewSingleTopic(props) {
 
     async function fetchTopic() {
       try {
-        setState(draft => {
-          draft.isLoading = true
-        })
         const response = await Axios.get(`/api/topic/${id}`, { cancelToken: ourRequest.token })
         setTopic(response.data)
         setState(draft => {
@@ -101,6 +99,7 @@ function ViewSingleTopic(props) {
           <Link to={`/topic/edit/${id}`} data-tip="Edit" data-for="edit" className="text-primary mr-2">
             <span className="material-symbols-outlined link-black mr-2"> edit </span>
           </Link>
+          <ReactTooltip id="edit" className="custom-tooltip" />
           <span
             onClick={() =>
               setState(draft => {
@@ -108,9 +107,12 @@ function ViewSingleTopic(props) {
               })
             }
             className="material-symbols-outlined link-black"
+            data-tip="Delete"
+            data-for="delete"
           >
             delete
           </span>
+          <ReactTooltip id="delete" className="custom-tooltip" />
         </div>
       )
     }
@@ -127,6 +129,9 @@ function ViewSingleTopic(props) {
   return (
     <div className="main container d-flex flex-column">
       <div className="mt-5"></div>
+      <Link className="text-primary medium font-weight-bold mb-3" to={`/`}>
+        &laquo; Back to topics
+      </Link>
       {showContext()}
       <div className="content mt-2 mr-auto p-4">{topic.description}</div>
       <div className="content container d-flex flex-column mt-4">
@@ -137,7 +142,10 @@ function ViewSingleTopic(props) {
           <div className="ml-auto d-flex flex-row align-items-center">
             {loggedIn ? (
               <button className="single-topic-content p-1 mr-3" style={{ backgroundColor: "DarkBlue" }} onClick={() => navigate(`/post/create`, { state: { topic: topic } })}>
-                <text>New Post</text>
+                <text data-tip="Add new post!" data-for="add-new-post">
+                  New Post
+                </text>
+                <ReactTooltip id="add-new-post" className="custom-tooltip" />
               </button>
             ) : null}
             <select className="mr-3" name="Pagination" id="pagination">

@@ -3,13 +3,14 @@ import Axios from "axios"
 import { useNavigate, Link, useLocation } from "react-router-dom"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
+import Loading from "./Loading"
 
 function CreatePost() {
   const [title, setTitle] = useState()
   const [content, setContent] = useState()
   const [topics, setTopics] = useState([])
   const [selectedTopic, setSelectedTopic] = useState()
-  const [navigatedFromTopic, setNavigatedFromTopic] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const navigate = useNavigate()
   const location = useLocation()
   const [tags, setTags] = useState([])
@@ -46,6 +47,7 @@ function CreatePost() {
       try {
         const response = await Axios.get("/api/topic", { cancelToken: ourRequest.token })
         setTopics(response.data)
+        setIsLoading(false)
       } catch (e) {
         console.log("There was a problem fetching topics" + e.message)
       }
@@ -54,7 +56,6 @@ function CreatePost() {
 
     if (location.state) {
       setSelectedTopic(location.state.topic)
-      setNavigatedFromTopic(true)
     }
 
     return () => {
@@ -78,17 +79,16 @@ function CreatePost() {
   }
 
   function showWarningIfDefaultTopicIsChanged() {
-    if (navigatedFromTopic) {
-      if (location.state.topic.id != selectedTopic.id) {
-        return (
-          <div className="ml-auto" style={{ color: "darkred", font: "small-caps bold 14px/30px Georgia, serif" }}>
-            original topic [{location.state.topic.name}] changed!
-          </div>
-        )
-      }
+    if (location.state && location.state.topic.id != selectedTopic.id) {
+      return (
+        <div className="ml-auto col-4" style={{ color: "FireBrick", font: "small-caps bold 14px/30px Georgia, serif" }}>
+          original topic [<a style={{ color: "Navy" }}>{location.state.topic.name}</a>] changed!
+        </div>
+      )
     }
   }
 
+  if (isLoading) return <Loading />
   return (
     <form onSubmit={handleSubmit}>
       <div className="main d-flex flex-column container">
@@ -99,11 +99,9 @@ function CreatePost() {
             </div>
             <div className="ml-auto mr-5 col-2">
               <select className="mr-3" name="Topics" id="topics" onChange={e => handleTopicSelect(e)}>
-                <option default>{navigatedFromTopic ? selectedTopic.name : "Topics:"}</option>
+                <option default>{selectedTopic ? selectedTopic.name : "Topics:"}</option>
                 {topics.map(topic => {
-                  if (navigatedFromTopic && topic.name === selectedTopic.name) {
-                    return
-                  }
+                  if (selectedTopic && topic.id === selectedTopic.id) return
                   return <option>{topic.name}</option>
                 })}
               </select>
