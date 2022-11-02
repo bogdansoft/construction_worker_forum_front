@@ -1,53 +1,110 @@
-import React, { useEffect, useContext } from "react"
+import React, { useEffect, useContext, useState } from "react"
 import DispatchContext from "../DispatchContext"
+import Axios from "axios"
+import StateContext from "../StateContext"
+import SingleSearchResult from "./SingleSearchResult"
+import { useImmer } from "use-immer"
+import Loading from "./Loading"
+
 function Search() {
   const appDispatch = useContext(DispatchContext)
-  return (
-    <>
-      <div className="search-overlay">
-        <div className="search-overlay-top shadow-sm">
-          <div className="container container--narrow">
-            <label htmlFor="live-search-field" className="search-overlay-icon">
-              <i className="fas fa-search"></i>
-            </label>
-            <input autoFocus type="text" autoComplete="off" id="live-search-field" className="live-search-field" placeholder="What are you interested in?" />
-            <span
-              id="close-search-bar"
-              onClick={() => {
-                appDispatch({ type: "closeSearch" })
-              }}
-              className="material-symbols-outlined"
-            >
-              cancel
-            </span>
-          </div>
-        </div>
+  const appState = useContext(StateContext)
 
-        <div className="search-overlay-bottom">
-          <div className="container container--narrow py-3">
-            <div className="live-search-results live-search-results--visible">
-              <div className="list-group shadow-sm">
-                <div className="list-group-item active">
-                  <strong>Search Results</strong> (3 items found)
-                </div>
-                <a href="#" className="list-group-item list-group-item-action">
-                  <img className="avatar-tiny" src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128" /> <strong>Example Post #1</strong>
-                  <span className="text-muted small">by brad on 2/10/2020 </span>
-                </a>
-                <a href="#" className="list-group-item list-group-item-action">
-                  <img className="avatar-tiny" src="https://gravatar.com/avatar/b9216295c1e3931655bae6574ac0e4c2?s=128" /> <strong>Example Post #2</strong>
-                  <span className="text-muted small">by barksalot on 2/10/2020 </span>
-                </a>
-                <a href="#" className="list-group-item list-group-item-action">
-                  <img className="avatar-tiny" src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128" /> <strong>Example Post #3</strong>
-                  <span className="text-muted small">by brad on 2/10/2020 </span>
-                </a>
-              </div>
+  const [state, setState] = useImmer({
+    searchItem: "",
+    results: [],
+    requestCount: 0,
+    loading: false
+  })
+
+  useEffect(() => {
+    if (state.requestCount) {
+      const ourRequest = Axios.CancelToken.source()
+      async function fetchResults() {
+        try {
+          setState(draft => {
+            draft.loading = false
+          })
+          const searchItem = state.searchItem
+          const response = await Axios.get("/api/post/search", { headers: { Authorization: `Bearer ${appState.user.token}` }, params: { searchItem } }, { cancelToken: ourRequest.token })
+          console.log(response.data)
+          setState(draft => {
+            draft.results = response.data
+          })
+        } catch (e) {
+          console.log("There was a problem search")
+        }
+      }
+      fetchResults()
+      return () => ourRequest.cancel()
+    }
+  }, [state.requestCount])
+
+  useEffect(() => {
+    if (state.searchItem.trim()) {
+      setState(draft => {
+        draft.loading = true
+      })
+      const delay = setTimeout(() => {
+        setState(draft => {
+          draft.requestCount++
+        })
+      }, 700)
+      return () => clearTimeout(delay)
+    }
+  }, [state.searchItem])
+
+  return (
+    <div className="search-overlay container">
+      <div className="search-overlay-top shadow-sm">
+        <div className="container container--narrow">
+          <label htmlFor="live-search-field" className="search-overlay-icon">
+            <i className="fas fa-search"></i>
+          </label>
+          <div className="container ml-auto mr-auto search-bar">
+            <input
+              onChange={e => {
+                setState(draft => {
+                  draft.searchItem = e.target.value
+                })
+              }}
+              autoFocus
+              type="text"
+              autoComplete="off"
+              id="live-search-field"
+              className="live-search-field"
+              placeholder="What are you interested in?"
+            />
+          </div>
+          <span
+            id="close-search-bar"
+            onClick={() => {
+              appDispatch({ type: "closeSearch" })
+            }}
+            className="material-symbols-outlined"
+          >
+            cancel
+          </span>
+        </div>
+      </div>
+
+      <div className="search-overlay-bottom">
+        <div className="container container--narrow py-3">
+          <div className="live-search-results live-search-results--visible">
+            <div className="list-group shadow-sm mt-2">
+              Found ({state.results.length})
+              {state.loading ? (
+                <Loading />
+              ) : (
+                state.results.map(result => {
+                  return <SingleSearchResult result={result} key={result.id} />
+                })
+              )}
             </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }
 
