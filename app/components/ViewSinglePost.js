@@ -32,6 +32,7 @@ function ViewSinglePost() {
   })
 
   useEffect(() => {
+    appDispatch({ type: "closeSearch" })
     const ourRequest = Axios.CancelToken.source()
     async function fetchPost() {
       try {

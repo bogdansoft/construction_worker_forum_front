@@ -1,8 +1,59 @@
-import React, { useEffect, useContext } from "react"
+import React, { useEffect, useContext, useState } from "react"
 import DispatchContext from "../DispatchContext"
-import { Link } from "react-router-dom"
+import Axios from "axios"
+import StateContext from "../StateContext"
+import SingleSearchResult from "./SingleSearchResult"
+import { useImmer } from "use-immer"
+import Loading from "./Loading"
+
 function Search() {
   const appDispatch = useContext(DispatchContext)
+  const appState = useContext(StateContext)
+
+  const [state, setState] = useImmer({
+    searchItem: "",
+    results: [],
+    requestCount: 0,
+    loading: false
+  })
+
+  useEffect(() => {
+    if (state.requestCount) {
+      const ourRequest = Axios.CancelToken.source()
+      async function fetchResults() {
+        try {
+          setState(draft => {
+            draft.loading = false
+          })
+          const searchItem = state.searchItem
+          const response = await Axios.get("/api/post/search", { headers: { Authorization: `Bearer ${appState.user.token}` }, params: { searchItem } }, { cancelToken: ourRequest.token })
+          console.log(response.data)
+          setState(draft => {
+            draft.results = response.data
+          })
+        } catch (e) {
+          console.log("There was a problem search")
+        }
+      }
+      fetchResults()
+      return () => ourRequest.cancel()
+    }
+  }, [state.requestCount])
+
+  useEffect(() => {
+    if (state.searchItem.trim()) {
+      setState(draft => {
+        draft.loading = true
+      })
+      const delay = setTimeout(() => {
+        setState(draft => {
+          draft.requestCount++
+        })
+      }, 700)
+      return () => clearTimeout(delay)
+    }
+  }, [state.searchItem])
+
   return (
     <div className="search-overlay container">
       <div className="search-overlay-top shadow-sm">
@@ -11,7 +62,19 @@ function Search() {
             <i className="fas fa-search"></i>
           </label>
           <div className="container ml-auto mr-auto search-bar">
-            <input autoFocus type="text" autoComplete="off" id="live-search-field" className="live-search-field" placeholder="What are you interested in?" />
+            <input
+              onChange={e => {
+                setState(draft => {
+                  draft.searchItem = e.target.value
+                })
+              }}
+              autoFocus
+              type="text"
+              autoComplete="off"
+              id="live-search-field"
+              className="live-search-field"
+              placeholder="What are you interested in?"
+            />
           </div>
           <span
             id="close-search-bar"
@@ -28,47 +91,15 @@ function Search() {
       <div className="search-overlay-bottom">
         <div className="container container--narrow py-3">
           <div className="live-search-results live-search-results--visible">
-            <div className="list-group shadow-sm">
-              Topics
-              <div class="search-result mt-2">
-                <a href="#" className="d-flex">
-                  Topic number one
-                  <span className=" ml-auto mr-3">Created: 01-01-2021 By login </span>
-                </a>
-              </div>
-              <div class="search-result mt-2">
-                <a href="#" className="d-flex">
-                  Topic number one
-                  <span className="ml-auto mr-3">Created: 01-01-2021 By login </span>
-                </a>
-              </div>
-              <div class="search-result mt-2">
-                <a href="#" className="d-flex">
-                  Topic number one
-                  <span className="ml-auto mr-3">Created: 01-01-2021 By login </span>
-                </a>
-              </div>
-            </div>
             <div className="list-group shadow-sm mt-2">
-              Posts
-              <div class="search-result mt-2">
-                <a href="#" className="d-flex">
-                  Post number one
-                  <span className=" ml-auto mr-3">Created: 01-01-2021 By login </span>
-                </a>
-              </div>
-              <div class="search-result mt-2">
-                <a href="#" className="d-flex">
-                  Post number one
-                  <span className="ml-auto mr-3">Created: 01-01-2021 By login </span>
-                </a>
-              </div>
-              <div class="search-result mt-2">
-                <a href="#" className="d-flex">
-                  Post number one
-                  <span className="ml-auto mr-3">Created: 01-01-2021 By login </span>
-                </a>
-              </div>
+              Found ({state.results.length})
+              {state.loading ? (
+                <Loading />
+              ) : (
+                state.results.map(result => {
+                  return <SingleSearchResult result={result} key={result.id} />
+                })
+              )}
             </div>
           </div>
         </div>

@@ -35,7 +35,7 @@ function NavbarLoggedIn() {
           </Link>
           <span
             onClick={() => {
-              appDispatch({ type: "searchOpen" })
+              appDispatch({ type: "openSearch" })
             }}
             className="material-symbols-outlined mr-3"
           >
@@ -43,7 +43,7 @@ function NavbarLoggedIn() {
             search{" "}
           </span>
           <span className="material-symbols-outlined mr-3"> chat </span>
-          <div class="relative">
+          <div className="relative">
             <span onClick={toggleOptions} className="material-symbols-outlined mr-3">
               {" "}
               account_circle{" "}
