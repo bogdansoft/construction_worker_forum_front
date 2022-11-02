@@ -136,6 +136,12 @@
     font-size: 0.95rem;
     border-radius: 15px;
     border: 3px solid black;
+    color: white;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: white;
+    opacity: 0.6; /* Firefox */
 }
 
 .chat-form-inline button {
