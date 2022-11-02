@@ -9,7 +9,7 @@
     width: 70%;
     height: 400px;
 
-    padding: 5px 5px 50px;
+    padding: 5px 5px 1px;
     border-radius: 15px;
     background-color: #efa00b;
     display: flex;
@@ -27,7 +27,7 @@
 .chat-title-bar {
     width: 100%;
     background-color: #9b6a6c;
-    color: #fff;
+    color: white;
     border-radius: 10px;
     border: 3px solid black;
     padding: 5px 9px;
