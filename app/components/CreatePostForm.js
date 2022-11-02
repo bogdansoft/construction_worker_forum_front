@@ -1,13 +1,18 @@
-import React, { useContext, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import Axios from "axios"
-import { useNavigate, Link } from "react-router-dom"
+import { useNavigate, Link, useLocation } from "react-router-dom"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
+import Loading from "./Loading"
 
 function CreatePost() {
   const [title, setTitle] = useState()
   const [content, setContent] = useState()
+  const [topics, setTopics] = useState([])
+  const [selectedTopic, setSelectedTopic] = useState()
+  const [isLoading, setIsLoading] = useState(true)
   const navigate = useNavigate()
+  const location = useLocation()
   const [tags, setTags] = useState([])
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
@@ -16,11 +21,16 @@ function CreatePost() {
     e.preventDefault()
     const ourRequest = Axios.CancelToken.source()
 
+    if (selectedTopic === undefined) {
+      appDispatch({ type: "flashMessage", value: "Please select a topic first!", messageType: "message-red" })
+      return
+    }
+
     async function fetchData() {
       try {
-        const response = await Axios.post("/api/post", { title, content, userId: appState.user.id, topicId: 1 }, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+        const response = await Axios.post("/api/post", { title, content, userId: appState.user.id, topicId: selectedTopic.id }, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
         appDispatch({ type: "flashMessage", value: "Post succesfully created !", messageType: "message-green" })
-        navigate("/")
+        navigate(`/post/${response.data.id}`)
       } catch (e) {
         console.log("There was a problem creating post")
       }
@@ -31,6 +41,28 @@ function CreatePost() {
     }
   }
 
+  useEffect(() => {
+    const ourRequest = Axios.CancelToken.source()
+    async function fetchTopics() {
+      try {
+        const response = await Axios.get("/api/topic", { cancelToken: ourRequest.token })
+        setTopics(response.data)
+        setIsLoading(false)
+      } catch (e) {
+        console.log("There was a problem fetching topics" + e.message)
+      }
+    }
+    fetchTopics()
+
+    if (location.state) {
+      setSelectedTopic(location.state.topic)
+    }
+
+    return () => {
+      ourRequest.cancel()
+    }
+  }, [])
+
   function handleCheckbox(e) {
     if (e.target.checked) {
       setTags(prev => prev.concat(e.target.value))
@@ -39,61 +71,80 @@ function CreatePost() {
     }
   }
 
+  function handleTopicSelect(e) {
+    const foundTopic = topics.find(obj => {
+      return obj.name === e.target.value
+    })
+    setSelectedTopic(foundTopic)
+  }
+
+  function showWarningIfDefaultTopicIsChanged() {
+    if (location.state && location.state.topic.id != selectedTopic.id) {
+      return (
+        <div className="ml-auto col-4" style={{ color: "FireBrick", font: "small-caps bold 14px/30px Georgia, serif" }}>
+          original topic [<a style={{ color: "Navy" }}>{location.state.topic.name}</a>] changed!
+        </div>
+      )
+    }
+  }
+
+  if (isLoading) return <Loading />
   return (
     <form onSubmit={handleSubmit}>
-      <div class="main d-flex flex-column container">
-        <div class="content d-flex flex-column mt-4">
-          <div class="d-flex flex-row">
-            <div class="ml-3 add-post-title">
-              Title: <input onChange={e => setTitle(e.target.value)} class="p-2 ml-3" type="text" />
+      <div className="main d-flex flex-column container">
+        <div className="content d-flex flex-column mt-4">
+          <div className="d-flex flex-row">
+            <div className="ml-3 add-post-title">
+              Title: <input onChange={e => setTitle(e.target.value)} className="p-2 ml-3" type="text" />
             </div>
-            <div class="ml-auto mr-5 col-2">
-              <select class="mr-3" name="Topics" id="topics">
-                <option>Topics</option>
-                <option>Work</option>
-                <option>Work</option>
-                <option>Work</option>
-                <option>Sandbox</option>
+            <div className="ml-auto mr-5 col-2">
+              <select className="mr-3" name="Topics" id="topics" onChange={e => handleTopicSelect(e)}>
+                <option default>{selectedTopic ? selectedTopic.name : "Topics:"}</option>
+                {topics.map(topic => {
+                  if (selectedTopic && topic.id === selectedTopic.id) return
+                  return <option>{topic.name}</option>
+                })}
               </select>
             </div>
           </div>
-          <div class="mt-3 ml-auto mr-auto">
-            <textarea onChange={e => setContent(e.target.value)} class="post-textarea p-2 ml-5" rows="10" cols="100"></textarea>
+          {showWarningIfDefaultTopicIsChanged()}
+          <div className="mt-3 ml-auto mr-auto">
+            <textarea onChange={e => setContent(e.target.value)} className="post-textarea p-2 ml-5" rows="10" cols="100"></textarea>
           </div>
-          <div class="d-flex align-items-center mt-3">
-            <div class="d-flex mt-3">
-              <span class="mr-4">Tags: </span>
-              <div class="ml-2">
+          <div className="d-flex align-items-center mt-3">
+            <div className="d-flex mt-3">
+              <span className="mr-4">Tags: </span>
+              <div className="ml-2">
                 <input type="checkbox" id="tag1" name="tag1" checked />
                 <label for="scales">tag1</label>
               </div>
-              <div class="ml-2">
+              <div className="ml-2">
                 <input type="checkbox" id="tag2" name="tag2" checked />
                 <label for="scales">tag2</label>
               </div>
-              <div class="ml-2">
+              <div className="ml-2">
                 <input type="checkbox" id="tag2" name="tag2" checked />
                 <label for="scales">tag2</label>
               </div>
-              <div class="ml-2">
+              <div className="ml-2">
                 <input type="checkbox" id="tag3" name="tag3" checked />
                 <label for="scales">tag3</label>
               </div>
-              <div class="ml-2">
+              <div className="ml-2">
                 <input type="checkbox" id="tag4" name="tag4" checked />
                 <label for="scales">tag4</label>
               </div>
-              <div class="ml-2">
+              <div className="ml-2">
                 <input type="checkbox" id="tag5" name="tag5" checked />
                 <label for="scales">tag5</label>
               </div>
-              <div class="ml-2">
+              <div className="ml-2">
                 <input type="checkbox" id="tag6" name="tag6" checked />
                 <label for="scales">tag6</label>
               </div>
             </div>
-            <div class="ml-auto">
-              <button class="nav-button">Create</button>
+            <div className="ml-auto">
+              <button className="nav-button">Create</button>
             </div>
           </div>
         </div>

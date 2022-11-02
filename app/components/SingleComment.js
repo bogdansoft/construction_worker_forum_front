@@ -1,7 +1,9 @@
-import React, { useState } from "react"
+import React, { useState, useContext } from "react"
 import Axios from "axios"
+import StateContext from "../StateContext"
 
 function SingleComment(props) {
+  const appState = useContext(StateContext)
   const [isEdited, setIsEdited] = useState(false)
   const [content, setContent] = useState(props.comment.content)
   const token = localStorage.getItem("constructionForumUserToken")
@@ -26,9 +28,6 @@ function SingleComment(props) {
   }
   async function handleSubmit(e) {
     e.preventDefault()
-    console.log(props.comment.user.id)
-    console.log(props.comment.post.id)
-    console.log(content)
     const ourRequest = Axios.CancelToken.source()
     try {
       await Axios.put(
@@ -55,6 +54,22 @@ function SingleComment(props) {
     setIsEdited(prevState => !prevState)
   }
 
+  function showEditAndDeleteButtons() {
+    if (appState.user.id == props.comment.user.id) {
+      return (
+        <div className="icon-black">
+          <span onClick={handleUpdate} className="material-symbols-outlined">
+            edit
+          </span>
+          <span onClick={handleDelete} className="material-symbols-outlined">
+            {" "}
+            delete{" "}
+          </span>
+        </div>
+      )
+    }
+  }
+
   return (
     <div className="single-topic container d-flex mt-4">
       <div className="avatar align-self-center d-flex flex-column text-center">
@@ -72,15 +87,7 @@ function SingleComment(props) {
                   Created: {date} <span className="ml-2">by {props.comment.user.username}</span>
                 </span>
               </div>
-              <div className="icon-black">
-                <span onClick={handleUpdate} className="material-symbols-outlined">
-                  edit
-                </span>
-                <span onClick={handleDelete} className="material-symbols-outlined">
-                  {" "}
-                  delete{" "}
-                </span>
-              </div>
+              {showEditAndDeleteButtons()}
             </div>
           )}
           {isEdited && (

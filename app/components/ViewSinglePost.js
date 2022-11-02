@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from "react"
 import { Link, useParams, useNavigate } from "react-router-dom"
+import ReactTooltip from "react-tooltip"
 import Axios from "axios"
 import { useImmer } from "use-immer"
 import SingleComment from "./SingleComment"
@@ -15,6 +16,7 @@ function ViewSinglePost() {
   const [comments, setComments] = useState([])
   const loggedIn = Boolean(localStorage.getItem("constructionForumUserToken"))
   const appDispatch = useContext(DispatchContext)
+  const appState = useContext(StateContext)
   const [state, setState] = useImmer({
     author: "",
     commentToAdd: {
@@ -26,7 +28,7 @@ function ViewSinglePost() {
       hasErrors: false,
       message: ""
     },
-    isLoading: false,
+    isLoading: true,
     reloadCounter: 0,
     delete: 0
   })
@@ -36,9 +38,6 @@ function ViewSinglePost() {
     const ourRequest = Axios.CancelToken.source()
     async function fetchPost() {
       try {
-        setState(draft => {
-          draft.isLoading = true
-        })
         const response = await Axios.get(`/api/post/${id}`, { cancelToken: ourRequest.token })
         setPost(response.data)
         setState(draft => {
@@ -139,54 +138,76 @@ function ViewSinglePost() {
     })
   }
 
+  function showEditAndDeleteButtons() {
+    if (loggedIn && appState.user.id == state.author.id) {
+      return (
+        <div className="d-flex flex-row ml-auto">
+          <Link to={`/post/edit/${id}`} data-tip="Edit" data-for="edit" className="text-primary mr-2">
+            <span className="material-symbols-outlined link-black mr-2"> edit </span>
+          </Link>
+          <ReactTooltip id="edit" className="custom-tooltip" />
+          <span
+            onClick={() =>
+              setState(draft => {
+                draft.delete++
+              })
+            }
+            className="material-symbols-outlined link-black"
+            data-tip="Delete"
+            data-for="delete"
+          >
+            delete
+          </span>
+          <ReactTooltip id="delete" className="custom-tooltip" />
+        </div>
+      )
+    }
+  }
+
   if (state.isLoading) return <Loading />
   return (
-    <div class="main d-flex flex-column container">
-      <div class="content d-flex flex-column mt-4">
-        <div class="content d-flex flex-row">
-          <div class="mr-4 d-flex flex-column text-center" id="post-avatar">
-            <span class="material-symbols-outlined"> person </span>
+    <div className="main d-flex flex-column container">
+      <div className="mt-5"></div>
+
+      <Link className="text-primary medium font-weight-bold mb-3" to={`/topic/${post.topic.id}`}>
+        &laquo; Back to topic [{post.topic.name}]
+      </Link>
+
+      <h2 className="d-flex ml-auto col-2">
+        <text style={{ fontSize: "20px", fontFamily: "Georgia" }}>
+          <a style={{ fontSize: "16px", fontVariantCaps: "small-caps" }}>topic:</a> <b>{post.topic.name}</b>
+        </text>
+      </h2>
+      <div className="content d-flex flex-column mt-4">
+        <div className="content d-flex flex-row">
+          <div className="mr-4 d-flex flex-column text-center" id="post-avatar">
+            <span className="material-symbols-outlined"> person </span>
             <span> {state.author.username} </span>
           </div>
-          <div class="post-content container mr-5">
-            <div class="ml-4">
+          <div className="post-content container mr-5">
+            <div className="ml-4">
               <h5>{post.title}</h5>
               <p>{post.content}</p>
             </div>
           </div>
-          <div class="d-flex flex-row ml-auto">
-            <Link to={`/post/edit/${id}`} data-tip="Edit" data-for="edit" className="text-primary mr-2">
-              <span class="material-symbols-outlined link-black mr-2"> edit </span>
-            </Link>
-            <span
-              onClick={() =>
-                setState(draft => {
-                  draft.delete++
-                })
-              }
-              class="material-symbols-outlined link-black"
-            >
-              {" "}
-              delete{" "}
-            </span>
-          </div>
+          {showEditAndDeleteButtons()}
         </div>
         <div>
-          <div class="d-flex flex-row">
-            <div class="ml-auto"></div>
-            <span class="material-symbols-outlined mr-3"> chat </span>
-            <span class="material-symbols-outlined mr-3"> thumb_up </span>
-            <span class="material-symbols-outlined mr-3"> share </span>
-            <span class="material-symbols-outlined mr-3"> report </span>
-            <span class="material-symbols-outlined mr-3"> bookmark </span>
+          <div className="d-flex flex-row">
+            <div className="ml-auto"></div>
+            <span className="material-symbols-outlined mr-3"> chat </span>
+            <span className="material-symbols-outlined mr-3"> thumb_up </span>
+            <span className="material-symbols-outlined mr-3"> share </span>
+            <span className="material-symbols-outlined mr-3"> report </span>
+            <span className="material-symbols-outlined mr-3"> bookmark </span>
           </div>
         </div>
       </div>
       {loggedIn ? (
         <>
-          <div class="comments d-flex col-11 ml-auto mr-auto mt-3 align-items-center">
+          <div className="comments d-flex col-11 ml-auto mr-auto mt-3 align-items-center">
             <form onSubmit={handleSubmit} className="d-flex ml-auto mr-auto align-items-center container">
-              <div class="container mt-3">
+              <div className="container mt-3">
                 <input
                   onChange={e =>
                     setState(draft => {
@@ -200,9 +221,10 @@ function ViewSinglePost() {
                 ></input>
               </div>
               <div className="ml-auto mr-4 mt-4">
-                <button type="submit" class="material-symbols-outlined">
+                <button type="submit" className="material-symbols-outlined" data-tip="Send comment!" data-for="send">
                   send
                 </button>
+                <ReactTooltip id="send" className="custom-tooltip" />
               </div>
             </form>
           </div>
