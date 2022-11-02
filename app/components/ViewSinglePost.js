@@ -25,6 +25,7 @@ function ViewSinglePost() {
       token: localStorage.getItem("constructionForumUserToken"),
       postId: id,
       listener: 0,
+      sendCount: 0,
       hasErrors: false,
       message: ""
     },
@@ -59,7 +60,7 @@ function ViewSinglePost() {
     const ourRequest = Axios.CancelToken.source()
     async function fetchPost() {
       try {
-        const response = await Axios.get(`/api/comment/post/${id}`, { headers: { Authorization: `Bearer ${state.commentToAdd.token}` } }, { cancelToken: ourRequest.token })
+        const response = await Axios.get(`/api/comment/post/${id}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
         setComments(response.data)
       } catch (e) {
         console.log("There was a problem or the request was cancelled." + e)
@@ -110,7 +111,7 @@ function ViewSinglePost() {
       const ourRequest = Axios.CancelToken.source()
       async function fetchData() {
         try {
-          await Axios.delete(`/api/post/${id}`, { headers: { Authorization: `Bearer ${localStorage.getItem("constructionForumUserToken")}` } })
+          await Axios.delete(`/api/post/${id}`, { headers: { Authorization: `Bearer ${appState.token}` } })
           appDispatch({ type: "flashMessage", value: "Post succesfully deleted !", messageType: "message-green" })
           navigate("/")
         } catch (e) {
@@ -126,7 +127,13 @@ function ViewSinglePost() {
 
   function handleSubmit(e) {
     e.preventDefault()
-
+    if (state.commentToAdd.content.length < 2) {
+      setState(draft => {
+        draft.commentToAdd.hasErrors = true
+        draft.commentToAdd.message = "Must be at least 2 characters long"
+      })
+      return
+    }
     setState(draft => {
       draft.commentToAdd.listener++
     })
@@ -205,7 +212,7 @@ function ViewSinglePost() {
       </div>
       {loggedIn ? (
         <>
-          <div className="comments d-flex col-11 ml-auto mr-auto mt-3 align-items-center">
+          <div className="comments d-flex col-11 ml-auto mr-auto mt-5 align-items-center">
             <form onSubmit={handleSubmit} className="d-flex ml-auto mr-auto align-items-center container">
               <div className="container mt-3">
                 <input
@@ -220,6 +227,9 @@ function ViewSinglePost() {
                   className="container single-topic-content p-2"
                 ></input>
               </div>
+              <CSSTransition in={state.commentToAdd.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+                <div className="alert alert-danger small liveValidateMessage ml-3">{state.commentToAdd.message}</div>
+              </CSSTransition>
               <div className="ml-auto mr-4 mt-4">
                 <button type="submit" className="material-symbols-outlined" data-tip="Send comment!" data-for="send">
                   send
@@ -228,7 +238,7 @@ function ViewSinglePost() {
               </div>
             </form>
           </div>
-          <div class="comments d-flex flex-column ml-auto mr-auto col-11 mt-5">{comments.length > 0 ? comments.map(comment => <SingleComment comment={comment} key={comment.id} reload={reload} />) : <div className="single-topic container d-flex mt-4">No comments yet!</div>}</div>
+          <div className="comments d-flex flex-column ml-auto mr-auto col-11 mt-5">{comments.length > 0 ? comments.map(comment => <SingleComment comment={comment} key={comment.id} reload={reload} />) : <div className="single-topic container d-flex mt-4">No comments yet!</div>}</div>
         </>
       ) : null}
     </div>

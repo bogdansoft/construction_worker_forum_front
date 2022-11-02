@@ -12,7 +12,6 @@ import Topics from "./components/Topics"
 import Footer from "./components/Footer"
 import Login from "./components/Login"
 import Search from "./components/Search"
-import SinglePost from "./components/SinglePost"
 import RegisterForm from "./components/RegisterForm"
 import CreatePostForm from "./components/CreatePostForm"
 import CreateTopicForm from "./components/CreateTopicForm"
@@ -101,7 +100,6 @@ function Main() {
             <Route path="/" element={<Topics />} />
             <Route path="/profile/:username/*" element={<UserProfile />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/post" element={<SinglePost />} />
             <Route path="/user/create" element={<RegisterForm />} />
             <Route path="/post/create" element={<CreatePostForm />} />
             <Route path="/topic/create" element={<CreateTopicForm />} />
