@@ -2,10 +2,13 @@ import React, { useEffect, useContext } from "react"
 import { Link, useParams, useNavigate } from "react-router-dom"
 import { useImmerReducer } from "use-immer"
 import Axios from "axios"
+import { CSSTransition } from "react-transition-group"
 import StateContext from "../StateContext"
+import DispatchContext from "../DispatchContext"
 
 function EditTopic() {
   const appState = useContext(StateContext)
+  const appDispatch = useContext(DispatchContext)
   const navigate = useNavigate()
   const originalState = {
     name: "",
@@ -79,9 +82,16 @@ function EditTopic() {
       dispatch({ type: "saveRequestStarted" })
       const ourRequest = Axios.CancelToken.source()
 
+      if (!(appState.user.isAdmin || appState.user.isSupport)) {
+        appDispatch({ type: "flashMessage", value: "No permission to perform this action!", messageType: "message-red" })
+        return
+      } else if (!state.name || !state.description || state.name.length >= 50) {
+        appDispatch({ type: "flashMessage", value: "Invalid name or description!", messageType: "message-red" })
+        return
+      }
+
       async function fetchTopic() {
         try {
-          console.log(state)
           await Axios.put(`/api/topic/${state.id}`, { name: state.name, description: state.description, userId: state.userId }, { headers: { Authorization: `Bearer ${appState.user.token}` } })
           navigate(`/topic/${state.id}`)
           dispatch({ type: "saveRequestFinished" })
@@ -105,11 +115,22 @@ function EditTopic() {
           </Link>
           <div className="d-flex flex-row">
             <div className="ml-3 add-post-title">
-              Name: <input onChange={e => dispatch({ type: "nameChange", value: e.target.value })} value={state.name} className="p-2 ml-3" type="text" />
+              <text style={{ fontSize: "40px" }}>Title:</text>
+              <input onChange={e => dispatch({ type: "nameChange", value: e.target.value })} value={state.name} className="p-2 ml-3" type="text" />
             </div>
           </div>
+          <span className="form-group  ml-5 d-flex ">
+            <CSSTransition in={!state.name} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+              <div className="alert alert-danger mt-3 ml-3 liveValidateMessage">{"Empty title!"}</div>
+            </CSSTransition>
+          </span>
           <div className="mt-3 ml-auto mr-auto">
             <textarea onChange={e => dispatch({ type: "descriptionChange", value: e.target.value })} value={state.description} className="post-textarea p-2 ml-5" rows="10" cols="100"></textarea>
+            <span className="form-group">
+              <CSSTransition in={!state.description} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+                <div className="alert alert-danger mt-3 liveValidateMessage">{"Empty description!"}</div>
+              </CSSTransition>
+            </span>
           </div>
           <div className="d-flex align-items-center mt-3">
             <div className="ml-auto">

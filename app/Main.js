@@ -86,6 +86,19 @@ function Main() {
     }
   }, [state.loggedIn])
 
+  useEffect(() => {
+    if (state.loggedIn) {
+      const tokenExpTime = jwtDecode(state.user.token).exp * 1000
+      const interval = setInterval(() => {
+        if (tokenExpTime < Date.now()) {
+          dispatch({ type: "logout" })
+          dispatch({ type: "flashMessage", value: "YOUR AUTHENTICATION EXPIRED. PLEASE LOG IN AGAIN.", messageType: "message-red" })
+        }
+      }, tokenExpTime - Date.now() + 1000)
+      return () => clearInterval(interval)
+    }
+  }, [state.loggedIn])
+
   return (
     <StateContext.Provider value={state}>
       <DispatchContext.Provider value={dispatch}>

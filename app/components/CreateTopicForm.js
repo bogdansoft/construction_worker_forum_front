@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react"
 import Axios from "axios"
 import { useNavigate } from "react-router-dom"
+import { CSSTransition } from "react-transition-group"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 
@@ -17,6 +18,9 @@ function CreateTopicForm(props) {
 
     if (!(appState.user.isAdmin || appState.user.isSupport)) {
       appDispatch({ type: "flashMessage", value: "No permission to perform this action!", messageType: "message-red" })
+      return
+    } else if (!name || !description || name.length >= 50) {
+      appDispatch({ type: "flashMessage", value: "Invalid name or description!", messageType: "message-red" })
       return
     }
 
@@ -37,18 +41,32 @@ function CreateTopicForm(props) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="main d-flex flex-column container">
-        <div className="content d-flex flex-column mt-4">
-          <div className="d-flex flex-row">
-            <div className="ml-1 add-post-title">
-              Name: <input onChange={e => setName(e.target.value)} className="p-2" type="text" />
+      <div className="form-label mt-4">
+        <div className="main d-flex flex-column container">
+          <div className="content d-flex flex-column mt-4">
+            <div className="d-flex flex-row">
+              <div className="ml-1 add-post-title">
+                <text style={{ fontSize: "40px" }}>Title:</text>
+
+                <input onChange={e => setName(e.target.value)} className="ml-3" type="text" style={{ fontSize: "20px" }} />
+              </div>
             </div>
-          </div>
-          <div className="mt-3 ml-auto mr-auto">
-            <textarea onChange={e => setDescription(e.target.value)} className="post-textarea p-2 ml-5" rows="5" cols="99"></textarea>
-          </div>
-          <div className="ml-auto">
-            <button className="nav-button">Create</button>
+            <span className="form-group  ml-5 d-flex ">
+              <CSSTransition in={!name} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+                <div className="alert alert-danger mt-3 ml-3 liveValidateMessage">{"Empty title!"}</div>
+              </CSSTransition>
+            </span>
+            <div className="mt-3 ml-auto mr-auto">
+              <textarea onChange={e => setDescription(e.target.value)} className="post-textarea p-2 ml-5" rows="5" cols="99"></textarea>
+              <span className="form-group">
+                <CSSTransition in={!description} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+                  <div className="alert alert-danger mt-3 liveValidateMessage">{"Empty description!"}</div>
+                </CSSTransition>
+              </span>
+            </div>
+            <div className="ml-auto">
+              <button className="nav-button">Create</button>
+            </div>
           </div>
         </div>
       </div>
