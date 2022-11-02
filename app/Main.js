@@ -20,6 +20,7 @@ import EditPost from "./components/EditPost"
 import ViewSinglePost from "./components/ViewSinglePost"
 import FlashMessages from "./components/FlashMessages"
 import Avatar from "./components/Avatar"
+import RenderAvatar from "./components/Avatar"
 
 Axios.defaults.baseURL = "http://localhost:8080"
 
@@ -92,7 +93,7 @@ function Main() {
             <Route path="/profile/changebio/:username" element={<ChangeBIO />} />
             <Route path="/post/edit/:id" element={<EditPost />} />
             <Route path="/post/:id" element={<ViewSinglePost />} />
-            <Route path="/avatar" element={<Avatar />} />
+            <Route path="/avatar" element={<RenderAvatar username="jake123" />} />
           </Routes>
           <Footer />
         </BrowserRouter>

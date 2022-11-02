@@ -6,6 +6,7 @@ import CancelIcon from "@material-ui/icons/Cancel"
 import getCroppedImg, { generateDownload } from "./utils/cropImage"
 import { IconButton, makeStyles } from "@material-ui/core"
 import { dataURLtoFile } from "./utils/dataURLtoFile"
+import Axios from "axios"
 
 const useStyles = makeStyles({
   iconButton: {
@@ -22,7 +23,7 @@ const useStyles = makeStyles({
   }
 })
 
-export default function RenderCropper({ handleCropper }) {
+export default function RenderCropper({ handleCropper, username }) {
   const classes = useStyles()
 
   const inputRef = React.useRef()
@@ -60,30 +61,40 @@ export default function RenderCropper({ handleCropper }) {
     const canvas = await getCroppedImg(image, croppedArea)
     const canvasDataUrl = canvas.toDataURL("image/jpeg")
     const convertedUrlToFile = dataURLtoFile(canvasDataUrl, "cropped-image.jpeg")
-    console.log(convertedUrlToFile)
+
+    try {
+      const formdata = new FormData()
+      formdata.append("croppedImage", convertedUrlToFile)
+
+      const response = await Axios.post(`/api/user/changeavatar`, { body: formdata })
+
+      console.log(response)
+    } catch {
+      console.log("There was a problem")
+    }
   }
 
   return (
-    <div className="container">
+    <div className="cro-container">
       <IconButton className={classes.iconButton} onClick={handleCropper}>
         <CancelIcon className={classes.cancelIcon} />
       </IconButton>
 
-      <div className="container-cropper">
+      <div className="cro-container-cropper">
         {image ? (
           <>
-            <div className="cropper">
+            <div className="cro-cropper">
               <Cropper image={image} crop={crop} zoom={zoom} aspect={1} onCropChange={setCrop} onZoomChange={setZoom} onCropComplete={onCropComplete} />
             </div>
 
-            <div className="slider">
+            <div className="cro-slider">
               <Slider min={1} max={3} step={0.1} value={zoom} onChange={(e, zoom) => setZoom(zoom)} color="secondary" />
             </div>
           </>
         ) : null}
       </div>
 
-      <div className="container-buttons">
+      <div className="cro-container-buttons">
         <input type="file" accept="image/*" ref={inputRef} onChange={onSelectFile} style={{ display: "none" }} />
 
         <Button onClick={() => onClear()} variant="contained" color="primary" style={{ marginRight: "10px" }}>

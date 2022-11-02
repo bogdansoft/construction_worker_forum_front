@@ -20,7 +20,7 @@ function UserProfile() {
         const response = await Axios.get(`/api/user?username=${username}`, { cancelToken: ourRequest.token })
         setState(response.data)
         console.log(response.data)
-        if (state.bio !== "") {
+        if (state.bio != "") {
           setIsBioPresent(true)
         }
       } catch {
@@ -37,7 +37,6 @@ function UserProfile() {
     e.preventDefault()
     try {
       Axios.delete(`/api/user?username=${username}`)
-
       navigate(`/`)
       console.log("Account deleted")
     } catch {
@@ -47,9 +46,7 @@ function UserProfile() {
 
   return (
     <div className={"container py-md-5"}>
-      <h2>
-        <RenderAvatar />
-      </h2>
+      <RenderAvatar username={username} />
       <div className="float-right">
         <Link className="btn btn-primary" to={`/profile/changebio/${username}`}>
           Change BIO

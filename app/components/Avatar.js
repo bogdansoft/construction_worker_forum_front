@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export default function RenderAvatar() {
+export default function RenderAvatar(props) {
   const classes = useStyles()
   const [open, setOpen] = React.useState(false)
   const anchorRef = React.useRef(null)
@@ -73,7 +73,7 @@ export default function RenderAvatar() {
     <>
       <div className="avatar-container">
         <div className="avatar">
-          <img src="" alt="avatar" className="avatar-img" />
+          <img src="https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png" alt="avatar" className="avatar-img" />
         </div>
 
         <IconButton className={classes.cameraIcon} ref={anchorRef} aria-controls={open ? "menu-list-grow" : undefined} aria-haspopup="true" onClick={handleToggle}>
@@ -109,7 +109,7 @@ export default function RenderAvatar() {
         </Popper>
       </div>
 
-      {showCropper && <RenderCropper handleCropper={handleCropper} />}
+      {showCropper && <RenderCropper username={props.username} handleCropper={handleCropper} />}
     </>
   )
 }
