@@ -1,8 +1,10 @@
 import React, { useState, useContext } from "react"
 import Axios from "axios"
 import StateContext from "../StateContext"
+import DispatchContext from "../DispatchContext"
 
 function SingleComment(props) {
+  const appDispatch = useContext(DispatchContext)
   const appState = useContext(StateContext)
   const [isEdited, setIsEdited] = useState(false)
   const [content, setContent] = useState(props.comment.content)
@@ -17,6 +19,7 @@ function SingleComment(props) {
     const ourRequest = Axios.CancelToken.source()
     try {
       await Axios.delete(`/api/comment/${props.comment.id}`, { headers: { Authorization: `Bearer ${token}` } }, { cancelToken: ourRequest.token })
+      appDispatch({ type: "flashMessage", value: "Comment succesfully deleted !", messageType: "message-green" })
       props.reload()
     } catch (e) {
       console.log("There was a problem or the request was cancelled.")
@@ -41,6 +44,7 @@ function SingleComment(props) {
         { cancelToken: ourRequest.token }
       )
       props.reload()
+      appDispatch({ type: "flashMessage", value: "Comment edited !", messageType: "message-green" })
       setIsEdited(false)
     } catch (e) {
       console.log("There was a problem or the request was cancelled." + e)

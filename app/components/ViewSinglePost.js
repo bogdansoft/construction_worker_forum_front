@@ -89,7 +89,7 @@ function ViewSinglePost() {
             { headers: { Authorization: `Bearer ${state.commentToAdd.token}` } },
             { cancelToken: ourRequest.token }
           )
-
+          appDispatch({ type: "flashMessage", value: "Comment succesfully created !", messageType: "message-green" })
           setComments(comments.concat(response.data))
         } catch (e) {
           console.log("There was a problem or the request was cancelled." + e)
