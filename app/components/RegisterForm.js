@@ -206,13 +206,8 @@ function RegisterForm() {
                 </CSSTransition>
               </div>
             </div>
-            <div className="mt-4 align-self-center mr-5">
-              <button className="nav-button">REGISTER</button>
-            </div>
-            <div className="mt-3 form-label">
-              <span id="login-white">
-                No Account? Sign Up <span id="login-blue">Here</span>
-              </span>
+            <div className="mt-4 ml-5">
+              <button className="nav-button ml-3">REGISTER</button>
             </div>
           </form>
         </div>
