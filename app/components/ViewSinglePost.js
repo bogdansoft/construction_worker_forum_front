@@ -205,11 +205,7 @@ function ViewSinglePost() {
               </div>
             </form>
           </div>
-          <div class="comments d-flex flex-column ml-auto mr-auto col-11 mt-5">
-            {comments.map(comment => (
-              <SingleComment comment={comment} key={comment.id} reload={reload} />
-            ))}
-          </div>
+          <div class="comments d-flex flex-column ml-auto mr-auto col-11 mt-5">{comments.length > 0 ? comments.map(comment => <SingleComment comment={comment} key={comment.id} reload={reload} />) : <div className="single-topic container d-flex mt-4">No comments yet!</div>}</div>
         </>
       ) : null}
     </div>
