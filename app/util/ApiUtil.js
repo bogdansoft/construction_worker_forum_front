@@ -1,18 +1,18 @@
 const BACKEND = "http://localhost:8080";
 
 export function getUsers() {
-    if (!localStorage.getItem("accessToken")) {
+    if (!localStorage.getItem("constructionForumUserToken")) {
         return Promise.reject("No access token set.");
     }
 
     return request({
-        url: BACKEND + "/api/user/all",
+        url: BACKEND + "/users/summaries",
         method: "GET",
     });
 }
 
 export function findChatMessages(senderId, recipientId) {
-    if (!localStorage.getItem("accessToken")) {
+    if (!localStorage.getItem("constructionForumUserToken")) {
         return Promise.reject("No access token set.");
     }
 
@@ -23,7 +23,7 @@ export function findChatMessages(senderId, recipientId) {
 }
 
 export function findChatMessage(id) {
-    if (!localStorage.getItem("accessToken")) {
+    if (!localStorage.getItem("constructionForumUserToken")) {
         return Promise.reject("No access token set.");
     }
 
@@ -34,7 +34,7 @@ export function findChatMessage(id) {
 }
 
 export function countNewMessages(senderId, recipientId) {
-    if (!localStorage.getItem("accessToken")) {
+    if (!localStorage.getItem("constructionForumUserToken")) {
         return Promise.reject("No access token set.");
     }
 
@@ -51,10 +51,10 @@ const request = (options) => {
         headers.append("Content-Type", "application/json");
     }
 
-    if (localStorage.getItem("accessToken")) {
+    if (localStorage.getItem("constructionForumUserToken")) {
         headers.append(
             "Authorization",
-            "Bearer " + localStorage.getItem("accessToken")
+            "Bearer " + localStorage.getItem("constructionForumUserToken")
         );
     }
 

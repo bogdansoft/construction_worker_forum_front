@@ -1,12 +1,17 @@
 import React, {useEffect, useState} from "react";
 import {message} from "antd";
-import {useRecoilState, useRecoilValue} from "recoil";
-import {chatActiveContact, chatMessages, loggedInUser} from "../atom/GlobalState";
-import {countNewMessages, findChatMessage, getUsers} from "../util/ApiUtil";
+import {useRecoilState} from "recoil";
+import {chatActiveContact, chatMessages} from "../../atom/GlobalState";
+import {countNewMessages, findChatMessage, getUsers} from "../../util/ApiUtil";
 
 let stompClient = null;
-const TestChat = (props) => {
-    const currentUser = useRecoilValue(loggedInUser);
+
+function TestChat() {
+    const currentUser = {
+        id: localStorage.getItem("constructionForumUserId"),
+        username: localStorage.getItem("constructionForumUsername"),
+        token: localStorage.getItem("constructionForumUserToken")
+    }
     const [text, setText] = useState("");
     const [contacts, setContacts] = useState([]);
     const [activeContact, setActiveContact] = useRecoilState(chatActiveContact);
@@ -14,7 +19,7 @@ const TestChat = (props) => {
 
     useEffect(() => {
         if (localStorage.getItem("accessToken") === null) {
-            props.history.push("/login");
+            console.log("Not logged in!");
         }
         connect();
         loadContacts();
@@ -62,8 +67,8 @@ const TestChat = (props) => {
             const message = {
                 senderId: currentUser.id,
                 recipientId: activeContact.id,
-                senderName: currentUser.name,
-                recipientName: activeContact.name,
+                senderName: currentUser.username,
+                recipientName: activeContact.username,
                 content: msg,
                 timestamp: new Date(),
             };
@@ -96,9 +101,15 @@ const TestChat = (props) => {
     };
 
     return (
-        <>
-
-        </>
+        <div>
+            <div>
+                <div>
+                    <div>
+                        <p>hello!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 }
 
