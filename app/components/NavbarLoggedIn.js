@@ -72,9 +72,17 @@ function NavbarLoggedIn() {
               {showAddOptionsDependingOnUserRole()}
             </CSSTransition>
           </div>
-          <span className="material-symbols-outlined mr-3"> search </span>
+          <span
+            onClick={() => {
+              appDispatch({ type: "openSearch" })
+            }}
+            className="material-symbols-outlined mr-3"
+          >
+            {" "}
+            search{" "}
+          </span>
           <span className="material-symbols-outlined mr-3"> chat </span>
-          <div class="relative">
+          <div className="relative">
             <span onClick={toggleProfileOptions} className="material-symbols-outlined mr-3">
               {" "}
               account_circle{" "}

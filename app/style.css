@@ -633,3 +633,120 @@ select:focus {
 input:focus {
   outline: none;
 }
+
+/* SEARCH */
+
+.search-overlay {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  z-index: 9000;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(215, 215, 215, 0.911);
+}
+
+.search-overlay-enter {
+  opacity: 0;
+  transform: scale(1.3);
+}
+
+.search-overlay-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: 0.33s visibility ease-in-out, 0.33s opacity ease-in-out, 0.33s transform ease-in-out;
+}
+
+.search-overlay-exit {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.search-overlay-exit-active {
+  opacity: 0;
+  transform: scale(1.3);
+  transition: 0.33s visibility ease-in-out, 0.33s opacity ease-in-out, 0.33s transform ease-in-out;
+}
+
+.search-overlay-icon {
+  color: #007bff;
+  font-size: 1.4rem;
+  margin: 0;
+  margin-right: 10px;
+}
+
+.live-search-field {
+  background-color: transparent;
+  border: none;
+  font-size: 1.5em;
+  outline: none;
+  flex: 1;
+  color: white;
+}
+
+.live-search-results {
+  opacity: 0;
+  transition: all 0.3s ease-out;
+  transform: scale(1.07);
+}
+
+.live-search-results--visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.search-overlay-top {
+  background-color: var(--orange);
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  /* background-color: rgba(0, 0, 0, .79); */
+}
+
+.search-overlay-top .container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.search-overlay-bottom {
+  overflow: auto;
+}
+
+.close-live-search {
+  font-size: 1.5rem;
+  cursor: pointer;
+  opacity: 0.75;
+  line-height: 1;
+  color: #292929;
+}
+
+.search-bar {
+  background-color: var(--light-brown);
+  border: 1px solid black;
+  padding: 30px 50px;
+  color: white;
+  font-size: 1.5em;
+  border-radius: 20px;
+}
+.search-bar input::placeholder {
+  color: white;
+}
+.search-overlay .material-symbols-outlined {
+  font-size: 4em;
+  margin-left: 20px;
+}
+.list-group {
+  padding: 20px 50px;
+  background-color: var(--orange);
+  border-radius: 20px;
+}
+.search-result {
+  border-radius: 15px;
+  background-color: var(--dark-violet);
+  padding: 10px 30px;
+  color: white;
+}
