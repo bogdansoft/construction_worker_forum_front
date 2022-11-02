@@ -50,7 +50,7 @@ nav {
 
 .main {
   background-color: var(--ultra-light-blue);
-  padding: 0px 50px;
+  padding: 0 50px;
 }
 .main h3 {
   font-size: 2em;
@@ -680,17 +680,17 @@ input:focus {
   border-bottom: 1px solid black;
 }
 
-.chat-input {
-  height: 40px;
-  background-color: var(--light-brown);
-  color: black;
-  border-radius: 10px;
-  border: 2px solid black;
-}
+/*.chat-input {*/
+/*  height: 40px;*/
+/*  background-color: var(--light-brown);*/
+/*  color: black;*/
+/*  border-radius: 10px;*/
+/*  border: 2px solid black;*/
+/*}*/
 
-.chat-field {
-  background-color: var(--light-brown);
-}
+/*.chat-field {*/
+/*  background-color: var(--light-brown);*/
+/*}*/
 
 .no-outline:focus {
   outline: none;
