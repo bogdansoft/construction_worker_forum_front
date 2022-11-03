@@ -1,10 +1,13 @@
 import React, { useState, useContext } from "react"
 import Axios from "axios"
 import StateContext from "../StateContext"
+import DeleteModal from "./DeleteModal"
+import { CSSTransition } from "react-transition-group"
 
 function SingleComment(props) {
   const appState = useContext(StateContext)
   const [isEdited, setIsEdited] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
   const [content, setContent] = useState(props.comment.content)
   const token = localStorage.getItem("constructionForumUserToken")
   const date = new Date(props.comment.createdAt).toLocaleDateString("utc", {
@@ -54,6 +57,10 @@ function SingleComment(props) {
     setIsEdited(prevState => !prevState)
   }
 
+  function deletePopup() {
+    setIsDeleting(prev => !prev)
+  }
+
   function showEditAndDeleteButtons() {
     if (appState.user.id == props.comment.user.id) {
       return (
@@ -61,7 +68,7 @@ function SingleComment(props) {
           <span onClick={handleUpdate} className="material-symbols-outlined">
             edit
           </span>
-          <span onClick={handleDelete} className="material-symbols-outlined">
+          <span onClick={deletePopup} className="material-symbols-outlined">
             {" "}
             delete{" "}
           </span>
@@ -87,6 +94,11 @@ function SingleComment(props) {
                   Created: {date} <span className="ml-2">by {props.comment.user.username}</span>
                 </span>
               </div>
+              <CSSTransition in={isDeleting} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+                <div className="delete-pop liveValidateMessage-delete ml-3">
+                  <DeleteModal delete={handleDelete} noDelete={deletePopup} />
+                </div>
+              </CSSTransition>
               {showEditAndDeleteButtons()}
             </div>
           )}
@@ -109,31 +121,6 @@ function SingleComment(props) {
         </div>
       </div>
     </div>
-
-    // <div className="comment mt-5 d-flex flex-row align-items-start ml-auto mr-auto">
-    //   <div className="mr-3 col-2 text-center">
-    //     <img src="https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png" />
-    //     <p className="font-weight-bold mt-2">{props.comment.user.username}</p>
-    //   </div>
-    //   {!isEdited && (
-    //     <div className="comment-body mt-2 col-8">
-    //       <p>{props.comment.content}</p>
-    //     </div>
-    //   )}
-    //   {isEdited && <EditComment id={props.comment.id} userId={props.comment.user.id} content={props.comment.content} postId={props.comment.post.id} />}
-    //   <div className="ml-auto d-flex flex-column align-self-start">
-    //     <div className="align-items-start comment-date">{date}</div>
-    //     <div className="align-self-end mt-4">
-    //       <span onClick={handleUpdate} className="material-symbols-outlined ">
-    //         edit{" "}
-    //       </span>
-    //       <span onClick={handleDelete} className="material-symbols-outlined pointer ml-2">
-    //         {" "}
-    //         delete{" "}
-    //       </span>
-    //     </div>
-    //   </div>
-    // </div>
   )
 }
 
