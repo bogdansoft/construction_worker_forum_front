@@ -1,35 +1,18 @@
-import React, {useContext, useEffect} from "react";
-import StateContext from "../../StateContext";
-import {useImmer} from "use-immer";
-import {useRecoilValue} from "recoil";
-import {loggedInUser} from "../../atom/GlobalState";
+import React, {useEffect, useMemo, useState} from "react";
+import {localStorageService} from "../../services/localStorageService/localStorage.service";
+import {Message} from "./Message";
 
 
 let stompClient = null;
 
 function TestChat() {
-    const currentUser = {
-        id: localStorage.getItem("constructionForumUserId"),
-        username: localStorage.getItem("constructionForumUsername"),
-        token: localStorage.getItem("constructionForumUserToken")
-    }
-    const appState = useContext(StateContext);
-    const [state, setState] = useImmer({
-        fieldValue: "",
-        chatMessages: []
-    });
-
-    const currentLoggedInUser = useRecoilValue(loggedInUser);
-
-    useEffect(() => {
-        console.log("CURRENT LOGGED IN USER: " + currentLoggedInUser.username);
-    }, []);
+    const currentUser = useMemo(() => localStorageService.getUser(), [])
+    const [messages, setMessages] = useState([]);
+    const [messageContent, setMessageContent] = useState("");
 
     useEffect(() => {
         if (currentUser.token === null) {
             console.log("Not logged in!");
-        } else {
-            console.log("USING LOGGED IN USER TOKEN");
         }
         connect();
     }, []);
@@ -44,9 +27,12 @@ function TestChat() {
 
     const onConnected = () => {
         console.log("connected");
-        console.log(currentLoggedInUser);
+        console.log(currentUser);
         stompClient.subscribe(
-            "/user/" + currentLoggedInUser.id + "/queue/messages"
+            "/user/" + currentUser.id + "/queue/messages",
+            (message) => {
+                setMessages((messages) => [...messages, JSON.parse(message.body)]);
+            }
         );
     };
 
@@ -57,14 +43,15 @@ function TestChat() {
     const sendMessage = (msg) => {
         if (msg.trim() !== "") {
             const message = {
-                senderId: currentLoggedInUser.id,
-                recipientId: 4,
-                senderName: currentLoggedInUser.username,
-                recipientName: "wolf123",
+                senderId: currentUser.id,
+                recipientId: currentUser.id,
+                senderName: currentUser.username,
+                recipientName: currentUser.username,
                 content: msg,
                 timestamp: new Date(),
             };
             stompClient.send("/app/chat", {}, JSON.stringify(message));
+            setMessages([...messages, message]);
         }
     };
 
@@ -105,35 +92,23 @@ function TestChat() {
                     Chat with ...
                 </div>
                 <div id="chat" className="chat-log">
-                    <div className="chat-self">
-                        <div className="chat-message">
-                            <div className="chat-message-inner">Hey, how are you?</div>
-                        </div>
-                        <img className="chat-avatar avatar-tiny"
-                             src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128" alt=""/>
-                    </div>
-
-                    <div className="chat-other">
-                        <a href="#">
-                            <img className="avatar-tiny"
-                                 src="https://gravatar.com/avatar/b9216295c1e3931655bae6574ac0e4c2?s=128" alt=""/>
-                        </a>
-                        <div className="chat-message">
-                            <div className="chat-message-inner">
-                                <a href="#">
-                                    <strong>wolf123: </strong>
-                                </a>
-                                hello!
-                            </div>
-                        </div>
-                    </div>
+                    <Message message={"hello"} isSenderMessage={true}/>
+                    <Message message={"hello hello"} isSenderMessage={false}/>
+                    {messages.map((value, index) => <Message key={index} message={value.content}
+                                                             isSenderMessage={value.senderId === currentUser.id}/>)}
                 </div>
-                <form id="chatForm" className="chat-form-inline">
-                    <input type="text" placeholder="Type a message…" autoComplete="off" autoFocus/>
-                    <button type="submit" className="material-symbols-outlined no-outline">
+                <div id="chatForm" className="chat-form-inline">
+                    <input type="text" onChange={e => setMessageContent(e.target.value)} value={messageContent}
+                           placeholder="Type a message…" autoComplete="off" autoFocus/>
+                    <button onClick={() => {
+                        if (!messageContent) return;
+                        sendMessage(messageContent);
+                        setMessageContent("");
+                    }}
+                            className="material-symbols-outlined no-outline">
                         send
                     </button>
-                </form>
+                </div>
             </div>
         </div>
     );

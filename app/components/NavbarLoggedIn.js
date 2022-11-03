@@ -1,11 +1,8 @@
-import React, { useContext, useEffect, useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import React, {useContext, useState} from "react"
+import {Link, useNavigate} from "react-router-dom"
 import DispatchContext from "../DispatchContext"
-import ReactTooltip from "react-tooltip"
-import { CSSTransition } from "react-transition-group"
+import {CSSTransition} from "react-transition-group"
 import StateContext from "../StateContext"
-import {useRecoilState} from "recoil";
-import {loggedInUser} from "../atom/GlobalState";
 
 function NavbarLoggedIn() {
   const appDispatch = useContext(DispatchContext)
@@ -13,19 +10,6 @@ function NavbarLoggedIn() {
   const navigate = useNavigate()
   const [profileOptions, setProfileOptions] = useState(false)
   const [addOptions, setAddOptions] = useState(false)
-  const [, setLoggedInUser] = useRecoilState(loggedInUser);
-
-  useEffect(() => {
-    loadCurrentUser();
-  }, []);
-
-  const loadCurrentUser = () => {
-    setLoggedInUser({
-      id: localStorage.getItem("constructionForumUserId"),
-      username: localStorage.getItem("constructionForumUsername"),
-      token: localStorage.getItem("constructionForumUserToken")
-    })
-  }
 
   function handleLoggedOut() {
     appDispatch({ type: "logout" })
