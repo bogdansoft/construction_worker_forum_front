@@ -78,21 +78,21 @@ function TestChat() {
                 <div className="d-flex flex-column">
                     <div className="chat-single-contact ml-auto mr-auto d-flex">
                         <img className="chat-avatar avatar-tiny"
-                             src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128"/>
+                             src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128" alt=""/>
                         <div className="align-self-center">
                             Denny
                         </div>
                     </div>
                     <div className="chat-single-contact ml-auto mr-auto d-flex">
                         <img className="chat-avatar avatar-tiny"
-                             src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128"/>
+                             src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128" alt=""/>
                         <div className="align-self-center">
                             Wolf123
                         </div>
                     </div>
                     <div className="chat-single-contact ml-auto mr-auto d-flex">
                         <img className="chat-avatar avatar-tiny"
-                             src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128"/>
+                             src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128" alt=""/>
                         <div className="align-self-center">
                             Jake123
                         </div>
@@ -110,13 +110,13 @@ function TestChat() {
                             <div className="chat-message-inner">Hey, how are you?</div>
                         </div>
                         <img className="chat-avatar avatar-tiny"
-                             src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128"/>
+                             src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128" alt=""/>
                     </div>
 
                     <div className="chat-other">
                         <a href="#">
                             <img className="avatar-tiny"
-                                 src="https://gravatar.com/avatar/b9216295c1e3931655bae6574ac0e4c2?s=128"/>
+                                 src="https://gravatar.com/avatar/b9216295c1e3931655bae6574ac0e4c2?s=128" alt=""/>
                         </a>
                         <div className="chat-message">
                             <div className="chat-message-inner">
