@@ -6,14 +6,25 @@ function SingleSearchResult(props) {
     month: "short",
     day: "numeric"
   })
-  return (
-    <div className="search-result mt-2 d-flex">
-      <Link to={`/post/${props.result.id}`}>{props.result.title}</Link>
-      <span className=" ml-auto mr-3">
-        Created: {date} By {props.result.user.username}{" "}
-      </span>
-    </div>
-  )
+  if (props.result.name) {
+    return (
+      <div className="search-result mt-2 d-flex">
+        <Link to={`/topic/${props.result.id}`}>{props.result.name}</Link>
+        <span className=" ml-auto mr-3">
+          Created: {date} By {props.result.user.username}{" "}
+        </span>
+      </div>
+    )
+  } else {
+    return (
+      <div className="search-result mt-2 d-flex">
+        <Link to={`/post/${props.result.id}`}> {props.result.title}</Link>
+        <span className=" ml-auto mr-3">
+          Created: {date} By {props.result.user.username}{" "}
+        </span>
+      </div>
+    )
+  }
 }
 
 export default SingleSearchResult
