@@ -69,41 +69,72 @@ function TestChat() {
     };
 
     return (
-        <div id="chat-wrapper"
-             className="container chat-wrapper chat-wrapper--is-visible shadow border-top border-left border-right">
-            <div className="chat-title-bar">
-                Chat with ...
-            </div>
-            <div id="chat" className="chat-log">
-                <div className="chat-self">
-                    <div className="chat-message">
-                        <div className="chat-message-inner">Hey, how are you?</div>
-                    </div>
-                    <img className="chat-avatar avatar-tiny"
-                         src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128"/>
+        <div id="chat-window" className="container chat-window flex-nowrap d-flex align-items-center">
+            <div id="chat-wrapper"
+                 className="col-4 chat-wrapper chat-wrapper--is-visible shadow border-top border-left border-right">
+                <div className="chat-title-bar mb-2">
+                    Messages
                 </div>
-
-                <div className="chat-other">
-                    <a href="#">
-                        <img className="avatar-tiny"
-                             src="https://gravatar.com/avatar/b9216295c1e3931655bae6574ac0e4c2?s=128"/>
-                    </a>
-                    <div className="chat-message">
-                        <div className="chat-message-inner">
-                            <a href="#">
-                                <strong>wolf123: </strong>
-                            </a>
-                            hello!
+                <div className="d-flex flex-column">
+                    <div className="chat-single-contact ml-auto mr-auto d-flex">
+                        <img className="chat-avatar avatar-tiny"
+                             src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128"/>
+                        <div className="align-self-center">
+                            Denny
+                        </div>
+                    </div>
+                    <div className="chat-single-contact ml-auto mr-auto d-flex">
+                        <img className="chat-avatar avatar-tiny"
+                             src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128"/>
+                        <div className="align-self-center">
+                            Wolf123
+                        </div>
+                    </div>
+                    <div className="chat-single-contact ml-auto mr-auto d-flex">
+                        <img className="chat-avatar avatar-tiny"
+                             src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128"/>
+                        <div className="align-self-center">
+                            Jake123
                         </div>
                     </div>
                 </div>
             </div>
-            <form id="chatForm" className="chat-form-inline">
-                <input type="text" placeholder="Type a message…" autoComplete="off" autoFocus/>
-                <button type="submit" className="material-symbols-outlined no-outline">
-                    send
-                </button>
-            </form>
+            <div id="chat-wrapper"
+                 className="col-8 chat-wrapper chat-wrapper--is-visible shadow border-top border-left border-right">
+                <div className="chat-title-bar">
+                    Chat with ...
+                </div>
+                <div id="chat" className="chat-log">
+                    <div className="chat-self">
+                        <div className="chat-message">
+                            <div className="chat-message-inner">Hey, how are you?</div>
+                        </div>
+                        <img className="chat-avatar avatar-tiny"
+                             src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128"/>
+                    </div>
+
+                    <div className="chat-other">
+                        <a href="#">
+                            <img className="avatar-tiny"
+                                 src="https://gravatar.com/avatar/b9216295c1e3931655bae6574ac0e4c2?s=128"/>
+                        </a>
+                        <div className="chat-message">
+                            <div className="chat-message-inner">
+                                <a href="#">
+                                    <strong>wolf123: </strong>
+                                </a>
+                                hello!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form id="chatForm" className="chat-form-inline">
+                    <input type="text" placeholder="Type a message…" autoComplete="off" autoFocus/>
+                    <button type="submit" className="material-symbols-outlined no-outline">
+                        send
+                    </button>
+                </form>
+            </div>
         </div>
     );
 }
