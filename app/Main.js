@@ -20,9 +20,7 @@ import EditPost from "./components/EditPost"
 import ViewSinglePost from "./components/ViewSinglePost"
 import FlashMessages from "./components/FlashMessages"
 import TestChat from "./components/chat/TestChat";
-import {RecoilRoot, useRecoilState} from "recoil";
-import {loggedInUser} from "./atom/GlobalState";
-
+import {RecoilRoot} from "recoil";
 
 Axios.defaults.baseURL = "http://localhost:8080"
 
@@ -61,25 +59,12 @@ function Main() {
     }
 
     const [state, dispatch] = useImmerReducer(ourReducer, initialState)
-    const [, setLoggedInUser] = useRecoilState(loggedInUser);
 
     useEffect(() => {
         if (state.loggedIn) {
             localStorage.setItem("constructionForumUserId", state.user.id)
             localStorage.setItem("constructionForumUsername", state.user.username)
             localStorage.setItem("constructionForumUserToken", state.user.token)
-
-            useEffect(() => {
-                loadCurrentUser();
-            }, []);
-
-            const loadCurrentUser = () => {
-                setLoggedInUser({
-                    id: localStorage.getItem("constructionForumUserId"),
-                    username: localStorage.getItem("constructionForumUsername"),
-                    token: localStorage.getItem("constructionForumUserToken")
-                })
-            }
         } else {
             localStorage.removeItem("constructionForumUserId")
             localStorage.removeItem("constructionForumUsername")
@@ -120,7 +105,9 @@ function Main() {
 }
 
 const root = ReactDOM.createRoot(document.querySelector("#app"))
-root.render(<Main/>)
+root.render(
+    <Main/>
+);
 
 if (module.hot) {
     module.hot.accept()
