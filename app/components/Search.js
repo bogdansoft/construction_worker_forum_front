@@ -12,7 +12,7 @@ function Search() {
 
   const [state, setState] = useImmer({
     searchItem: "",
-    results: [],
+    resultsPosts: [],
     resultsTopics: [],
     requestCount: 0,
     loading: false
@@ -27,11 +27,11 @@ function Search() {
             draft.loading = false
           })
           const searchItem = state.searchItem
-          const response = await Axios.get("/api/post/search", { headers: { Authorization: `Bearer ${appState.user.token}` }, params: { searchItem } }, { cancelToken: ourRequest.token })
+          const responsePost = await Axios.get("/api/post/search", { headers: { Authorization: `Bearer ${appState.user.token}` }, params: { searchItem } }, { cancelToken: ourRequest.token })
           const responseTopic = await Axios.get("/api/topic/search", { headers: { Authorization: `Bearer ${appState.user.token}` }, params: { searchItem } }, { cancelToken: ourRequest.token })
           console.log(responseTopic.data)
           setState(draft => {
-            draft.results = response.data
+            draft.resultsPosts = responsePost.data
             draft.resultsTopics = responseTopic.data
           })
         } catch (e) {
@@ -95,17 +95,17 @@ function Search() {
         <div className="container container--narrow py-3">
           <div className="live-search-results live-search-results--visible">
             <div className="list-group shadow-sm mt-2">
-              Posts Found ({state.results.length})
+              <span className="font-weight-bold">Posts Found ({state.resultsPosts.length})</span>
               {state.loading ? (
                 <Loading />
               ) : (
-                state.results.map(result => {
+                state.resultsPosts.map(result => {
                   return <SingleSearchResult result={result} key={result.id} />
                 })
               )}
             </div>
             <div className="list-group shadow-sm mt-2">
-              Topics Found ({state.resultsTopics.length})
+              <span className="font-weight-bold">Topics Found ({state.resultsTopics.length})</span>
               {state.loading ? (
                 <Loading />
               ) : (
