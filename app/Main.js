@@ -113,7 +113,7 @@ function Main() {
             <Route path="/post/:id" element={<ViewSinglePost />} />
             <Route path="/topic/:id" element={<ViewSingleTopic />} />
           </Routes>
-          <Logout />
+          {state.loggedIn ? <Logout /> : null}
           <Footer />
         </BrowserRouter>
       </DispatchContext.Provider>

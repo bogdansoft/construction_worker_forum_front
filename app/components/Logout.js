@@ -13,15 +13,16 @@ function Logout() {
     if (appState.loggedIn) {
       const tokenExpTime = jwtDecode(appState.user.token).exp * 1000
       const interval = setInterval(() => {
-        if (tokenExpTime < Date.now()) {
+        if (tokenExpTime < Date.now() && appState.loggedIn) {
           appDispatch({ type: "logout" })
           appDispatch({ type: "flashMessage", value: "YOUR AUTHENTICATION EXPIRED. PLEASE LOG IN AGAIN.", messageType: "message-red" })
           navigate("/")
+          console.log("User logged out automatically due to expired token time!")
         }
-      }, tokenExpTime - Date.now() + 1000)
-      return () => clearInterval(interval)
+      }, tokenExpTime - Date.now() + 10000)
+      return () => (appState.loggedIn ? clearInterval(interval) : null)
     }
-  }, [appState.loggedIn])
+  }, [])
 
   return null
 }

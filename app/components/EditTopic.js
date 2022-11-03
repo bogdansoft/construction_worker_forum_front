@@ -12,6 +12,7 @@ function EditTopic() {
   const navigate = useNavigate()
   const originalState = {
     name: "",
+    originalName: "",
     description: "",
     isFetching: true,
     isSaving: false,
@@ -24,6 +25,7 @@ function EditTopic() {
     switch (action.type) {
       case "fetchComplete":
         draft.name = action.value.name
+        draft.originalName = action.value.name
         draft.description = action.value.description
         draft.isFetching = false
         draft.userId = appState.user.id
@@ -86,7 +88,7 @@ function EditTopic() {
         appDispatch({ type: "flashMessage", value: "No permission to perform this action!", messageType: "message-red" })
         return
       } else if (!state.name || !state.description || state.name.length >= 50 || state.name.length < 3) {
-        appDispatch({ type: "flashMessage", value: "Invalid name (min. 3 signs) or description!", messageType: "message-red" })
+        appDispatch({ type: "flashMessage", value: "Invalid name or description!", messageType: "message-red" })
         return
       }
 
@@ -109,10 +111,10 @@ function EditTopic() {
   return (
     <form onSubmit={handleSubmit}>
       <div className="main d-flex flex-column container">
+        <Link className="text-primary medium font-weight-bold mb-3 mt-5" to={`/topic/${state.id}`}>
+          &laquo; Back to topic [{state.originalName}]
+        </Link>
         <div className="content d-flex flex-column mt-4">
-          <Link className="text-primary medium font-weight-bold mb-3" to={`/topic/${state.id}`}>
-            &laquo; Back to topic
-          </Link>
           <div className="d-flex flex-row">
             <div className="ml-3 add-post-title">
               <text style={{ fontSize: "40px" }}>Title:</text>
@@ -120,8 +122,8 @@ function EditTopic() {
             </div>
           </div>
           <span className="form-group  ml-5 d-flex ">
-            <CSSTransition in={!state.name} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-              <div className="alert alert-danger mt-3 ml-3 liveValidateMessage">{"Empty title!"}</div>
+            <CSSTransition in={!state.name || state.name.length < 3} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+              <div className="alert alert-danger mt-3 ml-3 liveValidateMessage">{!state.name ? "Empty title!" : "Title too short (min. 3 signs)"}</div>
             </CSSTransition>
           </span>
           <div className="mt-3 ml-auto mr-auto">
