@@ -23,6 +23,7 @@ import EditTopic from "./components/EditTopic"
 import ViewSinglePost from "./components/ViewSinglePost"
 import FlashMessages from "./components/FlashMessages"
 import ViewSingleTopic from "./components/ViewSingleTopic"
+import RenderAvatar from "./components/Avatar"
 
 Axios.defaults.baseURL = "http://localhost:8080"
 
@@ -110,6 +111,7 @@ function Main() {
             <Route path="/topic/edit/:id" element={<EditTopic />} />
             <Route path="/post/:id" element={<ViewSinglePost />} />
             <Route path="/topic/:id" element={<ViewSingleTopic />} />
+            <Route path="/avatar" element={<RenderAvatar username="jake123" />} />
           </Routes>
           <Footer />
         </BrowserRouter>

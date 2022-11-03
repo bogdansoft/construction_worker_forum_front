@@ -4,6 +4,7 @@ import UserProfileComments from "./UserProfileComments"
 import UserProfilePosts from "./UserProfilePosts"
 import Axios from "axios"
 import StateContext from "../StateContext"
+import RenderAvatar from "./Avatar"
 
 function UserProfile() {
   const { username } = useParams()
@@ -51,7 +52,10 @@ function UserProfile() {
         <div className="d-flex text-center align-items-start">
           <div className="d-flex align-items-center">
             <div className="profile-avatar">
-              <span className="material-symbols-outlined mr-3"> person </span>
+              <span className="material-symbols-outlined mr-3">
+                {" "}
+                <RenderAvatar />{" "}
+              </span>
             </div>
             <div className="mt" id="profile-username">
               {username}
