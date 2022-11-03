@@ -23,6 +23,7 @@ import EditTopic from "./components/EditTopic"
 import ViewSinglePost from "./components/ViewSinglePost"
 import FlashMessages from "./components/FlashMessages"
 import ViewSingleTopic from "./components/ViewSingleTopic"
+import Logout from "./components/Logout"
 
 Axios.defaults.baseURL = "http://localhost:8080"
 
@@ -86,19 +87,6 @@ function Main() {
     }
   }, [state.loggedIn])
 
-  useEffect(() => {
-    if (state.loggedIn) {
-      const tokenExpTime = jwtDecode(state.user.token).exp * 1000
-      const interval = setInterval(() => {
-        if (tokenExpTime < Date.now()) {
-          dispatch({ type: "logout" })
-          dispatch({ type: "flashMessage", value: "YOUR AUTHENTICATION EXPIRED. PLEASE LOG IN AGAIN.", messageType: "message-red" })
-        }
-      }, tokenExpTime - Date.now() + 1000)
-      return () => clearInterval(interval)
-    }
-  }, [state.loggedIn])
-
   return (
     <StateContext.Provider value={state}>
       <DispatchContext.Provider value={dispatch}>
@@ -114,6 +102,7 @@ function Main() {
             <Route path="/" element={<Topics />} />
             <Route path="/profile/:username/*" element={<UserProfile />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/logout" element={<Logout />} />
             <Route path="/post" element={<SinglePost />} />
             <Route path="/user/create" element={<RegisterForm />} />
             <Route path="/post/create" element={<CreatePostForm />} />
@@ -124,6 +113,7 @@ function Main() {
             <Route path="/post/:id" element={<ViewSinglePost />} />
             <Route path="/topic/:id" element={<ViewSingleTopic />} />
           </Routes>
+          <Logout />
           <Footer />
         </BrowserRouter>
       </DispatchContext.Provider>

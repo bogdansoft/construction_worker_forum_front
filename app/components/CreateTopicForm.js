@@ -19,8 +19,8 @@ function CreateTopicForm(props) {
     if (!(appState.user.isAdmin || appState.user.isSupport)) {
       appDispatch({ type: "flashMessage", value: "No permission to perform this action!", messageType: "message-red" })
       return
-    } else if (!name || !description || name.length >= 50) {
-      appDispatch({ type: "flashMessage", value: "Invalid name or description!", messageType: "message-red" })
+    } else if (!name || !description || name.length >= 50 || name.length < 3) {
+      appDispatch({ type: "flashMessage", value: "Invalid name (min. 3 signs) or description!", messageType: "message-red" })
       return
     }
 

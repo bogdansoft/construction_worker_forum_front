@@ -85,8 +85,8 @@ function EditTopic() {
       if (!(appState.user.isAdmin || appState.user.isSupport)) {
         appDispatch({ type: "flashMessage", value: "No permission to perform this action!", messageType: "message-red" })
         return
-      } else if (!state.name || !state.description || state.name.length >= 50) {
-        appDispatch({ type: "flashMessage", value: "Invalid name or description!", messageType: "message-red" })
+      } else if (!state.name || !state.description || state.name.length >= 50 || state.name.length < 3) {
+        appDispatch({ type: "flashMessage", value: "Invalid name (min. 3 signs) or description!", messageType: "message-red" })
         return
       }
 
