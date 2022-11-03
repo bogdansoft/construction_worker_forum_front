@@ -12,7 +12,7 @@ function UserProfileComments() {
 
     async function fetchPosts() {
       try {
-        const response = await Axios.get(`/api/${username}/comments`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+        const response = await Axios.get(`/api/comment/all_by_username${username}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
         setComments(response.data)
       } catch {
         console.log("There was a problem")
@@ -25,11 +25,11 @@ function UserProfileComments() {
   }, [username])
 
   return (
-    <div className="list-group">
-      {/* {comments.map(comment => {
-        return <Comment comment={comment} key={comment.id} />
-      })} */}
-    </div>
+    <section id="content2">
+      {comments.map(comment => {
+        return <SingleCommentProfile comment={comment} key={comment.id} />
+      })}
+    </section>
   )
 }
 
