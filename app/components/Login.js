@@ -17,17 +17,16 @@ function Login() {
       const response = await Axios.post("/api/login", { username, password })
 
       if (response.data) {
-        console.log(response.data)
         appDispatch({ type: "login", data: response.data })
         appDispatch({ type: "flashMessage", value: "Succesfully logged in !", messageType: "message-green" })
         navigate("/")
       }
     } catch (e) {
-      if (e.response.status === 401) {
+      if (e.response === 401) {
         appDispatch({ type: "flashMessage", value: "Wrong credentials !", messageType: "message-red" })
         console.log("Incorrect user credentials!")
       } else {
-        console.log("There was a problem!")
+        console.log("There was a problem!" + e)
       }
     }
   }
