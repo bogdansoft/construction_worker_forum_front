@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import Axios from "axios"
 import Post from "./Post"
 import { useParams, Link } from "react-router-dom"
+import SinglePostProfile from "./SinglePostProfile"
 
 function UserProfilePosts() {
   const [posts, setPosts] = useState([])
@@ -12,7 +13,7 @@ function UserProfilePosts() {
 
     async function fetchPosts() {
       try {
-        const response = await Axios.get(`/api/${username}/posts`, { cancelToken: ourRequest.token })
+        const response = await Axios.get(`/api/post/all_by_username/${username}`, { cancelToken: ourRequest.token })
         setPosts(response.data)
       } catch {
         console.log("There was a problem")
@@ -25,11 +26,11 @@ function UserProfilePosts() {
   }, [username])
 
   return (
-    <div className="list-group">
+    <section id="content1">
       {posts.map(post => {
-        return <Post post={post} key={post.id} />
+        return <SinglePostProfile post={post} key={post.id} />
       })}
-    </div>
+    </section>
   )
 }
 

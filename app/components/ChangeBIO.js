@@ -4,11 +4,13 @@ import { CSSTransition } from "react-transition-group"
 import { useImmerReducer } from "use-immer"
 import Axios from "axios"
 import StateContext from "../StateContext"
+import DispatchContext from "../DispatchContext"
 
 function ChangeBIO() {
   const navigate = useNavigate()
   const { username } = useParams()
   const appState = useContext(StateContext)
+  const appDispatch = useContext(DispatchContext)
   const originalState = {
     body: {
       value: "",
@@ -61,7 +63,7 @@ function ChangeBIO() {
 
     async function fetchPost() {
       try {
-        const response = await Axios.get(`/api/user?username=${username}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+        const response = await Axios.get(`/api/user/user?username=${username}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
         if (response.data) {
           dispatch({ type: "fetchComplete", value: response.data })
         }
@@ -82,11 +84,13 @@ function ChangeBIO() {
 
       async function fetchPost() {
         try {
-          const response = await Axios.post(`/api/user/${username}/changebio`, { newBio: state.body.value }, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+          const response = await Axios.put(`/api/user/${username}/bio`, { newBio: state.body.value }, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
           dispatch({ type: "saveRequestFinished" })
+          appDispatch({ type: "flashMessage", value: "Bio changed !", messageType: "message-green" })
           navigate(`/profile/${username}`)
-        } catch {
+        } catch (e) {
           console.log("There was a problem or the request was cancelled")
+          console.log(e)
         }
       }
       fetchPost()
@@ -97,30 +101,27 @@ function ChangeBIO() {
   }, [state.sendCount])
 
   return (
-    <>
-      <div className={"container py-md-5"}>
-        <div className="float-right">
-          <Link className="btn btn-primary" to={`/profile/${username}`}>
-            Go Back
+    <form onSubmit={handleSubmit}>
+      <div className="main d-flex flex-column container">
+        <div className="content d-flex flex-column mt-4">
+          <Link className="text-primary medium font-weight-bold mb-3" to={`/profile/${username}`}>
+            &laquo; Back to profile
           </Link>
-        </div>
-        <br />
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="post-body" className="text-muted mb-1 d-block">
-              <h3 className="display-3">New BIO</h3>
-            </label>
-            <textarea onBlur={e => dispatch({ type: "bodyRules", value: e.target.value })} onChange={e => dispatch({ type: "bodyChange", value: e.target.value })} name="body" id="post-body" className="body-content tall-textarea form-control" type="text" value={state.body.value} />
-            <CSSTransition in={state.body.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-              <div className="alert alert-danger large liveValidateMessage">{state.body.message}</div>
-            </CSSTransition>
+          <div className="d-flex flex-row"></div>
+          <label htmlFor="post-body" className="ml-3 add-post-title">
+            <h3 className="display-3">New BIO</h3>
+          </label>
+          <div className="mt-3 ml-auto mr-auto">
+            <textarea onBlur={e => dispatch({ type: "bodyRules", value: e.target.value })} onChange={e => dispatch({ type: "bodyChange", value: e.target.value })} name="body" id="post-body" className="post-textarea p-2 ml-5" rows="10" cols="100" type="text" value={state.body.value} />
           </div>
-          <button className="btn btn-primary" disabled={state.IsSaving}>
-            Save Changes
-          </button>
-        </form>
+          <div className="d-flex align-items-center mt-3">
+            <div className="ml-auto" disabled={state.IsSaving}>
+              <button className="nav-button">Change</button>
+            </div>
+          </div>
+        </div>
       </div>
-    </>
+    </form>
   )
 }
 
