@@ -20,6 +20,7 @@ import EditPost from "./components/EditPost"
 import ViewSinglePost from "./components/ViewSinglePost"
 import FlashMessages from "./components/FlashMessages"
 import TestChat from "./components/chat/TestChat";
+import {RecoilRoot} from "recoil";
 
 Axios.defaults.baseURL = "http://localhost:8080"
 
@@ -72,32 +73,34 @@ function Main() {
     }, [state.loggedIn])
 
     return (
-        <StateContext.Provider value={state}>
-            <DispatchContext.Provider value={dispatch}>
-                <BrowserRouter>
-                    <FlashMessages messages={state.flashMessages}/>
-                    <Navbar/>
-                    <CSSTransition timeout={330} in={state.searchIsOpen} classNames="search-overlay" unmountOnExit>
-                        <div className="search-overlay">
-                            <Search/>
-                        </div>
-                    </CSSTransition>
-                    <Routes>
-                        <Route path="/" element={<Posts/>}/>
-                        <Route path="/profile/:username/*" element={<UserProfile/>}/>
-                        <Route path="/login" element={<Login/>}/>
-                        <Route path="/post" element={<SinglePost/>}/>
-                        <Route path="/user/create" element={<RegisterForm/>}/>
-                        <Route path="/post/create" element={<CreatePostForm/>}/>
-                        <Route path="/profile/changebio/:username" element={<ChangeBIO/>}/>
-                        <Route path="/post/edit/:id" element={<EditPost/>}/>
-                        <Route path="/post/:id" element={<ViewSinglePost/>}/>
-                        <Route path="/chat" element={<TestChat/>}/>
-                    </Routes>
-                    <Footer/>
-                </BrowserRouter>
-            </DispatchContext.Provider>
-        </StateContext.Provider>
+        <RecoilRoot>
+            <StateContext.Provider value={state}>
+                <DispatchContext.Provider value={dispatch}>
+                    <BrowserRouter>
+                        <FlashMessages messages={state.flashMessages}/>
+                        <Navbar/>
+                        <CSSTransition timeout={330} in={state.searchIsOpen} classNames="search-overlay" unmountOnExit>
+                            <div className="search-overlay">
+                                <Search/>
+                            </div>
+                        </CSSTransition>
+                        <Routes>
+                            <Route path="/" element={<Posts/>}/>
+                            <Route path="/profile/:username/*" element={<UserProfile/>}/>
+                            <Route path="/login" element={<Login/>}/>
+                            <Route path="/post" element={<SinglePost/>}/>
+                            <Route path="/user/create" element={<RegisterForm/>}/>
+                            <Route path="/post/create" element={<CreatePostForm/>}/>
+                            <Route path="/profile/changebio/:username" element={<ChangeBIO/>}/>
+                            <Route path="/post/edit/:id" element={<EditPost/>}/>
+                            <Route path="/post/:id" element={<ViewSinglePost/>}/>
+                            <Route path="/chat" element={<TestChat/>}/>
+                        </Routes>
+                        <Footer/>
+                    </BrowserRouter>
+                </DispatchContext.Provider>
+            </StateContext.Provider>
+        </RecoilRoot>
     )
 }
 

@@ -1,6 +1,8 @@
 import React, {useContext, useEffect} from "react";
 import StateContext from "../../StateContext";
 import {useImmer} from "use-immer";
+import {useRecoilValue} from "recoil";
+import {loggedInUser} from "../../atom/GlobalState";
 
 
 let stompClient = null;
@@ -16,6 +18,12 @@ function TestChat() {
         fieldValue: "",
         chatMessages: []
     });
+
+    const currentLoggedInUser = useRecoilValue(loggedInUser);
+
+    useEffect(() => {
+        console.log("CURRENT LOGGED IN USER: " + currentLoggedInUser.username);
+    }, []);
 
     useEffect(() => {
         if (currentUser.token === null) {
@@ -36,9 +44,9 @@ function TestChat() {
 
     const onConnected = () => {
         console.log("connected");
-        console.log(currentUser);
+        console.log(currentLoggedInUser);
         stompClient.subscribe(
-            "/user/" + currentUser.id + "/queue/messages"
+            "/user/" + currentLoggedInUser.id + "/queue/messages"
         );
     };
 
@@ -49,9 +57,9 @@ function TestChat() {
     const sendMessage = (msg) => {
         if (msg.trim() !== "") {
             const message = {
-                senderId: currentUser.id,
+                senderId: currentLoggedInUser.id,
                 recipientId: 4,
-                senderName: currentUser.username,
+                senderName: currentLoggedInUser.username,
                 recipientName: "wolf123",
                 content: msg,
                 timestamp: new Date(),
@@ -64,7 +72,7 @@ function TestChat() {
         <div id="chat-wrapper"
              className="container chat-wrapper chat-wrapper--is-visible shadow border-top border-left border-right">
             <div className="chat-title-bar">
-                Chat with barksalot
+                Chat with ...
             </div>
             <div id="chat" className="chat-log">
                 <div className="chat-self">
@@ -85,7 +93,7 @@ function TestChat() {
                             <a href="#">
                                 <strong>wolf123: </strong>
                             </a>
-                            Hey, I am good, how about you?
+                            hello!
                         </div>
                     </div>
                 </div>

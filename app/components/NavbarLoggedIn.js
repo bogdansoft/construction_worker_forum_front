@@ -1,13 +1,28 @@
-import React, {useContext, useState} from "react"
+import React, {useContext, useEffect, useState} from "react"
 import {Link} from "react-router-dom"
-import DispatchContext from "../DispatchContext"
 import {CSSTransition} from "react-transition-group"
+import {useRecoilState} from "recoil";
+import {loggedInUser} from "../atom/GlobalState";
 import StateContext from "../StateContext"
+import DispatchContext from "../DispatchContext"
 
 function NavbarLoggedIn() {
     const appDispatch = useContext(DispatchContext)
     const appState = useContext(StateContext)
     const [options, setOptions] = useState(false)
+    const [currentUser, setLoggedInUser] = useRecoilState(loggedInUser);
+
+    useEffect(() => {
+        loadCurrentUser();
+    }, []);
+
+    const loadCurrentUser = () => {
+        setLoggedInUser({
+            id: localStorage.getItem("constructionForumUserId"),
+            username: localStorage.getItem("constructionForumUsername"),
+            token: localStorage.getItem("constructionForumUserToken")
+        })
+    }
 
     function handleLoggedOut() {
         appDispatch({type: "logout"})
