@@ -12,7 +12,6 @@ import Topics from "./components/Topics"
 import Footer from "./components/Footer"
 import Login from "./components/Login"
 import Search from "./components/Search"
-import SinglePost from "./components/SinglePost"
 import RegisterForm from "./components/RegisterForm"
 import CreatePostForm from "./components/CreatePostForm"
 import CreateTopicForm from "./components/CreateTopicForm"
@@ -24,6 +23,7 @@ import ViewSinglePost from "./components/ViewSinglePost"
 import FlashMessages from "./components/FlashMessages"
 import ViewSingleTopic from "./components/ViewSingleTopic"
 import RenderAvatar from "./components/Avatar"
+import NotFound from "./components/NotFound"
 
 Axios.defaults.baseURL = "http://localhost:8080"
 
@@ -102,7 +102,6 @@ function Main() {
             <Route path="/" element={<Topics />} />
             <Route path="/profile/:username/*" element={<UserProfile />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/post" element={<SinglePost />} />
             <Route path="/user/create" element={<RegisterForm />} />
             <Route path="/post/create" element={<CreatePostForm />} />
             <Route path="/topic/create" element={<CreateTopicForm />} />
@@ -112,6 +111,7 @@ function Main() {
             <Route path="/post/:id" element={<ViewSinglePost />} />
             <Route path="/topic/:id" element={<ViewSingleTopic />} />
             <Route path="/avatar" element={<RenderAvatar username="jake123" />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
           <Footer />
         </BrowserRouter>
