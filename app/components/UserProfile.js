@@ -7,13 +7,14 @@ import StateContext from "../StateContext"
 import RenderAvatar from "./Avatar"
 
 function UserProfile() {
+  const navigate = useNavigate()
   const { username } = useParams()
   const [isBioPresent, setIsBioPresent] = useState(false)
   const appState = useContext(StateContext)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [state, setState] = useState({
     avatar: "https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png",
-    bio: "",
+    bio: "There is no BIO yet",
     username: ""
   })
   useEffect(() => {
@@ -25,14 +26,15 @@ function UserProfile() {
         const response = await Axios.get(`/api/user/user?username=${username}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
         setState(response.data)
         console.log(response.data)
-        if (state.bio != "") {
-          setIsBioPresent(true)
-        }
         if (username === loggedUsername) {
           setIsLoggedIn(true)
         }
+        if (state.bio !== "") {
+          setIsBioPresent(true)
+        }
       } catch {
         console.log("There was a problem")
+        navigate(`/notfound`)
       }
     }
     fetchData()
