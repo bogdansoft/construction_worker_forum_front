@@ -100,12 +100,12 @@ function TestChat() {
                 <div id="chatForm" className="chat-form-inline">
                     <input type="text" onChange={e => setMessageContent(e.target.value)} value={messageContent}
                            placeholder="Type a message…" autoComplete="off" autoFocus/>
-                    <button onClick={() => {
-                        if (!messageContent) return;
-                        sendMessage(messageContent);
-                        setMessageContent("");
-                    }}
-                            className="material-symbols-outlined no-outline">
+                    <button className="material-symbols-outlined no-outline" onClick={
+                        () => {
+                            if (!messageContent) return;
+                            sendMessage(messageContent);
+                            setMessageContent("");
+                        }}>
                         send
                     </button>
                 </div>
