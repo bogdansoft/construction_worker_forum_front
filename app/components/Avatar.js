@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState, useContext } from "react"
 import Button from "@material-ui/core/Button"
 import ClickAwayListener from "@material-ui/core/ClickAwayListener"
 import Grow from "@material-ui/core/Grow"
@@ -36,6 +36,9 @@ export default function RenderAvatar(props) {
   const classes = useStyles()
   const [open, setOpen] = React.useState(false)
   const anchorRef = React.useRef(null)
+  const [avatar, setAvatar] = useState({
+    avatar: "https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png"
+  })
 
   const handleToggle = () => {
     setOpen(prevOpen => !prevOpen)
@@ -73,12 +76,14 @@ export default function RenderAvatar(props) {
     <>
       <div className="avatar-container">
         <div className="avatar">
-          <img src="https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png" alt="avatar" className="avatar-img" />
+          <img src={avatar.avatar} alt="https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png" className="avatar-img" />
         </div>
 
-        <IconButton className={classes.cameraIcon} ref={anchorRef} aria-controls={open ? "menu-list-grow" : undefined} aria-haspopup="true" onClick={handleToggle}>
-          <CameraAltIcon fontSize="large" />
-        </IconButton>
+        {props.isLoggedIn && (
+          <IconButton className={classes.cameraIcon} ref={anchorRef} aria-controls={open ? "menu-list-grow" : undefined} aria-haspopup="true" onClick={handleToggle}>
+            <CameraAltIcon fontSize="large" />
+          </IconButton>
+        )}
 
         <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
           {({ TransitionProps, placement }) => (
@@ -109,7 +114,7 @@ export default function RenderAvatar(props) {
         </Popper>
       </div>
 
-      {showCropper && <RenderCropper username={props.username} handleCropper={handleCropper} />}
+      {showCropper && <RenderCropper username={props.username} handleCropper={handleCropper} setAvatar={setAvatar} />}
     </>
   )
 }

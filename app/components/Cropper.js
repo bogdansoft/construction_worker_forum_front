@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext, useEffect } from "react"
 import Cropper from "react-easy-crop"
 import Slider from "@material-ui/core/Slider"
 import Button from "@material-ui/core/Button"
@@ -7,6 +7,8 @@ import getCroppedImg, { generateDownload } from "./utils/cropImage"
 import { IconButton, makeStyles } from "@material-ui/core"
 import { dataURLtoFile } from "./utils/dataURLtoFile"
 import Axios from "axios"
+import StateContext from "../StateContext"
+import DispatchContext from "../DispatchContext"
 
 const useStyles = makeStyles({
   iconButton: {
@@ -23,7 +25,9 @@ const useStyles = makeStyles({
   }
 })
 
-export default function RenderCropper({ handleCropper, username }) {
+export default function RenderCropper({ handleCropper, username, setAvatar }) {
+  const appState = useContext(StateContext)
+  const appDispatch = useContext(DispatchContext)
   const classes = useStyles()
 
   const inputRef = React.useRef()
@@ -61,13 +65,13 @@ export default function RenderCropper({ handleCropper, username }) {
     const canvas = await getCroppedImg(image, croppedArea)
     const canvasDataUrl = canvas.toDataURL("image/jpeg")
     const convertedUrlToFile = dataURLtoFile(canvasDataUrl, "cropped-image.jpeg")
-
+    console.log(convertedUrlToFile)
     try {
-      const formdata = new FormData()
-      formdata.append("croppedImage", convertedUrlToFile)
-
-      const response = await Axios.post(`/api/user/changeavatar`, { body: formdata })
-
+      const formData = new FormData()
+      formData.append("file", convertedUrlToFile)
+      console.log(formData)
+      const response = await Axios.put(`/api/user/${username}/changeavatar`, formData, { headers: { Authorization: `Bearer ${appState.user.token}` } })
+      setAvatar(response)
       console.log(response)
     } catch {
       console.log("There was a problem")
