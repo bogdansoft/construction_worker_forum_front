@@ -37,7 +37,7 @@ export default function RenderAvatar(props) {
   const [open, setOpen] = React.useState(false)
   const anchorRef = React.useRef(null)
   const [avatar, setAvatar] = useState({
-    avatar: "https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png"
+    avatar: "file:///C:/Projects/ForumProjectBackend/construction_worker_forum_back/user-avatar/1/cropped-image.jpeg"
   })
 
   const handleToggle = () => {

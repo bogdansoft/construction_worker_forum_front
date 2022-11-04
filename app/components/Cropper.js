@@ -69,8 +69,9 @@ export default function RenderCropper({ handleCropper, username, setAvatar }) {
     try {
       const formData = new FormData()
       formData.append("file", convertedUrlToFile)
+      formData.append("username", username)
       console.log(formData)
-      const response = await Axios.put(`/api/user/${username}/changeavatar`, formData, { headers: { Authorization: `Bearer ${appState.user.token}` } })
+      const response = await Axios.put(`/api/user/changeavatar`, formData, { headers: { Authorization: `Bearer ${appState.user.token}` } })
       setAvatar(response)
       console.log(response)
     } catch {
