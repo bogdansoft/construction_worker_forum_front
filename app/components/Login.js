@@ -22,11 +22,11 @@ function Login() {
         navigate("/")
       }
     } catch (e) {
-      if (e.response.status === 401) {
+      if (e.response === 401) {
         appDispatch({ type: "flashMessage", value: "Wrong credentials !", messageType: "message-red" })
         console.log("Incorrect user credentials!")
       } else {
-        console.log("There was a problem!")
+        console.log("There was a problem!" + e)
       }
     }
   }

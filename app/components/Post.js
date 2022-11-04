@@ -20,7 +20,7 @@ function Post(props) {
       async function fetchData() {
         try {
           await Axios.delete(`/api/post/${props.post.id}`, { headers: { Authorization: `Bearer ${appState.user.token}` } })
-          appDispatch({ type: "flashMessage", value: "Post succesfully deleted !", messageType: "message-green" })
+          appDispatch({ type: "flashMessage", value: "Post successfully deleted !", messageType: "message-green" })
           props.reload()
         } catch (e) {
           console.log("there was a problem deleting post")
