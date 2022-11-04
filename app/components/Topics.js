@@ -1,39 +1,34 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useContext } from "react"
 import { useImmer } from "use-immer"
+import { useNavigate } from "react-router-dom"
 import Axios from "axios"
 import Topic from "./Topic"
 import Loading from "./Loading"
+import StateContext from "../StateContext"
+import ReactTooltip from "react-tooltip"
 
 function Topics(props) {
+  const appState = useContext(StateContext)
+  const navigate = useNavigate()
   const [state, setState] = useImmer({
     feed: [],
     reloadCounter: 0,
-    isLoading: false
+    isLoading: true
   })
 
   useEffect(() => {
-    const ourRequest = Axios.CancelToken.source()
-
     async function fetchData() {
       try {
-        setState(draft => {
-          draft.isLoading = true
-        })
-
-        const resposne = await Axios.get("/api/topic", { cancelToken: ourRequest.token })
+        const resposne = await Axios.get("/api/topic")
         setState(draft => {
           draft.feed = resposne.data
           draft.isLoading = false
         })
       } catch (e) {
-        console.log("there was a problem fetching the data")
+        console.log("there was a problem fetching the data" + e)
       }
     }
-
     fetchData()
-    return () => {
-      ourRequest.cancel()
-    }
   }, [state.reloadCounter])
 
   function reload() {
@@ -54,6 +49,14 @@ function Topics(props) {
             <h4 className="font-weight-bold">Topics</h4>
           </div>
           <div className="ml-auto d-flex flex-row align-items-center">
+            {appState.user.isAdmin || appState.user.isSupport ? (
+              <button className="single-topic-content p-1 mr-3" style={{ backgroundColor: "DarkBlue" }} onClick={() => navigate(`/topic/create`)}>
+                <text data-tip="Add new topic!" data-for="add-new-topic">
+                  New Topic
+                </text>
+                <ReactTooltip id="add-new-topic" className="custom-tooltip" />
+              </button>
+            ) : null}
             <select className="mr-3" name="Pagination" id="pagination">
               <option>Pagination</option>
               <option>10</option>
