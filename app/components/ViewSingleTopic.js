@@ -26,8 +26,8 @@ function ViewSingleTopic(props) {
   })
 
   useEffect(() => {
+    appDispatch({ type: "closeSearch" })
     const ourRequest = Axios.CancelToken.source()
-
     async function fetchTopic() {
       try {
         const response = await Axios.get(`/api/topic/${id}`, { cancelToken: ourRequest.token })
