@@ -33,20 +33,19 @@ export const ChatWindow = ({ currentUser }) => {
       setMessages([...messages, message]);
     }
   };
-  console.log("active user: " + activeContact);
+
   if (!activeContact) return null;
 
   return (
     <>
       <div className="chat-title-bar">Chat with {activeContact.username}</div>
       <div id="chat" className="chat-log">
-        <Message message={"hello"} isSenderMessage={true} />
-        <Message message={"hello hello"} isSenderMessage={false} />
         {messages.map((value, index) => (
           <Message
             key={index}
             message={value.content}
             isSenderMessage={value.senderId === currentUser.id}
+            sender={value.senderName}
           />
         ))}
       </div>
