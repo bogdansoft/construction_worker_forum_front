@@ -4,25 +4,32 @@ import UserProfileComments from "./UserProfileComments"
 import UserProfilePosts from "./UserProfilePosts"
 import Axios from "axios"
 import StateContext from "../StateContext"
+import RenderAvatar from "./Avatar"
 
 function UserProfile() {
   const { username } = useParams()
   const [isBioPresent, setIsBioPresent] = useState(false)
   const appState = useContext(StateContext)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [state, setState] = useState({
     avatar: "https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png",
-    bio: ""
+    bio: "",
+    username: ""
   })
   useEffect(() => {
     const ourRequest = Axios.CancelToken.source()
 
     async function fetchData() {
+      const loggedUsername = localStorage.getItem("constructionForumUsername")
       try {
         const response = await Axios.get(`/api/user/user?username=${username}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
         setState(response.data)
         console.log(response.data)
         if (state.bio != "") {
           setIsBioPresent(true)
+        }
+        if (username === loggedUsername) {
+          setIsLoggedIn(true)
         }
       } catch {
         console.log("There was a problem")
@@ -51,20 +58,27 @@ function UserProfile() {
         <div className="d-flex text-center align-items-start">
           <div className="d-flex align-items-center">
             <div className="profile-avatar">
-              <span className="material-symbols-outlined mr-3"> person </span>
+              <span className="material-symbols-outlined mr-3">
+                {" "}
+                <RenderAvatar username={state.username} isLoggedIn={isLoggedIn} />{" "}
+              </span>
             </div>
             <div className="mt" id="profile-username">
-              {username}
+              {state.username}
             </div>
           </div>
           <textarea value={state.bio} className="ml-4 post-textarea p-2" rows="5" cols="50"></textarea>
           <div className="ml-4 d-flex flex-column ml-5">
-            <Link className="nav-button mt-2" to={`/profile/changebio/${username}`}>
-              Change BIO
-            </Link>{" "}
-            <button onClick={handleDelete} className="nav-button mt-3">
-              Delete account
-            </button>
+            {isLoggedIn && (
+              <Link className="nav-button mt-2" to={`/profile/changebio/${username}`}>
+                Change BIO
+              </Link>
+            )}
+            {isLoggedIn && (
+              <button onClick={handleDelete} className="nav-button mt-3">
+                Delete account
+              </button>
+            )}
           </div>
         </div>
         <div>
