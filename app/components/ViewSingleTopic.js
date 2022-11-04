@@ -1,10 +1,12 @@
 import React, { useEffect, useState, useContext } from "react"
 import { Link, useParams, useNavigate } from "react-router-dom"
+import { CSSTransition } from "react-transition-group"
 import ReactTooltip from "react-tooltip"
 import Axios from "axios"
 import { useImmer } from "use-immer"
 import Loading from "./Loading"
 import Post from "./Post"
+import DeleteModal from "./DeleteModal"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 
@@ -12,6 +14,7 @@ function ViewSingleTopic(props) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
   const navigate = useNavigate()
+  const [isDeleting, setIsDeleting] = useState(false)
   const { id } = useParams()
   const [topic, setTopic] = useState([])
   const [posts, setPosts] = useState([])
@@ -67,29 +70,25 @@ function ViewSingleTopic(props) {
     })
   }
 
-  useEffect(() => {
-    if (state.delete) {
-      const ourRequest = Axios.CancelToken.source()
+  function deletePopup() {
+    setIsDeleting(prev => !prev)
+  }
 
-      async function handleDeleteTopic() {
-        const ourRequest = Axios.CancelToken.source()
-        try {
-          await Axios.delete(`/api/topic/${id}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
-          appDispatch({ type: "flashMessage", value: "Topic successfully deleted!", messageType: "message-green" })
-          navigate("/")
-        } catch (e) {
-          console.log("There was a problem while deleting the topic", e)
-        }
-      }
-      handleDeleteTopic()
-
-      return () => {
-        ourRequest.cancel()
-      }
+  async function handleDelete() {
+    const ourRequest = Axios.CancelToken.source()
+    try {
+      await Axios.delete(`/api/topic/${id}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+      appDispatch({ type: "flashMessage", value: "Topic successfully deleted!", messageType: "message-green" })
+      navigate("/")
+    } catch (e) {
+      console.log("There was a problem while deleting the topic", e)
     }
-  }, [state.delete])
+    return () => {
+      ourRequest.cancel()
+    }
+  }
 
-  function showContext() {
+  function showContextDependingOnPermission() {
     if (appState.user.isAdmin || appState.user.isSupport) {
       return (
         <div className="font-weight-bold text-left">
@@ -100,16 +99,7 @@ function ViewSingleTopic(props) {
             <span className="material-symbols-outlined link-black mr-2"> edit </span>
           </Link>
           <ReactTooltip id="edit" className="custom-tooltip" />
-          <span
-            onClick={() =>
-              setState(draft => {
-                draft.delete++
-              })
-            }
-            className="material-symbols-outlined link-black"
-            data-tip="Delete"
-            data-for="delete"
-          >
+          <span onClick={deletePopup} className="material-symbols-outlined link-black" data-tip="Delete" data-for="delete">
             delete
           </span>
           <ReactTooltip id="delete" className="custom-tooltip" />
@@ -132,7 +122,12 @@ function ViewSingleTopic(props) {
       <Link className="text-primary medium font-weight-bold mb-3" to={`/`}>
         &laquo; Back to topics
       </Link>
-      {showContext()}
+      <CSSTransition in={isDeleting} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+        <div className="delete-pop liveValidateMessage-delete ml-3">
+          <DeleteModal delete={handleDelete} noDelete={deletePopup} posts={posts} />
+        </div>
+      </CSSTransition>
+      {showContextDependingOnPermission()}
       <div className="content mt-2 mr-auto p-4">{topic.description}</div>
       <div className="content container d-flex flex-column mt-4">
         <div className="d-flex flex-row">

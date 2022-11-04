@@ -22,6 +22,7 @@ import EditTopic from "./components/EditTopic"
 import ViewSinglePost from "./components/ViewSinglePost"
 import FlashMessages from "./components/FlashMessages"
 import ViewSingleTopic from "./components/ViewSingleTopic"
+import Logout from "./components/Logout"
 
 Axios.defaults.baseURL = "http://localhost:8080"
 
@@ -100,6 +101,8 @@ function Main() {
             <Route path="/" element={<Topics />} />
             <Route path="/profile/:username/*" element={<UserProfile />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/logout" element={<Logout />} />
+            <Route path="/post" element={<SinglePost />} />
             <Route path="/user/create" element={<RegisterForm />} />
             <Route path="/post/create" element={<CreatePostForm />} />
             <Route path="/topic/create" element={<CreateTopicForm />} />
@@ -109,6 +112,7 @@ function Main() {
             <Route path="/post/:id" element={<ViewSinglePost />} />
             <Route path="/topic/:id" element={<ViewSingleTopic />} />
           </Routes>
+          {state.loggedIn ? <Logout /> : null}
           <Footer />
         </BrowserRouter>
       </DispatchContext.Provider>

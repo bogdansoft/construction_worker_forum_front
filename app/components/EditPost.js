@@ -12,6 +12,7 @@ function EditPost() {
   const [selectedTopic, setSelectedTopic] = useState()
   const originalState = {
     title: "",
+    originalTitle: "",
     content: "",
     topic: undefined,
     isFetching: true,
@@ -25,6 +26,7 @@ function EditPost() {
     switch (action.type) {
       case "fetchComplete":
         draft.title = action.value.title
+        draft.originalTitle = action.value.title
         draft.content = action.value.content
         draft.topic = action.value.topic
         draft.isFetching = false
@@ -87,7 +89,7 @@ function EditPost() {
 
       async function fetchPost() {
         try {
-          await Axios.put(`/api/post/${state.id}`, { title: state.title, content: state.content, userId: state.userId, topicId: state.topic.id }, { headers: { Authorization: `Bearer ${appState.user.token}` } })
+          await Axios.put(`/api/post/${state.id}`, { title: state.title, content: state.content, userId: state.userId, topicId: selectedTopic.id }, { headers: { Authorization: `Bearer ${appState.user.token}` } })
           navigate(`/post/${state.id}`)
           dispatch({ type: "saveRequestFinished" })
         } catch (e) {
@@ -140,7 +142,7 @@ function EditPost() {
       <div className="main d-flex flex-column container">
         <div className="content d-flex flex-column mt-4">
           <Link className="text-primary medium font-weight-bold mb-3" to={`/post/${state.id}`}>
-            &laquo; Back to post [{state.title}]
+            &laquo; Back to post [{state.originalTitle}]
           </Link>
           <div className="d-flex flex-row">
             <div className="ml-3 add-post-title">
