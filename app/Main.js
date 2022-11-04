@@ -21,10 +21,9 @@ import EditPost from "./components/EditPost";
 import EditTopic from "./components/EditTopic";
 import ViewSinglePost from "./components/ViewSinglePost";
 import FlashMessages from "./components/FlashMessages";
-import TestChat from "./components/chat/TestChat";
 import ViewSingleTopic from "./components/ViewSingleTopic";
-import RenderAvatar from "./components/Avatar";
 import Logout from "./components/Logout";
+import TestChat from "./components/chat/TestChat";
 
 Axios.defaults.baseURL = "http://localhost:8080";
 
@@ -135,10 +134,6 @@ function Main() {
             <Route path="/topic/edit/:id" element={<EditTopic />} />
             <Route path="/post/:id" element={<ViewSinglePost />} />
             <Route path="/topic/:id" element={<ViewSingleTopic />} />
-            <Route
-              path="/avatar"
-              element={<RenderAvatar username="jake123" />}
-            />
             <Route path="/chat" element={<TestChat />} />
           </Routes>
           {state.loggedIn ? <Logout /> : null}
