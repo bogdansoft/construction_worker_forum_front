@@ -6,7 +6,6 @@ import DispatchContext from "../DispatchContext"
 function Login() {
   const [username, setUsername] = useState()
   const [password, setPassword] = useState()
-  const navigate = useNavigate()
 
   const appDispatch = useContext(DispatchContext)
 
@@ -19,7 +18,6 @@ function Login() {
       if (response.data) {
         appDispatch({ type: "login", data: response.data })
         appDispatch({ type: "flashMessage", value: "Succesfully logged in !", messageType: "message-green" })
-        navigate("/")
       }
     } catch (e) {
       if (e.response.status === 401) {

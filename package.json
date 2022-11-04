@@ -5,7 +5,7 @@
   "main": "test.js",
   "scripts": {
     "dev": "webpack serve",
-    "test": "echo \"Error: no test specified\""
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
