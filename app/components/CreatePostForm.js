@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react"
 import Axios from "axios"
 import { useNavigate, Link, useLocation } from "react-router-dom"
+import { CSSTransition } from "react-transition-group"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 import Loading from "./Loading"
@@ -21,7 +22,7 @@ function CreatePost() {
     e.preventDefault()
     const ourRequest = Axios.CancelToken.source()
 
-     if (!title || !content || title.length >= 50 || title.length < 3 || content.length >= 1000 || content.length < 3) {
+    if (!title || !content || title.length >= 50 || title.length < 3 || content.length >= 1000 || content.length < 3) {
       appDispatch({ type: "flashMessage", value: "Invalid title or content!", messageType: "message-red" })
       return
     } else if (selectedTopic === undefined) {
@@ -100,6 +101,7 @@ function CreatePost() {
             <div className="ml-3 add-post-title">
               Title: <input onChange={e => setTitle(e.target.value)} className="p-2 ml-3" type="text" />
             </div>
+
             <div className="ml-auto mr-5 col-2">
               <select className="mr-3" name="Topics" id="topics" onChange={e => handleTopicSelect(e)}>
                 <option default>{selectedTopic ? selectedTopic.name : "Topics:"}</option>
@@ -110,6 +112,9 @@ function CreatePost() {
               </select>
             </div>
           </div>
+          <CSSTransition in={!content} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+            <div className="alert alert-danger mt-3 ml-3 liveValidateMessage">Empty description!</div>
+          </CSSTransition>
           {showWarningIfDefaultTopicIsChanged()}
           <div className="mt-3 ml-auto mr-auto">
             <textarea onChange={e => setContent(e.target.value)} className="post-textarea p-2 ml-5" rows="10" cols="100"></textarea>
