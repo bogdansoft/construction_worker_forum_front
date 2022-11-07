@@ -3,6 +3,7 @@ import { Message } from "./Message";
 import { useStompClient } from "./useStompClient";
 import ChatContext from "./Chat.context";
 import Axios from "axios";
+import StateContext from "../../StateContext";
 
 export const ChatWindow = ({ currentUser }) => {
   const [messageContent, setMessageContent] = useState("");
@@ -11,12 +12,13 @@ export const ChatWindow = ({ currentUser }) => {
     setMessages((messages) => [...messages, JSON.parse(message.body)]);
   }, currentUser);
   const { activeContact } = useContext(ChatContext);
+  const appState = useContext(StateContext);
 
   useEffect(() => {
     if (!activeContact) return;
-    Axios.get(`/messages/${currentUser.id}/${activeContact.id}`).then((r) =>
-      setMessages(r.data)
-    );
+    Axios.get(`/messages/${currentUser.id}/${activeContact.id}`, {
+      headers: { Authorization: `Bearer ${appState.user.token}` },
+    }).then((r) => setMessages(r.data));
   }, [activeContact]);
 
   const sendMessage = (msg) => {
