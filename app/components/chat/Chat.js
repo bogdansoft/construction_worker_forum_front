@@ -5,7 +5,7 @@ import { ContactList } from "./contactList/ContactList";
 import { ChatProvider } from "./Chat.context";
 import { ChatWindow } from "./ChatWindow";
 
-function TestChat() {
+function Chat() {
   const currentUser = useMemo(() => localStorageService.getUser(), []);
 
   return (
@@ -31,4 +31,4 @@ function TestChat() {
   );
 }
 
-export default TestChat;
+export default Chat;

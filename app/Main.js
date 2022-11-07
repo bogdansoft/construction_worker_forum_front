@@ -23,7 +23,7 @@ import ViewSinglePost from "./components/ViewSinglePost";
 import FlashMessages from "./components/FlashMessages";
 import ViewSingleTopic from "./components/ViewSingleTopic";
 import Logout from "./components/Logout";
-import TestChat from "./components/chat/TestChat";
+import Chat from "./components/chat/Chat";
 
 Axios.defaults.baseURL = "http://localhost:8080";
 
@@ -134,7 +134,7 @@ function Main() {
             <Route path="/topic/edit/:id" element={<EditTopic />} />
             <Route path="/post/:id" element={<ViewSinglePost />} />
             <Route path="/topic/:id" element={<ViewSingleTopic />} />
-            <Route path="/chat" element={<TestChat />} />
+            <Route path="/chat" element={<Chat />} />
           </Routes>
           {state.loggedIn ? <Logout /> : null}
           <Footer />
