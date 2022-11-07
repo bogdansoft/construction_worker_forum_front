@@ -98,9 +98,6 @@ function EditPost() {
         appDispatch({ type: "flashMessage", value: "Invalid title", messageType: "message-red" })
         return
       } else if (!state.content || state.content.length >= 1000 || state.content.length < 3) {
-        console.log(!state.content)
-        console.log(state.content.length >= 50)
-        console.log(state.content.length < 3)
         appDispatch({ type: "flashMessage", value: "Invalid content", messageType: "message-red" })
         return
       }
