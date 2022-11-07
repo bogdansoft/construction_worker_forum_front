@@ -98,10 +98,17 @@ function CreatePost() {
       <div className="main d-flex flex-column container">
         <div className="content d-flex flex-column mt-4">
           <div className="d-flex flex-row">
-            <div className="ml-3 add-post-title">
-              Title: <input onChange={e => setTitle(e.target.value)} className="p-2 ml-3" type="text" />
+            <div>
+              {" "}
+              <div className="ml-3 add-post-title">
+                Title: <input onChange={e => setTitle(e.target.value)} className="p-2 ml-3" type="text" />
+              </div>
+              <span className="form-group ml-5 d-flex" style={{ fontSize: "13px" }}>
+                <CSSTransition in={!title || title.length < 3 || title.length > 50} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+                  <div className="alert alert-danger mt-2 ml-5 liveValidateMessage">{!title || title.length > 50 ? "Empty title or too long (max. 50 sings)" : "Title too short (min. 3 signs)"}</div>
+                </CSSTransition>
+              </span>
             </div>
-
             <div className="ml-auto mr-5 col-2">
               <select className="mr-3" name="Topics" id="topics" onChange={e => handleTopicSelect(e)}>
                 <option default>{selectedTopic ? selectedTopic.name : "Topics:"}</option>
@@ -112,13 +119,15 @@ function CreatePost() {
               </select>
             </div>
           </div>
-          <CSSTransition in={!content} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-            <div className="alert alert-danger mt-3 ml-3 liveValidateMessage">Empty description!</div>
-          </CSSTransition>
           {showWarningIfDefaultTopicIsChanged()}
           <div className="mt-3 ml-auto mr-auto">
             <textarea onChange={e => setContent(e.target.value)} className="post-textarea p-2 ml-5" rows="10" cols="100"></textarea>
           </div>
+          <span className="form-group ml-5 d-flex" style={{ fontSize: "13px" }}>
+            <CSSTransition in={!content || content.length > 1000} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+              <div className="alert alert-danger ml-5 liveValidateMessage">{"Empty description or too long (max. 1000 signs)"}</div>
+            </CSSTransition>
+          </span>
           <div className="d-flex align-items-center mt-3">
             <div className="d-flex mt-3">
               <span className="mr-4">Tags: </span>

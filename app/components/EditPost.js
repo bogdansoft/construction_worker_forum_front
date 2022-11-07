@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
+import { CSSTransition } from "react-transition-group"
 import { useImmerReducer } from "use-immer"
 import Axios from "axios"
 import StateContext from "../StateContext"
@@ -185,10 +186,20 @@ function EditPost() {
               </select>
             </div>
           </div>
+          <span className="form-group ml-5 d-flex" style={{ fontSize: "13px" }}>
+            <CSSTransition in={!state.title || state.title.length < 3 || state.title.length > 50} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+              <div className="alert alert-danger mt-2 ml-5 liveValidateMessage">{!state.title || state.title.length > 50 ? "Empty title or too long (max. 50 sings)" : "Title too short (min. 3 signs)"}</div>
+            </CSSTransition>
+          </span>
           {showWarningIfDefaultTopicIsChanged()}
           <div className="mt-3 ml-auto mr-auto">
             <textarea onChange={e => dispatch({ type: "contentChange", value: e.target.value })} value={state.content} className="post-textarea p-2 ml-5" rows="10" cols="100"></textarea>
           </div>
+          <span className="form-group ml-5 d-flex" style={{ fontSize: "13px" }}>
+            <CSSTransition in={!state.content || state.content.length > 1000} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+              <div className="alert alert-danger ml-5 liveValidateMessage">{"Empty description or too long (max. 1000 signs)"}</div>
+            </CSSTransition>
+          </span>
           <div className="d-flex align-items-center mt-3">
             <div className="d-flex mt-3">
               <span className="mr-4">Tags: </span>

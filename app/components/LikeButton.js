@@ -8,7 +8,7 @@ function LikeButton(props) {
 
   useEffect(() => {
     props.isLiked ? setColor("blue") : setColor("black")
-    setAnimation("animateLikeButtonClikcMe 4s 1s")
+    props.isLiked ? null : setAnimation("animateLikeButtonClikcMe 4s 1s")
     setAnimationTrigger(animationTrigger + 1)
   }, [props.isLiked])
 
