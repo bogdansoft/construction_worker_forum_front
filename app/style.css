@@ -827,6 +827,14 @@ input:focus {
   background-color: white;
 }
 
+/*Not Found component*/
+.notfound-content {
+  background-color: #efa00b;
+  padding-left: 320px;
+  padding-right: 320px;
+  align-content: inherit;
+}
+
 /* CHAT */
 .content {
   background-color: var(--orange);
