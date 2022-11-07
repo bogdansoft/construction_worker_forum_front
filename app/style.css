@@ -50,7 +50,7 @@ nav {
 
 .main {
   background-color: var(--ultra-light-blue);
-  padding: 0px 50px;
+  padding: 0 50px;
 }
 .main h3 {
   font-size: 2em;
@@ -627,9 +627,11 @@ img {
   color: white;
   font-size: 1.5em;
 }
+
 select:focus {
   outline: none;
 }
+
 input:focus {
   outline: none;
 }
@@ -831,4 +833,107 @@ input:focus {
   padding-left: 320px;
   padding-right: 320px;
   align-content: inherit;
+}
+
+/* CHAT */
+.content {
+  background-color: var(--orange);
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.chat .material-symbols-outlined {
+  font-size: 3em;
+  font-weight: bold;
+}
+
+.sender {
+  background-color: var(--dark-violet);
+  border-radius: 15px;
+  border: 2px solid black;
+  color: white;
+  padding: 10px 20px;
+  text-align: right;
+}
+
+.recipient {
+  background-color: var(--light-blue);
+  color: white;
+  border-radius: 15px;
+  border: 2px solid black;
+  padding: 10px 20px;
+  text-align: left;
+}
+
+.chat input:focus {
+  border-top-style: hidden;
+  border-right-style: hidden;
+  border-left-style: hidden;
+  border-bottom: 1px solid black;
+}
+
+.chat input {
+  border-top-style: hidden;
+  border-right-style: hidden;
+  border-left-style: hidden;
+  border-bottom: 1px solid black;
+}
+
+/*.chat-input {*/
+/*  height: 40px;*/
+/*  background-color: var(--light-brown);*/
+/*  color: black;*/
+/*  border-radius: 10px;*/
+/*  border: 2px solid black;*/
+/*}*/
+
+/*.chat-field {*/
+/*  background-color: var(--light-brown);*/
+/*}*/
+
+.no-outline:focus {
+  outline: none;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: black;
+  opacity: 0.6; /* Firefox */
+}
+
+.chat .material-symbols-outlined:focus {
+  animation-name: scale;
+  animation-duration: 500ms;
+  animation-timing-function: ease-in;
+}
+
+.chat button {
+  border: none;
+  background-color: transparent;
+}
+
+.chat button:focus {
+  border: none;
+  outline: none;
+  background-color: transparent;
+}
+
+@keyframes scale {
+  0% {
+    transform: scale(1)
+  }
+  50% {
+    transform: scale(0.8)
+  }
+  100% {
+    transform: scale(1)
+  }
+}
+
+.navbar-button button {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
 }
