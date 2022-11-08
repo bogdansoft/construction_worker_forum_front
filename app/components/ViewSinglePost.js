@@ -214,14 +214,13 @@ function ViewSinglePost() {
   return (
     <div className="main d-flex flex-column container">
       <div className="mt-5"></div>
-
       <Link className="text-primary medium font-weight-bold mb-3" to={`/topic/${post.topic.id}`}>
         &laquo; Back to topic [{post.topic.name}]
       </Link>
-
       <h2 className="d-flex ml-auto col-2">
-        <text style={{ fontSize: "20px", fontFamily: "Georgia" }}>
-          <a style={{ fontSize: "16px", fontVariantCaps: "small-caps" }}>topic:</a> <b>{post.topic.name}</b>
+        <text className="d-flex" style={{ fontSize: "20px", fontFamily: "Georgia" }}>
+          <a style={{ fontSize: "16px", fontVariantCaps: "small-caps", marginRight: ".5rem" }}>topic: </a>
+          <b className="ml-auto mr-5">{post.topic.name}</b>
         </text>
       </h2>
       <div className="content d-flex flex-column mt-4">

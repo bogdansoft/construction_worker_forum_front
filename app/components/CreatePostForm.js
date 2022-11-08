@@ -85,7 +85,7 @@ function CreatePost() {
   function showWarningIfDefaultTopicIsChanged() {
     if (location.state && location.state.topic.id != selectedTopic.id) {
       return (
-        <div className="ml-auto col-4" style={{ color: "FireBrick", font: "small-caps bold 14px/30px Georgia, serif" }}>
+        <div className="ml-auto" style={{ color: "FireBrick", font: "small-caps bold 14px/30px Georgia, serif" }}>
           original topic [<a style={{ color: "Navy" }}>{location.state.topic.name}</a>] changed!
         </div>
       )
@@ -109,7 +109,7 @@ function CreatePost() {
                 </CSSTransition>
               </span>
             </div>
-            <div className="ml-auto mr-5 col-2">
+            <div className="mt-1 ml-auto">
               <select className="mr-3" name="Topics" id="topics" onChange={e => handleTopicSelect(e)}>
                 <option default>{selectedTopic ? selectedTopic.name : "Topics:"}</option>
                 {topics.map(topic => {

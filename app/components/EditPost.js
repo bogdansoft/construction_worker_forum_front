@@ -6,6 +6,7 @@ import Axios from "axios"
 import StateContext from "../StateContext"
 import Loading from "./Loading"
 import DispatchContext from "../DispatchContext"
+import UnauthorizedAccessView from "./UnauthorizedAccessView"
 
 function EditPost() {
   const appState = useContext(StateContext)
@@ -157,14 +158,18 @@ function EditPost() {
   function showWarningIfDefaultTopicIsChanged() {
     if (state.topic.id !== selectedTopic.id) {
       return (
-        <div className="ml-auto col-4" style={{ color: "FireBrick", font: "small-caps bold 14px/30px Georgia, serif" }}>
+        <div className="ml-auto" style={{ color: "FireBrick", font: "small-caps bold 14px/30px Georgia, serif" }}>
           original topic [<a style={{ color: "Navy" }}>{state.topic.name}</a>] changed!
         </div>
       )
     }
   }
 
-  if (state.isFetching) return <Loading />
+  if (!appState.loggedIn) {
+    return <UnauthorizedAccessView />
+  } else if (state.isFetching) {
+    return <Loading />
+  }
   return (
     <form onSubmit={handleSubmit}>
       <div className="main d-flex flex-column container">
@@ -176,7 +181,7 @@ function EditPost() {
             <div className="ml-3 add-post-title">
               Title: <input onChange={e => dispatch({ type: "titleChange", value: e.target.value })} value={state.title} className="p-2 ml-3" type="text" />
             </div>
-            <div className="ml-auto mr-5 col-2">
+            <div className="mt-1 ml-auto">
               <select className="mr-3" name="Topics" id="topics" onChange={e => handleTopicSelect(e)}>
                 <option default>{state.topic.name}</option>
                 {topics.map(topic => {
