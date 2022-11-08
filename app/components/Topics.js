@@ -55,7 +55,7 @@ function Topics(props) {
 
   function handlePage(event) {
     setState((draft) => {
-      draft.pageNumber = event.target.textContent
+      draft.pageNumber = parseInt(event.target.textContent)
     })
   }
 
@@ -101,6 +101,9 @@ function Topics(props) {
                 paginate(e.target.value)
               }}
             >
+              <option value="" disabled selected>
+                Pagination
+              </option>
               <option value="10">10</option>
               <option value="20">20</option>
               <option value="30">30</option>
