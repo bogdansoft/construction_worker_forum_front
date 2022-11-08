@@ -51,12 +51,8 @@ function Main() {
         state.loggedIn = true;
         state.user = action.data;
         state.user.roles = jwtDecode(state.user.token).roles;
-        state.user.isAdmin = state.user.roles.includes("ADMINISTRATOR")
-          ? true
-          : false;
-        state.user.isSupport = state.user.roles.includes("SUPPORT")
-          ? true
-          : false;
+        state.user.isAdmin = state.user.roles.includes("ADMINISTRATOR");
+        state.user.isSupport = state.user.roles.includes("SUPPORT");
         break;
       case "logout":
         state.loggedIn = false;
@@ -89,14 +85,9 @@ function Main() {
       initialState.user.roles = jwtDecode(
         localStorage.getItem("constructionForumUserToken")
       ).roles;
-      initialState.user.isAdmin = initialState.user.roles.includes(
-        "ADMINISTRATOR"
-      )
-        ? true
-        : false;
-      initialState.user.isSupport = initialState.user.roles.includes("SUPPORT")
-        ? true
-        : false;
+      initialState.user.isAdmin =
+        initialState.user.roles.includes("ADMINISTRATOR");
+      initialState.user.isSupport = initialState.user.roles.includes("SUPPORT");
     } else {
       localStorage.removeItem("constructionForumUserId");
       localStorage.removeItem("constructionForumUsername");
