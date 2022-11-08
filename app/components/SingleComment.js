@@ -30,7 +30,8 @@ function SingleComment(props) {
   async function handleDelete() {
     const ourRequest = Axios.CancelToken.source()
     try {
-      await Axios.delete(`/api/comment/${props.comment.id}`, { headers: { Authorization: `Bearer ${token}` } }, { cancelToken: ourRequest.token })
+      const userId = props.comment.user.id
+      await Axios.delete(`/api/comment/${props.comment.id}`, { headers: { Authorization: `Bearer ${appState.user.token}` }, params: { userId } }, { cancelToken: ourRequest.token })
       appDispatch({ type: "flashMessage", value: "Comment succesfully deleted !", messageType: "message-green" })
       props.reload()
     } catch (e) {
@@ -85,6 +86,13 @@ function SingleComment(props) {
           <span onClick={deletePopup} className="material-symbols-outlined">
             {" "}
             delete{" "}
+            <CSSTransition in={isDeleting} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+              <div class="delete-absolute col-7">
+                <div className="delete-pop liveValidateMessage-delete ml-3">
+                  <DeleteModal delete={handleDelete} noDelete={deletePopup} />
+                </div>
+              </div>
+            </CSSTransition>
           </span>
         </div>
       )
@@ -139,11 +147,6 @@ function SingleComment(props) {
                   Created: {date} <span className="ml-2">by {props.comment.user.username}</span>
                 </span>
               </div>
-              <CSSTransition in={isDeleting} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-                <div className="delete-pop liveValidateMessage-delete ml-3">
-                  <DeleteModal delete={handleDelete} noDelete={deletePopup} />
-                </div>
-              </CSSTransition>
               {showEditAndDeleteButtons()}
             </div>
           )}
