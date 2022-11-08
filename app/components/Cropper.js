@@ -7,6 +7,7 @@ import getCroppedImg, { generateDownload } from "./utils/cropImage"
 import { IconButton, makeStyles } from "@material-ui/core"
 import { dataURLtoFile } from "./utils/dataURLtoFile"
 import Axios from "axios"
+import { Buffer } from "buffer"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 
@@ -71,11 +72,13 @@ export default function RenderCropper({ handleCropper, username, setAvatar }) {
       formData.append("file", convertedUrlToFile)
       formData.append("username", username)
       console.log(formData)
-      const response = await Axios.put(`/api/user/changeavatar`, formData, { headers: { Authorization: `Bearer ${appState.user.token}` } })
-      setAvatar(response)
-      console.log(response)
-    } catch {
-      console.log("There was a problem")
+      const response = await Axios.put(`/api/user/changeavatar`, formData, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { responseType: "arraybuffer" })
+      console.log("Response" + response)
+      let base64ImageString = Buffer.from(response.data, "binary").toString("base64")
+      setAvatar(base64ImageString)
+      console.log(base64ImageString)
+    } catch (e) {
+      console.log("There was a problem " + e)
     }
   }
 
