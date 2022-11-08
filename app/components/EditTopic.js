@@ -109,7 +109,7 @@ function EditTopic() {
     }
   }, [state.sendCount])
 
-  if (!appState.loggedIn) return <UnauthorizedAccessView />
+  if (!appState.loggedIn || !appState.user.isAdmin) return <UnauthorizedAccessView />
   return (
     <form onSubmit={handleSubmit}>
       <div className="main d-flex flex-column container">

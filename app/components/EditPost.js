@@ -168,10 +168,10 @@ function EditPost() {
     }
   }
 
-  if (!appState.loggedIn) {
-    return <UnauthorizedAccessView />
-  } else if (state.isFetching) {
+  if (state.isFetching) {
     return <Loading />
+  } else if (!appState.loggedIn || (!appState.user.isAdmin && state.userId != state.postAuthor.id && !appState.user.isSupport)) {
+    return <UnauthorizedAccessView />
   }
   return (
     <form onSubmit={handleSubmit}>
