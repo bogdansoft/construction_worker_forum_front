@@ -75,7 +75,6 @@ export default function RenderCropper({ handleCropper, username, setAvatar }) {
       const response = await Axios.put(`/api/user/changeavatar`, formData, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { responseType: "arraybuffer" })
       console.log("Response" + response)
       let base64ImageString = Buffer.from(response.data, "binary").toString("base64")
-      setAvatar(base64ImageString)
       console.log(base64ImageString)
     } catch (e) {
       console.log("There was a problem " + e)
