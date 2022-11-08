@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export const Message = ({ message, isSenderMessage, sender }) => {
   if (isSenderMessage) {
@@ -17,18 +18,18 @@ export const Message = ({ message, isSenderMessage, sender }) => {
   }
   return (
     <div className="chat-other">
-      <a href="#">
+      <Link to={`/profile/${sender}`}>
         <img
           className="avatar-tiny"
           src="https://gravatar.com/avatar/b9216295c1e3931655bae6574ac0e4c2?s=128"
           alt=""
         />
-      </a>
+      </Link>
       <div className="chat-message">
         <div className="chat-message-inner">
-          <a href="#">
+          <Link to={`/profile/${sender}`}>
             <strong>{sender}: </strong>
-          </a>
+          </Link>
           {message}
         </div>
       </div>
