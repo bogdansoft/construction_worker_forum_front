@@ -38,6 +38,13 @@ export const ChatWindow = ({ currentUser }) => {
 
   if (!activeContact) return null;
 
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (!messageContent) return;
+    sendMessage(messageContent);
+    setMessageContent("");
+  }
+
   return (
     <>
       <div className="chat-title-bar">Chat with {activeContact.username}</div>
@@ -52,21 +59,19 @@ export const ChatWindow = ({ currentUser }) => {
         ))}
       </div>
       <div id="chatForm" className="chat-form-inline">
-        <input
-          type="text"
-          onChange={(e) => setMessageContent(e.target.value)}
-          value={messageContent}
-          placeholder="Type a message…"
-          autoComplete="off"
-          autoFocus
-        />
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            onChange={(e) => setMessageContent(e.target.value)}
+            value={messageContent}
+            placeholder="Type a message…"
+            autoComplete="off"
+            autoFocus
+          />
+        </form>
         <button
           className="material-symbols-outlined no-outline"
-          onClick={() => {
-            if (!messageContent) return;
-            sendMessage(messageContent);
-            setMessageContent("");
-          }}
+          onClick={handleSubmit}
         >
           send
         </button>
