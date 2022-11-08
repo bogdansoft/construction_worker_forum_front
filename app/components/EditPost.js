@@ -7,6 +7,7 @@ import StateContext from "../StateContext"
 import Loading from "./Loading"
 import DispatchContext from "../DispatchContext"
 import UnauthorizedAccessView from "./UnauthorizedAccessView"
+import ShowAuthor from "./ShowAuthor"
 
 function EditPost() {
   const appState = useContext(StateContext)
@@ -19,6 +20,7 @@ function EditPost() {
     title: "",
     originalTitle: "",
     content: "",
+    postAuthor: undefined,
     topic: undefined,
     isFetching: true,
     isSaving: false,
@@ -36,6 +38,7 @@ function EditPost() {
         draft.title = action.value.title
         draft.originalTitle = action.value.title
         draft.content = action.value.content
+        draft.postAuthor = action.value.user
         draft.topic = action.value.topic
         draft.isFetching = false
         draft.userId = appState.user.id
@@ -174,10 +177,13 @@ function EditPost() {
     <form onSubmit={handleSubmit}>
       <div className="main d-flex flex-column container">
         <div className="content d-flex flex-column mt-4">
-          <Link className="text-primary medium font-weight-bold mb-3" to={`/post/${state.id}`}>
-            &laquo; Back to post [{state.originalTitle}]
-          </Link>
-          <div className="d-flex flex-row">
+          <div className="p-2">
+            <Link className="text-primary medium font-weight-bold mb-3" to={`/post/${state.id}`}>
+              &laquo; Back to post [{state.originalTitle}]
+            </Link>
+            <ShowAuthor contentAuthor={state.postAuthor} onlyForAdmin={true} />
+          </div>
+          <div className="d-flex flex-row mt-2">
             <div className="ml-3 add-post-title">
               Title: <input onChange={e => dispatch({ type: "titleChange", value: e.target.value })} value={state.title} className="p-2 ml-3" type="text" />
             </div>

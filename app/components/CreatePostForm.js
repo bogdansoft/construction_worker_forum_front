@@ -5,6 +5,7 @@ import { CSSTransition } from "react-transition-group"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 import Loading from "./Loading"
+import UnauthorizedAccessView from "./UnauthorizedAccessView"
 
 function CreatePost() {
   const [title, setTitle] = useState()
@@ -92,7 +93,11 @@ function CreatePost() {
     }
   }
 
-  if (isLoading) return <Loading />
+  if (!appState.loggedIn) {
+    return <UnauthorizedAccessView />
+  } else if (isLoading) {
+    return <Loading />
+  }
   return (
     <form onSubmit={handleSubmit}>
       <div className="main d-flex flex-column container">
