@@ -1,9 +1,11 @@
-import React, { useState, useContext } from "react"
+import React, { useState, useContext, useEffect } from "react"
 import Axios from "axios"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 import DeleteModal from "./DeleteModal"
 import { CSSTransition } from "react-transition-group"
+import { useImmer } from "use-immer"
+import LikeButton from "./LikeButton"
 
 function SingleComment(props) {
   const appDispatch = useContext(DispatchContext)
@@ -16,6 +18,13 @@ function SingleComment(props) {
     year: "numeric",
     month: "short",
     day: "numeric"
+  })
+  const [state, setState] = useImmer({
+    commentId: props.comment.id,
+    commentLikesCount: props.comment.likers.length,
+    isCommentLikedByUser: props.comment.likers.filter(user => user.id == appState.user.id).length > 0,
+    isCommentOwnedByUser: props.comment.user.id == appState.user.id,
+    like: 0
   })
 
   async function handleDelete() {
@@ -32,6 +41,7 @@ function SingleComment(props) {
       ourRequest.cancel()
     }
   }
+
   async function handleSubmit(e) {
     e.preventDefault()
     const ourRequest = Axios.CancelToken.source()
@@ -81,6 +91,37 @@ function SingleComment(props) {
     }
   }
 
+  useEffect(() => {
+    if (state.like) {
+      const ourRequest = Axios.CancelToken.source()
+      async function fetchLikeCommentData() {
+        try {
+          if (!state.isCommentLikedByUser) {
+            await Axios.post(`/api/comment/like?userId=${appState.user.id}&commentId=${state.commentId}`, {}, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+            appDispatch({ type: "flashMessage", value: "Comment liked successfully!", messageType: "message-green" })
+            setState(draft => {
+              draft.isCommentLikedByUser = true
+              draft.commentLikesCount++
+            })
+          } else {
+            await Axios.delete(`/api/comment/like?userId=${appState.user.id}&commentId=${state.commentId}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+            appDispatch({ type: "flashMessage", value: "Comment unliked successfully!", messageType: "message-green" })
+            setState(draft => {
+              draft.isCommentLikedByUser = false
+              draft.commentLikesCount--
+            })
+          }
+        } catch (e) {
+          console.log("There was a problem or the request was cancelled." + e)
+        }
+      }
+      fetchLikeCommentData()
+      return () => {
+        ourRequest.cancel()
+      }
+    }
+  }, [state.like])
+
   return (
     <div className="single-topic container d-flex mt-4">
       <div className="avatar align-self-center d-flex flex-column text-center">
@@ -120,7 +161,19 @@ function SingleComment(props) {
           )}
         </div>
         <div className="col-1 d-flex">
-          <span className="material-symbols-outlined mr-2 mt-2"> thumb_up </span>
+          <div style={{ fontSize: "15px" }}>{state.commentLikesCount}</div>
+          <a
+            onClick={
+              !state.isCommentOwnedByUser
+                ? () =>
+                    setState(draft => {
+                      draft.like++
+                    })
+                : null
+            }
+          >
+            <LikeButton isLiked={state.isCommentLikedByUser} isOwner={state.isCommentOwnedByUser}></LikeButton>
+          </a>
           <span className="material-symbols-outlined mt-2"> reply </span>
         </div>
       </div>
