@@ -6,34 +6,52 @@ import Topic from "./Topic"
 import Loading from "./Loading"
 import StateContext from "../StateContext"
 import ReactTooltip from "react-tooltip"
+import { Pagination } from "@mui/material"
 
 function Topics(props) {
   const appState = useContext(StateContext)
   const navigate = useNavigate()
   const [state, setState] = useImmer({
     feed: [],
-    reloadCounter: 0,
-    isLoading: true
+    isLoading: true,
+    paginationValue: 10,
+    pagesNumber: 1,
+    pageNumber: 1,
   })
 
   useEffect(() => {
     async function fetchData() {
       try {
         const resposne = await Axios.get("/api/topic")
-        setState(draft => {
+        setState((draft) => {
           draft.feed = resposne.data
           draft.isLoading = false
+          draft.pagesNumber = Math.ceil(resposne.data.length / 10)
         })
       } catch (e) {
         console.log("there was a problem fetching the data" + e)
       }
     }
     fetchData()
-  }, [state.reloadCounter])
+  }, [])
 
-  function reload() {
-    setState(draft => {
-      draft.reloadCounter++
+  function handlePage(event) {
+    setState((draft) => {
+      draft.pageNumber = event.target.textContent
+    })
+  }
+
+  function paginate(value) {
+    setState((draft) => {
+      draft.paginationValue = value
+      draft.pagesNumber = Math.ceil(draft.feed.length / value)
+    })
+  }
+
+  function renderTopics(value) {
+    const sliceTopics = state.feed.slice((state.pageNumber - 1) * 10, value * state.pageNumber)
+    return sliceTopics.map((topic) => {
+      return <Topic topic={topic} key={topic.id} author={topic.user} />
     })
   }
 
@@ -57,12 +75,18 @@ function Topics(props) {
                 <ReactTooltip id="add-new-topic" className="custom-tooltip" />
               </button>
             ) : null}
-            <select className="mr-3" name="Pagination" id="pagination">
-              <option>Pagination</option>
-              <option>10</option>
-              <option>20</option>
-              <option>30</option>
-              <option>40</option>
+            <select
+              className="mr-3"
+              name="Pagination"
+              id="pagination"
+              onChange={(e) => {
+                paginate(e.target.value)
+              }}
+            >
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="30">30</option>
+              <option value="40">40</option>
             </select>
             <select className="mr-3" name="Sorting" id="sorting">
               <option>Sorting</option>
@@ -76,9 +100,10 @@ function Topics(props) {
             </div>
           </div>
         </div>
-        {state.feed.map(topic => {
-          return <Topic topic={topic} key={topic.id} author={topic.user} reload={reload} />
-        })}
+        {renderTopics(state.paginationValue)}
+        <div className="mt-2 align-items-right">
+          <Pagination count={state.pagesNumber} shape="rounded" onChange={handlePage} />
+        </div>
       </div>
     </div>
   )
