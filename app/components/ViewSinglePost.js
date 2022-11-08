@@ -22,6 +22,7 @@ function ViewSinglePost() {
     author: "",
     postLikesCount: 0,
     isPostLikedByUser: false,
+    isPostOwnedByUser: false,
     commentToAdd: {
       content: "",
       userId: localStorage.getItem("constructionForumUserId"),
@@ -49,6 +50,7 @@ function ViewSinglePost() {
           draft.author = response.data.user
           draft.postLikesCount = response.data.likers.length
           draft.isPostLikedByUser = response.data.likers.filter(user => user.id == appState.user.id).length > 0
+          draft.isPostOwnedByUser = response.data.user.id == appState.user.id
           draft.isLoading = false
         })
       } catch (e) {
@@ -241,13 +243,16 @@ function ViewSinglePost() {
             <div className="ml-auto"></div>
             <div style={{ fontSize: "15px" }}>{state.postLikesCount}</div>
             <a
-              onClick={() =>
-                setState(draft => {
-                  draft.like++
-                })
+              onClick={
+                !state.isPostOwnedByUser
+                  ? () =>
+                      setState(draft => {
+                        draft.like++
+                      })
+                  : null
               }
             >
-              <LikeButton isLiked={state.isPostLikedByUser}></LikeButton>
+              <LikeButton isLiked={state.isPostLikedByUser} isOwner={state.isPostOwnedByUser}></LikeButton>
             </a>
             <span className="material-symbols-outlined mr-3"> chat </span>
             <span className="material-symbols-outlined mr-3"> share </span>

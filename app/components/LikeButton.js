@@ -18,6 +18,14 @@ function LikeButton(props) {
     }
   }, [animationTrigger])
 
+  if (props.isOwner) {
+    return (
+      <span type="like" className="material-symbols-outlined mr-3" style={{ color: "gray", cursor: "none" }}>
+        thumb_up
+      </span>
+    )
+  }
+
   return (
     <span type="like" className="material-symbols-outlined mr-3" data-tip="Like post!" data-for="like" style={{ animation: animation, color: color }} anim>
       thumb_up

@@ -23,6 +23,7 @@ function SingleComment(props) {
     commentId: props.comment.id,
     commentLikesCount: props.comment.likers.length,
     isCommentLikedByUser: props.comment.likers.filter(user => user.id == appState.user.id).length > 0,
+    isCommentOwnedByUser: props.comment.user.id == appState.user.id,
     like: 0
   })
 
@@ -162,13 +163,16 @@ function SingleComment(props) {
         <div className="col-1 d-flex">
           <div style={{ fontSize: "15px" }}>{state.commentLikesCount}</div>
           <a
-            onClick={() =>
-              setState(draft => {
-                draft.like++
-              })
+            onClick={
+              !state.isCommentOwnedByUser
+                ? () =>
+                    setState(draft => {
+                      draft.like++
+                    })
+                : null
             }
           >
-            <LikeButton isLiked={state.isCommentLikedByUser}></LikeButton>
+            <LikeButton isLiked={state.isCommentLikedByUser} isOwner={state.isCommentOwnedByUser}></LikeButton>
           </a>
           <span className="material-symbols-outlined mt-2"> reply </span>
         </div>
