@@ -24,8 +24,10 @@ import FlashMessages from "./components/FlashMessages"
 import ViewSingleTopic from "./components/ViewSingleTopic"
 import NotFound from "./components/NotFound"
 import Logout from "./components/Logout"
+import Chat from "./components/chat/Chat";
 
-Axios.defaults.baseURL = "http://localhost:8080"
+
+Axios.defaults.baseURL = "http://localhost:8080";
 
 function Main() {
   //
@@ -70,7 +72,7 @@ function Main() {
     }
   }
 
-  const [state, dispatch] = useImmerReducer(ourReducer, initialState)
+  const [state, dispatch] = useImmerReducer(ourReducer, initialState);
 
   useEffect(() => {
     if (state.loggedIn) {
@@ -81,11 +83,11 @@ function Main() {
       initialState.user.isAdmin = initialState.user.roles.includes("ADMINISTRATOR") ? true : false
       initialState.user.isSupport = initialState.user.roles.includes("SUPPORT") ? true : false
     } else {
-      localStorage.removeItem("constructionForumUserId")
-      localStorage.removeItem("constructionForumUsername")
-      localStorage.removeItem("constructionForumUserToken")
+      localStorage.removeItem("constructionForumUserId");
+      localStorage.removeItem("constructionForumUsername");
+      localStorage.removeItem("constructionForumUserToken");
     }
-  }, [state.loggedIn])
+  }, [state.loggedIn]);
 
   return (
     <StateContext.Provider value={state}>
@@ -112,18 +114,19 @@ function Main() {
             <Route path="/post/:id" element={<ViewSinglePost />} />
             <Route path="/topic/:id" element={<ViewSingleTopic />} />
             <Route path="*" element={<NotFound />} />
+            <Route path="/chat" element={<Chat />} />
           </Routes>
           {state.loggedIn ? <Logout /> : null}
           <Footer />
         </BrowserRouter>
       </DispatchContext.Provider>
     </StateContext.Provider>
-  )
+  );
 }
 
-const root = ReactDOM.createRoot(document.querySelector("#app"))
-root.render(<Main />)
+const root = ReactDOM.createRoot(document.querySelector("#app"));
+root.render(<Main />);
 
 if (module.hot) {
-  module.hot.accept()
+  module.hot.accept();
 }
