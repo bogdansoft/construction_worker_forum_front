@@ -86,6 +86,13 @@ function SingleComment(props) {
           <span onClick={deletePopup} className="material-symbols-outlined">
             {" "}
             delete{" "}
+            <CSSTransition in={isDeleting} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+              <div class="delete-absolute col-7">
+                <div className="delete-pop liveValidateMessage-delete ml-3">
+                  <DeleteModal delete={handleDelete} noDelete={deletePopup} />
+                </div>
+              </div>
+            </CSSTransition>
           </span>
         </div>
       )
@@ -140,11 +147,6 @@ function SingleComment(props) {
                   Created: {date} <span className="ml-2">by {props.comment.user.username}</span>
                 </span>
               </div>
-              <CSSTransition in={isDeleting} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-                <div className="delete-pop liveValidateMessage-delete ml-3">
-                  <DeleteModal delete={handleDelete} noDelete={deletePopup} />
-                </div>
-              </CSSTransition>
               {showEditAndDeleteButtons()}
             </div>
           )}

@@ -756,10 +756,14 @@ input:focus {
 }
 
 .liveValidateMessage-delete {
-  top: 50px;
-  left: 550px;
-  position: absolute;
+  position: relative;
+  left: -100px;
   z-index: 1;
+}
+.delete-absolute {
+  font-size: 1em;
+  font-family: "Roboto", sans-serif;
+  position: absolute;
 }
 .delete-pop {
   background-color: white;
@@ -770,6 +774,7 @@ input:focus {
 .delete-button {
   text-align: center;
   border-radius: 10px;
+  font-size: 0.5em;
 }
 .delete-button-yes {
   background-color: darkgreen;
@@ -783,7 +788,6 @@ input:focus {
 .delete-button-no:hover {
   background-color: red;
 }
-
 .avatar-container {
   width: 10rem;
   height: 10rem;
