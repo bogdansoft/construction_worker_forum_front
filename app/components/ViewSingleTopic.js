@@ -102,6 +102,13 @@ function ViewSingleTopic(props) {
           <span onClick={deletePopup} className="material-symbols-outlined link-black" data-tip="Delete" data-for="delete">
             delete
           </span>
+          <CSSTransition in={isDeleting} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+            <div class="delete-absolute container">
+              <div className="delete-pop col-4 ml-auto mr-auto liveValidateMessage-delete ml-3">
+                <DeleteModal delete={handleDelete} noDelete={deletePopup} />
+              </div>
+            </div>
+          </CSSTransition>
           <ReactTooltip id="delete" className="custom-tooltip" />
         </div>
       )
@@ -122,11 +129,6 @@ function ViewSingleTopic(props) {
       <Link className="text-primary medium font-weight-bold mb-3" to={`/`}>
         &laquo; Back to topics
       </Link>
-      <CSSTransition in={isDeleting} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-        <div className="delete-pop liveValidateMessage-delete ml-3">
-          <DeleteModal delete={handleDelete} noDelete={deletePopup} posts={posts} />
-        </div>
-      </CSSTransition>
       {showContextDependingOnPermission()}
       <div className="content mt-2 mr-auto p-4">{topic.description}</div>
       <div className="content container d-flex flex-column mt-4">
