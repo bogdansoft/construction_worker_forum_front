@@ -185,7 +185,7 @@ function ViewSinglePost() {
   }
 
   function showEditAndDeleteButtons() {
-    if (loggedIn && appState.user.id == state.author.id) {
+    if (loggedIn && (appState.user.id == state.author.id || appState.user.isAdmin) && (appState.user.isSupport || appState.user.isAdmin)) {
       return (
         <div className="d-flex flex-row ml-auto">
           <Link to={`/post/edit/${id}`} data-tip="Edit" data-for="edit" className="text-primary mr-2">
@@ -237,28 +237,30 @@ function ViewSinglePost() {
           </div>
           {showEditAndDeleteButtons()}
         </div>
-        <div>
-          <div className="d-flex flex-row mt-3">
-            <div className="ml-auto"></div>
-            <div style={{ fontSize: "15px" }}>{state.postLikesCount}</div>
-            <a
-              onClick={
-                !state.isPostOwnedByUser
-                  ? () =>
-                      setState(draft => {
-                        draft.like++
-                      })
-                  : null
-              }
-            >
-              <LikeButton isLiked={state.isPostLikedByUser} isOwner={state.isPostOwnedByUser}></LikeButton>
-            </a>
-            <span className="material-symbols-outlined mr-3"> chat </span>
-            <span className="material-symbols-outlined mr-3"> share </span>
-            <span className="material-symbols-outlined mr-3"> report </span>
-            <span className="material-symbols-outlined mr-3"> bookmark </span>
+        {loggedIn ? (
+          <div>
+            <div className="d-flex flex-row mt-3">
+              <div className="ml-auto"></div>
+              <div style={{ fontSize: "15px" }}>{state.postLikesCount}</div>
+              <a
+                onClick={
+                  !state.isPostOwnedByUser
+                    ? () =>
+                        setState(draft => {
+                          draft.like++
+                        })
+                    : null
+                }
+              >
+                <LikeButton isLiked={state.isPostLikedByUser} isOwner={state.isPostOwnedByUser}></LikeButton>
+              </a>
+              <span className="material-symbols-outlined mr-3"> chat </span>
+              <span className="material-symbols-outlined mr-3"> share </span>
+              <span className="material-symbols-outlined mr-3"> report </span>
+              <span className="material-symbols-outlined mr-3"> bookmark </span>
+            </div>
           </div>
-        </div>
+        ) : null}
       </div>
       {loggedIn ? (
         <>
