@@ -17,6 +17,7 @@ function Topics(props) {
     paginationValue: 10,
     pagesNumber: 1,
     pageNumber: 1,
+    numberOfRecords: 1,
   })
 
   useEffect(() => {
@@ -24,7 +25,8 @@ function Topics(props) {
       try {
         const resposne = await Axios.get("/api/topic")
         setState((draft) => {
-          draft.feed = resposne.data
+          draft.numberOfRecords = resposne.data.length
+          draft.feed = resposne.data.slice(0, 10)
           draft.isLoading = false
           draft.pagesNumber = Math.ceil(resposne.data.length / 10)
         })
@@ -35,6 +37,22 @@ function Topics(props) {
     fetchData()
   }, [])
 
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const resposne = await Axios.get(`/api/topic/number/${state.paginationValue}/page/${state.pageNumber}`)
+        setState((draft) => {
+          draft.feed = resposne.data
+          draft.isLoading = false
+          renderTopics
+        })
+      } catch (e) {
+        console.log("there was a problem fetching the data" + e)
+      }
+    }
+    fetchData()
+  }, [state.pageNumber, state.paginationValue])
+
   function handlePage(event) {
     setState((draft) => {
       draft.pageNumber = event.target.textContent
@@ -43,14 +61,14 @@ function Topics(props) {
 
   function paginate(value) {
     setState((draft) => {
+      draft.pageNumber = 1
       draft.paginationValue = value
-      draft.pagesNumber = Math.ceil(draft.feed.length / value)
+      draft.pagesNumber = Math.ceil(state.numberOfRecords / value)
     })
   }
 
-  function renderTopics(value) {
-    const sliceTopics = state.feed.slice((state.pageNumber - 1) * 10, value * state.pageNumber)
-    return sliceTopics.map((topic) => {
+  function renderTopics() {
+    return state.feed.map((topic) => {
       return <Topic topic={topic} key={topic.id} author={topic.user} />
     })
   }
@@ -100,9 +118,9 @@ function Topics(props) {
             </div>
           </div>
         </div>
-        {renderTopics(state.paginationValue)}
+        {renderTopics()}
         <div className="mt-2 align-items-right">
-          <Pagination count={state.pagesNumber} shape="rounded" onChange={handlePage} />
+          <Pagination count={state.pagesNumber} page={state.pageNumber} defaultPage={1} shape="rounded" onChange={handlePage} />
         </div>
       </div>
     </div>
