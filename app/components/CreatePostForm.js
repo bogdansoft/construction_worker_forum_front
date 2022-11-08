@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useState } from "react"
 import Axios from "axios"
 import { useNavigate, Link, useLocation } from "react-router-dom"
+import { CSSTransition } from "react-transition-group"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 import Loading from "./Loading"
+import UnauthorizedAccessView from "./UnauthorizedAccessView"
 
 function CreatePost() {
   const [title, setTitle] = useState()
@@ -21,7 +23,7 @@ function CreatePost() {
     e.preventDefault()
     const ourRequest = Axios.CancelToken.source()
 
-     if (!title || !content || title.length >= 50 || title.length < 3 || content.length >= 1000 || content.length < 3) {
+    if (!title || !content || title.length >= 50 || title.length < 3 || content.length >= 1000 || content.length < 3) {
       appDispatch({ type: "flashMessage", value: "Invalid title or content!", messageType: "message-red" })
       return
     } else if (selectedTopic === undefined) {
@@ -84,23 +86,35 @@ function CreatePost() {
   function showWarningIfDefaultTopicIsChanged() {
     if (location.state && location.state.topic.id != selectedTopic.id) {
       return (
-        <div className="ml-auto col-4" style={{ color: "FireBrick", font: "small-caps bold 14px/30px Georgia, serif" }}>
+        <div className="ml-auto" style={{ color: "FireBrick", font: "small-caps bold 14px/30px Georgia, serif" }}>
           original topic [<a style={{ color: "Navy" }}>{location.state.topic.name}</a>] changed!
         </div>
       )
     }
   }
 
-  if (isLoading) return <Loading />
+  if (!appState.loggedIn) {
+    return <UnauthorizedAccessView />
+  } else if (isLoading) {
+    return <Loading />
+  }
   return (
     <form onSubmit={handleSubmit}>
       <div className="main d-flex flex-column container">
         <div className="content d-flex flex-column mt-4">
           <div className="d-flex flex-row">
-            <div className="ml-3 add-post-title">
-              Title: <input onChange={e => setTitle(e.target.value)} className="p-2 ml-3" type="text" />
+            <div>
+              {" "}
+              <div className="ml-3 add-post-title">
+                Title: <input onChange={e => setTitle(e.target.value)} className="p-2 ml-3" type="text" />
+              </div>
+              <span className="form-group ml-5 d-flex" style={{ fontSize: "13px" }}>
+                <CSSTransition in={!title || title.length < 3 || title.length > 50} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+                  <div className="alert alert-danger mt-2 ml-5 liveValidateMessage">{!title || title.length > 50 ? "Empty title or too long (max. 50 sings)" : "Title too short (min. 3 signs)"}</div>
+                </CSSTransition>
+              </span>
             </div>
-            <div className="ml-auto mr-5 col-2">
+            <div className="mt-1 ml-auto">
               <select className="mr-3" name="Topics" id="topics" onChange={e => handleTopicSelect(e)}>
                 <option default>{selectedTopic ? selectedTopic.name : "Topics:"}</option>
                 {topics.map(topic => {
@@ -114,6 +128,11 @@ function CreatePost() {
           <div className="mt-3 ml-auto mr-auto">
             <textarea onChange={e => setContent(e.target.value)} className="post-textarea p-2 ml-5" rows="10" cols="100"></textarea>
           </div>
+          <span className="form-group ml-5 d-flex" style={{ fontSize: "13px" }}>
+            <CSSTransition in={!content || content.length > 1000} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+              <div className="alert alert-danger ml-5 liveValidateMessage">{"Empty description or too long (max. 1000 signs)"}</div>
+            </CSSTransition>
+          </span>
           <div className="d-flex align-items-center mt-3">
             <div className="d-flex mt-3">
               <span className="mr-4">Tags: </span>

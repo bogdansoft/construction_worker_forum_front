@@ -1,9 +1,11 @@
-import React, { useState, useContext } from "react"
+import React, { useState, useContext, useEffect } from "react"
 import Axios from "axios"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 import DeleteModal from "./DeleteModal"
 import { CSSTransition } from "react-transition-group"
+import { useImmer } from "use-immer"
+import LikeButton from "./LikeButton"
 
 function SingleComment(props) {
   const appDispatch = useContext(DispatchContext)
@@ -17,11 +19,19 @@ function SingleComment(props) {
     month: "short",
     day: "numeric"
   })
+  const [state, setState] = useImmer({
+    commentId: props.comment.id,
+    commentLikesCount: props.comment.likers.length,
+    isCommentLikedByUser: props.comment.likers.filter(user => user.id == appState.user.id).length > 0,
+    isCommentOwnedByUser: props.comment.user.id == appState.user.id,
+    like: 0
+  })
 
   async function handleDelete() {
     const ourRequest = Axios.CancelToken.source()
     try {
-      await Axios.delete(`/api/comment/${props.comment.id}`, { headers: { Authorization: `Bearer ${token}` } }, { cancelToken: ourRequest.token })
+      const userId = props.comment.user.id
+      await Axios.delete(`/api/comment/${props.comment.id}`, { headers: { Authorization: `Bearer ${appState.user.token}` }, params: { userId } }, { cancelToken: ourRequest.token })
       appDispatch({ type: "flashMessage", value: "Comment succesfully deleted !", messageType: "message-green" })
       props.reload()
     } catch (e) {
@@ -32,6 +42,7 @@ function SingleComment(props) {
       ourRequest.cancel()
     }
   }
+
   async function handleSubmit(e) {
     e.preventDefault()
     const ourRequest = Axios.CancelToken.source()
@@ -75,11 +86,49 @@ function SingleComment(props) {
           <span onClick={deletePopup} className="material-symbols-outlined">
             {" "}
             delete{" "}
+            <CSSTransition in={isDeleting} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+              <div class="delete-absolute col-7">
+                <div className="delete-pop liveValidateMessage-delete ml-3">
+                  <DeleteModal delete={handleDelete} noDelete={deletePopup} />
+                </div>
+              </div>
+            </CSSTransition>
           </span>
         </div>
       )
     }
   }
+
+  useEffect(() => {
+    if (state.like) {
+      const ourRequest = Axios.CancelToken.source()
+      async function fetchLikeCommentData() {
+        try {
+          if (!state.isCommentLikedByUser) {
+            await Axios.post(`/api/comment/like?userId=${appState.user.id}&commentId=${state.commentId}`, {}, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+            appDispatch({ type: "flashMessage", value: "Comment liked successfully!", messageType: "message-green" })
+            setState(draft => {
+              draft.isCommentLikedByUser = true
+              draft.commentLikesCount++
+            })
+          } else {
+            await Axios.delete(`/api/comment/like?userId=${appState.user.id}&commentId=${state.commentId}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+            appDispatch({ type: "flashMessage", value: "Comment unliked successfully!", messageType: "message-green" })
+            setState(draft => {
+              draft.isCommentLikedByUser = false
+              draft.commentLikesCount--
+            })
+          }
+        } catch (e) {
+          console.log("There was a problem or the request was cancelled." + e)
+        }
+      }
+      fetchLikeCommentData()
+      return () => {
+        ourRequest.cancel()
+      }
+    }
+  }, [state.like])
 
   return (
     <div className="single-topic container d-flex mt-4">
@@ -98,11 +147,6 @@ function SingleComment(props) {
                   Created: {date} <span className="ml-2">by {props.comment.user.username}</span>
                 </span>
               </div>
-              <CSSTransition in={isDeleting} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-                <div className="delete-pop liveValidateMessage-delete ml-3">
-                  <DeleteModal delete={handleDelete} noDelete={deletePopup} />
-                </div>
-              </CSSTransition>
               {showEditAndDeleteButtons()}
             </div>
           )}
@@ -120,7 +164,19 @@ function SingleComment(props) {
           )}
         </div>
         <div className="col-1 d-flex">
-          <span className="material-symbols-outlined mr-2 mt-2"> thumb_up </span>
+          <div style={{ fontSize: "15px" }}>{state.commentLikesCount}</div>
+          <a
+            onClick={
+              !state.isCommentOwnedByUser
+                ? () =>
+                    setState(draft => {
+                      draft.like++
+                    })
+                : null
+            }
+          >
+            <LikeButton isLiked={state.isCommentLikedByUser} isOwner={state.isCommentOwnedByUser}></LikeButton>
+          </a>
           <span className="material-symbols-outlined mt-2"> reply </span>
         </div>
       </div>

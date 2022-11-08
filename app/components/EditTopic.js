@@ -5,6 +5,7 @@ import Axios from "axios"
 import { CSSTransition } from "react-transition-group"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
+import UnauthorizedAccessView from "./UnauthorizedAccessView"
 
 function EditTopic() {
   const appState = useContext(StateContext)
@@ -108,6 +109,7 @@ function EditTopic() {
     }
   }, [state.sendCount])
 
+  if (!appState.loggedIn) return <UnauthorizedAccessView />
   return (
     <form onSubmit={handleSubmit}>
       <div className="main d-flex flex-column container">

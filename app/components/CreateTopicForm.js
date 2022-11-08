@@ -4,6 +4,7 @@ import { useNavigate, Link } from "react-router-dom"
 import { CSSTransition } from "react-transition-group"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
+import UnauthorizedAccessView from "./UnauthorizedAccessView"
 
 function CreateTopicForm(props) {
   const [name, setName] = useState()
@@ -39,6 +40,7 @@ function CreateTopicForm(props) {
     }
   }
 
+  if (!appState.loggedIn) return <UnauthorizedAccessView />
   return (
     <form onSubmit={handleSubmit}>
       <div className="form-label">

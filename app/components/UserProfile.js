@@ -32,8 +32,8 @@ function UserProfile() {
         if (state.bio !== "") {
           setIsBioPresent(true)
         }
-      } catch {
-        console.log("There was a problem")
+      } catch (e) {
+        console.log("There was a problem" + e.message)
         navigate(`/notfound`)
       }
     }
