@@ -1,10 +1,14 @@
 /**
  * @jest-environment jsdom
  */
-import { render } from "@testing-library/react"
+import { render, cleanup, screen, fireEvent, act } from "@testing-library/react"
+import "@testing-library/jest-dom"
 import React from "react"
 import Login from "../Login"
-test("test", () => {
+
+afterEach(cleanup)
+test("test login page render", () => {
   render(<Login />)
-  expect(true).toBe(true)
+  expect(screen.getByText("No Account? Sign Up")).toBeInTheDocument()
+  expect(screen.getByRole("button", { type: "submit" })).toBeEnabled()
 })
