@@ -8,6 +8,7 @@ import { CSSTransition } from "react-transition-group"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 import Loading from "./Loading"
+import LikeButton from "./LikeButton"
 
 function ViewSinglePost() {
   const navigate = useNavigate()
@@ -19,6 +20,9 @@ function ViewSinglePost() {
   const appState = useContext(StateContext)
   const [state, setState] = useImmer({
     author: "",
+    postLikesCount: 0,
+    isPostLikedByUser: false,
+    isPostOwnedByUser: false,
     commentToAdd: {
       content: "",
       userId: localStorage.getItem("constructionForumUserId"),
@@ -31,7 +35,8 @@ function ViewSinglePost() {
     },
     isLoading: true,
     reloadCounter: 0,
-    delete: 0
+    delete: 0,
+    like: 0
   })
 
   useEffect(() => {
@@ -43,6 +48,9 @@ function ViewSinglePost() {
         setPost(response.data)
         setState(draft => {
           draft.author = response.data.user
+          draft.postLikesCount = response.data.likers.length
+          draft.isPostLikedByUser = response.data.likers.filter(user => user.id == appState.user.id).length > 0
+          draft.isPostOwnedByUser = response.data.user.id == appState.user.id
           draft.isLoading = false
         })
       } catch (e) {
@@ -107,11 +115,42 @@ function ViewSinglePost() {
   }, [state.commentToAdd.listener])
 
   useEffect(() => {
+    if (state.like) {
+      const ourRequest = Axios.CancelToken.source()
+      async function fetchLikePostData() {
+        try {
+          if (!state.isPostLikedByUser) {
+            await Axios.post(`/api/post/like?userId=${appState.user.id}&postId=${id}`, {}, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+            appDispatch({ type: "flashMessage", value: "Post liked successfully!", messageType: "message-green" })
+            setState(draft => {
+              draft.isPostLikedByUser = true
+              draft.postLikesCount++
+            })
+          } else {
+            await Axios.delete(`/api/post/like?userId=${appState.user.id}&postId=${id}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+            appDispatch({ type: "flashMessage", value: "Post unliked successfully!", messageType: "message-green" })
+            setState(draft => {
+              draft.isPostLikedByUser = false
+              draft.postLikesCount--
+            })
+          }
+        } catch (e) {
+          console.log("There was a problem or the request was cancelled." + e)
+        }
+      }
+      fetchLikePostData()
+      return () => {
+        ourRequest.cancel()
+      }
+    }
+  }, [state.like])
+
+  useEffect(() => {
     if (state.delete) {
       const ourRequest = Axios.CancelToken.source()
       async function fetchData() {
         try {
-          await Axios.delete(`/api/post/${id}`, { headers: { Authorization: `Bearer ${appState.token}` } })
+          await Axios.delete(`/api/post/${id}`, { headers: { Authorization: `Bearer ${appState.user.token}` } })
           appDispatch({ type: "flashMessage", value: "Post succesfully deleted !", messageType: "message-green" })
           navigate("/")
         } catch (e) {
@@ -200,10 +239,22 @@ function ViewSinglePost() {
           {showEditAndDeleteButtons()}
         </div>
         <div>
-          <div className="d-flex flex-row">
+          <div className="d-flex flex-row mt-3">
             <div className="ml-auto"></div>
+            <div style={{ fontSize: "15px" }}>{state.postLikesCount}</div>
+            <a
+              onClick={
+                !state.isPostOwnedByUser
+                  ? () =>
+                      setState(draft => {
+                        draft.like++
+                      })
+                  : null
+              }
+            >
+              <LikeButton isLiked={state.isPostLikedByUser} isOwner={state.isPostOwnedByUser}></LikeButton>
+            </a>
             <span className="material-symbols-outlined mr-3"> chat </span>
-            <span className="material-symbols-outlined mr-3"> thumb_up </span>
             <span className="material-symbols-outlined mr-3"> share </span>
             <span className="material-symbols-outlined mr-3"> report </span>
             <span className="material-symbols-outlined mr-3"> bookmark </span>
