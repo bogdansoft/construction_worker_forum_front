@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Message } from "./Message";
 import { useStompClient } from "./useStompClient";
 import ChatContext from "./Chat.context";
@@ -13,6 +13,11 @@ export const ChatWindow = ({ currentUser }) => {
   }, currentUser);
   const { activeContact } = useContext(ChatContext);
   const appState = useContext(StateContext);
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
     if (!activeContact) return;
@@ -20,6 +25,10 @@ export const ChatWindow = ({ currentUser }) => {
       headers: { Authorization: `Bearer ${appState.user.token}` },
     }).then((r) => setMessages(r.data));
   }, [activeContact]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const sendMessage = (msg) => {
     if (msg.trim() !== "") {
@@ -38,6 +47,13 @@ export const ChatWindow = ({ currentUser }) => {
 
   if (!activeContact) return null;
 
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (!messageContent) return;
+    sendMessage(messageContent);
+    setMessageContent("");
+  }
+
   return (
     <>
       <div className="chat-title-bar">Chat with {activeContact.username}</div>
@@ -50,23 +66,22 @@ export const ChatWindow = ({ currentUser }) => {
             sender={value.senderName}
           />
         ))}
+        <div ref={messagesEndRef} />
       </div>
       <div id="chatForm" className="chat-form-inline">
-        <input
-          type="text"
-          onChange={(e) => setMessageContent(e.target.value)}
-          value={messageContent}
-          placeholder="Type a message…"
-          autoComplete="off"
-          autoFocus
-        />
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            onChange={(e) => setMessageContent(e.target.value)}
+            value={messageContent}
+            placeholder="Type a message…"
+            autoComplete="off"
+            autoFocus
+          />
+        </form>
         <button
           className="material-symbols-outlined no-outline"
-          onClick={() => {
-            if (!messageContent) return;
-            sendMessage(messageContent);
-            setMessageContent("");
-          }}
+          onClick={handleSubmit}
         >
           send
         </button>
