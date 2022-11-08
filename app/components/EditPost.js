@@ -8,6 +8,7 @@ import Loading from "./Loading"
 import DispatchContext from "../DispatchContext"
 import UnauthorizedAccessView from "./UnauthorizedAccessView"
 import ShowAuthor from "./ShowAuthor"
+import NotFound from "./NotFound"
 
 function EditPost() {
   const appState = useContext(StateContext)
@@ -80,11 +81,10 @@ function EditPost() {
         if (response.data) {
           dispatch({ type: "fetchComplete", value: response.data })
           setSelectedTopic(response.data.topic)
-        } else {
-          dispatch({ type: "notFound" })
         }
       } catch (e) {
         console.log("There was a problem or the request was cancelled." + e)
+        dispatch({ type: "notFound" })
       }
     }
 
@@ -168,11 +168,10 @@ function EditPost() {
     }
   }
 
-  if (state.isFetching) {
-    return <Loading />
-  } else if (!appState.loggedIn || (!appState.user.isAdmin && state.userId != state.postAuthor.id && !appState.user.isSupport)) {
-    return <UnauthorizedAccessView />
-  }
+  if (!appState.loggedIn) return <UnauthorizedAccessView />
+  if (state.notFound) return <NotFound />
+  if (state.isFetching) return <Loading />
+  if (!appState.user.isAdmin && state.userId != state.postAuthor.id && !appState.user.isSupport) return <UnauthorizedAccessView />
   return (
     <form onSubmit={handleSubmit}>
       <div className="main d-flex flex-column container">
