@@ -143,8 +143,8 @@ function ViewSingleTopic(props) {
           </span>
           <CSSTransition in={isDeleting} timeout={330} classNames="liveValidateMessage" unmountOnExit>
             <div class="delete-absolute container">
-              <div className="delete-pop col-4 ml-auto mr-auto liveValidateMessage-delete ml-3">
-                <DeleteModal delete={handleDelete} noDelete={deletePopup} />
+              <div className="delete-pop col-4 ml-5 liveValidateMessage-delete ml-3">
+                <DeleteModal delete={handleDelete} noDelete={deletePopup} relatedItemsLength={posts.length} relatedItemsType={"post"} />
               </div>
             </div>
           </CSSTransition>
