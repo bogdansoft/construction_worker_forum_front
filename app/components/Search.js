@@ -27,8 +27,8 @@ function Search() {
             draft.loading = false
           })
           const searchItem = state.searchItem
-          const responsePost = await Axios.get("/api/post/search", { headers: { Authorization: `Bearer ${appState.user.token}` }, params: { searchItem } }, { cancelToken: ourRequest.token })
-          const responseTopic = await Axios.get("/api/topic/search", { headers: { Authorization: `Bearer ${appState.user.token}` }, params: { searchItem } }, { cancelToken: ourRequest.token })
+          const responsePost = await Axios.get("/api/post/search", { params: { searchItem } }, { cancelToken: ourRequest.token })
+          const responseTopic = await Axios.get("/api/topic/search", { params: { searchItem } }, { cancelToken: ourRequest.token })
           console.log(responseTopic.data)
           setState(draft => {
             draft.resultsPosts = responsePost.data
