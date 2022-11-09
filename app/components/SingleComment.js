@@ -78,12 +78,29 @@ function SingleComment(props) {
   }
 
   function showEditAndDeleteButtons() {
+    console.log(appState)
     if (appState.user.id == props.comment.user.id) {
       return (
         <div className="icon-black">
           <span onClick={handleUpdate} className="material-symbols-outlined">
             edit
           </span>
+          <span onClick={deletePopup} className="material-symbols-outlined">
+            {" "}
+            delete{" "}
+            <CSSTransition in={isDeleting} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+              <div class="delete-absolute col-7">
+                <div className="delete-pop liveValidateMessage-delete ml-3">
+                  <DeleteModal delete={handleDelete} noDelete={deletePopup} />
+                </div>
+              </div>
+            </CSSTransition>
+          </span>
+        </div>
+      )
+    } else if (appState.user.roles.includes("ADMINISTRATOR") || appState.user.roles.includes("SUPPORT")) {
+      return (
+        <div className="icon-black">
           <span onClick={deletePopup} className="material-symbols-outlined">
             {" "}
             delete{" "}
