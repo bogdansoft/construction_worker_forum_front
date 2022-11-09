@@ -10,6 +10,7 @@ import DispatchContext from "../DispatchContext"
 import Loading from "./Loading"
 import LikeButton from "./LikeButton"
 import RenderAvatar from "./Avatar"
+import DeleteModal from "./DeleteModal"
 
 function ViewSinglePost() {
   const navigate = useNavigate()
@@ -19,6 +20,7 @@ function ViewSinglePost() {
   const loggedIn = Boolean(localStorage.getItem("constructionForumUserToken"))
   const appDispatch = useContext(DispatchContext)
   const appState = useContext(StateContext)
+  const [isDeleting, setIsDeleting] = useState(false)
   const [state, setState] = useImmer({
     author: "",
     postLikesCount: 0,
@@ -36,7 +38,6 @@ function ViewSinglePost() {
     },
     isLoading: true,
     reloadCounter: 0,
-    delete: 0,
     like: 0
   })
 
@@ -146,24 +147,19 @@ function ViewSinglePost() {
     }
   }, [state.like])
 
-  useEffect(() => {
-    if (state.delete) {
-      const ourRequest = Axios.CancelToken.source()
-      async function fetchData() {
-        try {
-          await Axios.delete(`/api/post/${id}`, { headers: { Authorization: `Bearer ${appState.user.token}` } })
-          appDispatch({ type: "flashMessage", value: "Post succesfully deleted !", messageType: "message-green" })
-          navigate("/")
-        } catch (e) {
-          console.log("there was a problem deleting post" + e)
-        }
-      }
-      fetchData()
-      return () => {
-        ourRequest.cancel()
-      }
+  async function handleDelete() {
+    const ourRequest = Axios.CancelToken.source()
+    try {
+      await Axios.delete(`/api/post/${id}`, { headers: { Authorization: `Bearer ${appState.user.token}` } })
+      appDispatch({ type: "flashMessage", value: "Post succesfully deleted !", messageType: "message-green" })
+      navigate("/")
+    } catch (e) {
+      console.log("there was a problem deleting post" + e)
     }
-  }, [state.delete])
+    return () => {
+      ourRequest.cancel()
+    }
+  }
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -185,6 +181,10 @@ function ViewSinglePost() {
     })
   }
 
+  function deletePopup() {
+    setIsDeleting(prev => !prev)
+  }
+
   function showEditAndDeleteButtons() {
     if (loggedIn && (appState.user.id == state.author.id || appState.user.isAdmin) && (appState.user.isSupport || appState.user.isAdmin)) {
       return (
@@ -193,18 +193,16 @@ function ViewSinglePost() {
             <span className="material-symbols-outlined link-black mr-2"> edit </span>
           </Link>
           <ReactTooltip id="edit" className="custom-tooltip" />
-          <span
-            onClick={() =>
-              setState(draft => {
-                draft.delete++
-              })
-            }
-            className="material-symbols-outlined link-black"
-            data-tip="Delete"
-            data-for="delete"
-          >
+          <span onClick={deletePopup} className="material-symbols-outlined link-black" data-tip="Delete" data-for="delete">
             delete
           </span>
+          <CSSTransition in={isDeleting} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+            <div class="delete-absolute container col-5 ml-1 mt-5">
+              <div className="delete-pop col-5 p-2 liveValidateMessage-delete">
+                <DeleteModal delete={handleDelete} noDelete={deletePopup} relatedItemsLength={comments.length} relatedItemsType={"comment"} />
+              </div>
+            </div>
+          </CSSTransition>
           <ReactTooltip id="delete" className="custom-tooltip" />
         </div>
       )

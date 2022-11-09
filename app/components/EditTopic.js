@@ -6,6 +6,8 @@ import { CSSTransition } from "react-transition-group"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 import UnauthorizedAccessView from "./UnauthorizedAccessView"
+import NotFound from "./NotFound"
+import Loading from "./Loading"
 
 function EditTopic() {
   const appState = useContext(StateContext)
@@ -19,7 +21,8 @@ function EditTopic() {
     isSaving: false,
     id: useParams().id,
     userId: null,
-    sendCount: 0
+    sendCount: 0,
+    notFound: undefined
   }
 
   function ourReducer(draft, action) {
@@ -67,11 +70,10 @@ function EditTopic() {
         const response = await Axios.get(`/api/topic/${state.id}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
         if (response.data) {
           dispatch({ type: "fetchComplete", value: response.data })
-        } else {
-          dispatch({ type: "notFound" })
         }
       } catch (e) {
         console.log("There was a problem or the request was cancelled.")
+        dispatch({ type: "notFound" })
       }
     }
     fetchTopic()
@@ -109,7 +111,9 @@ function EditTopic() {
     }
   }, [state.sendCount])
 
-  if (!appState.loggedIn) return <UnauthorizedAccessView />
+  if ((state.isFetching && !appState.loggedIn) || !appState.user.isAdmin) return <UnauthorizedAccessView />
+  if (state.notFound) return <NotFound />
+  if (state.isFetching) return <Loading />
   return (
     <form onSubmit={handleSubmit}>
       <div className="main d-flex flex-column container">

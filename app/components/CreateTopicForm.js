@@ -17,10 +17,7 @@ function CreateTopicForm(props) {
     e.preventDefault()
     const ourRequest = Axios.CancelToken.source()
 
-    if (!(appState.user.isAdmin || appState.user.isSupport)) {
-      appDispatch({ type: "flashMessage", value: "No permission to perform this action!", messageType: "message-red" })
-      return
-    } else if (!name || !description || name.length >= 50 || name.length < 3) {
+    if (!name || !description || name.length >= 50 || name.length < 3) {
       appDispatch({ type: "flashMessage", value: "Invalid name or description!", messageType: "message-red" })
       return
     }
@@ -40,7 +37,7 @@ function CreateTopicForm(props) {
     }
   }
 
-  if (!appState.loggedIn) return <UnauthorizedAccessView />
+  if (!appState.loggedIn || !appState.user.isAdmin) return <UnauthorizedAccessView />
   return (
     <form onSubmit={handleSubmit}>
       <div className="form-label">
