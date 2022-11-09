@@ -9,6 +9,7 @@ import Post from "./Post"
 import DeleteModal from "./DeleteModal"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
+import { Pagination } from "@mui/material"
 
 function ViewSingleTopic(props) {
   const appState = useContext(StateContext)
@@ -22,7 +23,11 @@ function ViewSingleTopic(props) {
   const [state, setState] = useImmer({
     isLoading: true,
     reloadCounter: 0,
-    delete: 0
+    delete: 0,
+    paginationValue: 10,
+    pagesNumber: 1,
+    pageNumber: 1,
+    numberOfRecords: 1,
   })
 
   useEffect(() => {
@@ -32,7 +37,7 @@ function ViewSingleTopic(props) {
       try {
         const response = await Axios.get(`/api/topic/${id}`, { cancelToken: ourRequest.token })
         setTopic(response.data)
-        setState(draft => {
+        setState((draft) => {
           draft.isLoading = false
         })
       } catch (e) {
@@ -52,7 +57,11 @@ function ViewSingleTopic(props) {
     async function fetchPosts() {
       try {
         const response = await Axios.get(`/api/post/all_by_topicid/${id}`, { cancelToken: ourRequest.token })
-        setPosts(response.data)
+        setPosts(response.data.slice(0, 10))
+        setState((draft) => {
+          draft.numberOfRecords = response.data.length
+          draft.pagesNumber = Math.ceil(response.data.length / 10)
+        })
       } catch (e) {
         console.log("There was a problem or the request was cancelled." + e)
       }
@@ -64,14 +73,44 @@ function ViewSingleTopic(props) {
     }
   }, [id, state.reloadCounter])
 
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await Axios.get(`/api/post/all_by_topicid/${id}/number/${state.paginationValue}/page/${state.pageNumber}`)
+        setState((draft) => {
+          setPosts(response.data)
+          draft.isLoading = false
+        })
+      } catch (e) {
+        console.log("there was a problem fetching the data" + e)
+      }
+    }
+    fetchData()
+  }, [state.pageNumber, state.paginationValue])
+
   function reload() {
-    setState(draft => {
+    setState((draft) => {
       draft.reloadCounter++
     })
   }
 
   function deletePopup() {
-    setIsDeleting(prev => !prev)
+    setIsDeleting((prev) => !prev)
+  }
+
+  function paginate(value) {
+    setState((draft) => {
+      draft.pageNumber = 1
+      draft.paginationValue = value
+      draft.pagesNumber = Math.ceil(state.numberOfRecords / value)
+    })
+  }
+
+  function handlePage(event) {
+    setState((draft) => {
+      draft.pageNumber = parseInt(event.target.textContent)
+      console.log(state.pageNumber)
+    })
   }
 
   async function handleDelete() {
@@ -145,8 +184,17 @@ function ViewSingleTopic(props) {
                 <ReactTooltip id="add-new-post" className="custom-tooltip" />
               </button>
             ) : null}
-            <select className="mr-3" name="Pagination" id="pagination">
-              <option>Pagination</option>
+            <select
+              className="mr-3"
+              name="Pagination"
+              id="pagination"
+              onChange={(e) => {
+                paginate(e.target.value)
+              }}
+            >
+              <option value="" disabled selected>
+                Pagination
+              </option>
               <option>10</option>
               <option>20</option>
               <option>30</option>
@@ -167,10 +215,13 @@ function ViewSingleTopic(props) {
         {posts.length == 0 ? (
           <span className="font-weight-bold text-center p-5">There are no posts for this topic yet. Feel free to create one!</span>
         ) : (
-          posts.map(post => {
+          posts.map((post) => {
             return <Post post={post} key={post.id} author={post.user} reload={reload} />
           })
         )}
+        <div className="mt-2 align-items-right">
+          <Pagination count={state.pagesNumber} page={state.pageNumber} defaultPage={1} shape="rounded" onChange={handlePage} />
+        </div>
       </div>
     </div>
   )
