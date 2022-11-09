@@ -36,9 +36,7 @@ export default function RenderAvatar(props) {
   const classes = useStyles()
   const [open, setOpen] = React.useState(false)
   const anchorRef = React.useRef(null)
-  const [avatar, setAvatar] = useState({
-    avatar: "https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png"
-  })
+  const [avatar, setAvatar] = useState("https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png")
 
   const handleToggle = () => {
     setOpen(prevOpen => !prevOpen)
@@ -76,7 +74,7 @@ export default function RenderAvatar(props) {
     <>
       <div className="avatar-container">
         <div className="avatar">
-          <img src={avatar.avatar} alt="https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png" className="avatar-img" />
+          <img src={avatar} alt="https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png" className="avatar-img" />
         </div>
 
         {props.isLoggedIn && (

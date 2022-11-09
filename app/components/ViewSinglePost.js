@@ -9,6 +9,7 @@ import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 import Loading from "./Loading"
 import LikeButton from "./LikeButton"
+import RenderAvatar from "./Avatar"
 import DeleteModal from "./DeleteModal"
 
 function ViewSinglePost() {
@@ -223,9 +224,11 @@ function ViewSinglePost() {
       </h2>
       <div className="content d-flex flex-column mt-4">
         <div className="content d-flex flex-row">
-          <div className="mr-4 d-flex flex-column text-center" id="post-avatar">
-            <span className="material-symbols-outlined"> person </span>
-            <span> {state.author.username} </span>
+          <div className="profile-avatar">
+            <span className="material-symbols-outlined mr-3">
+              {" "}
+              <RenderAvatar isLoggedIn={false} />{" "}
+            </span>
           </div>
           <div className="post-content container mr-5">
             <div className="ml-4">

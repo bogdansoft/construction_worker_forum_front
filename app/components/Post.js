@@ -5,6 +5,7 @@ import Axios from "axios"
 import { Link, useNavigate } from "react-router-dom"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
+import RenderAvatar from "./Avatar"
 
 function Post(props) {
   const appState = useContext(StateContext)
@@ -67,12 +68,17 @@ function Post(props) {
 
   return (
     <div className="single-topic container d-flex mt-4">
-      <div className="avatar">
-        <span className="material-symbols-outlined"> person </span>
+      <div className="profile-avatar">
+        <span className="material-symbols-outlined mr-3">
+          {" "}
+          <RenderAvatar isLoggedIn={false} />{" "}
+        </span>
       </div>
       <div className="single-topic-content container d-flex ml-3 p-2 align-items-center">
         <div id="topic-name">
-          <Link to={`/post/${props.post.id}`}>{props.post.title}</Link>
+          <Link to={`/post/${props.post.id}`}>
+            <h4>{props.post.title}</h4>
+          </Link>
         </div>
         <div className="ml-auto mr-5">
           Comments: {props.post.comments.length}{" "}

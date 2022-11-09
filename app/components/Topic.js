@@ -42,9 +42,6 @@ function Topic(props) {
 
   return (
     <div className="single-topic container d-flex mt-4">
-      <div className="avatar">
-        <span className="material-symbols-outlined"> person </span>
-      </div>
       <div className="single-topic-content container d-flex ml-3 p-2 align-items-center">
         <div id="topic-name">
           <Link to={`topic/${props.topic.id}`}>{props.topic.name}</Link>

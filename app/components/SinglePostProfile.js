@@ -13,7 +13,7 @@ function SingleCommentProfile(props) {
           <Link to={`/post/${props.post.id}`}>{props.post.title}</Link>
         </div>
         <div className="ml-auto mr-3">
-          Comments: 21 <span className="ml-3">Created: {date}</span>
+          <span className="ml-3">Created: {date}</span>
         </div>
         <div className="icon-black">
           <span className="material-symbols-outlined"> edit </span>
