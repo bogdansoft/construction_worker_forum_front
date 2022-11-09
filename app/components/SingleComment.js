@@ -134,13 +134,7 @@ function SingleComment(props) {
   return (
     <div className="single-topic container d-flex mt-4">
       <div className="profile-avatar">
-        <div className="material-symbols-outlined mr-3">
-          <div className="profile-avatar-container-comment">
-            <div className="profile-avatar-comment">
-              <RenderAvatar isLoggedIn={false} />{" "}
-            </div>
-          </div>
-        </div>
+        <div className="material-symbols-outlined mr-3"></div>
       </div>
 
       <span>{props.comment.user.username}</span>
@@ -186,7 +180,6 @@ function SingleComment(props) {
           >
             <LikeButton isLiked={state.isCommentLikedByUser} isOwner={state.isCommentOwnedByUser}></LikeButton>
           </a>
-          <span className="material-symbols-outlined mt-2"> reply </span>
         </div>
       </div>
     </div>

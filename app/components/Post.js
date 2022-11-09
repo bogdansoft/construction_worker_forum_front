@@ -76,7 +76,9 @@ function Post(props) {
       </div>
       <div className="single-topic-content container d-flex ml-3 p-2 align-items-center">
         <div id="topic-name">
-          <Link to={`/post/${props.post.id}`}>{props.post.title}</Link>
+          <Link to={`/post/${props.post.id}`}>
+            <h4>{props.post.title}</h4>
+          </Link>
         </div>
         <div className="ml-auto mr-5">
           Comments: {props.post.comments.length}{" "}
