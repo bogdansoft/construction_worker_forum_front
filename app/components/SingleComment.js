@@ -6,6 +6,7 @@ import DeleteModal from "./DeleteModal"
 import { CSSTransition } from "react-transition-group"
 import { useImmer } from "use-immer"
 import LikeButton from "./LikeButton"
+import RenderAvatar from "./Avatar"
 
 function SingleComment(props) {
   const appDispatch = useContext(DispatchContext)
@@ -132,10 +133,18 @@ function SingleComment(props) {
 
   return (
     <div className="single-topic container d-flex mt-4">
-      <div className="avatar align-self-center d-flex flex-column text-center">
-        <span className="material-symbols-outlined"> person </span>
-        <span>{props.comment.user.username}</span>
+      <div className="profile-avatar">
+        <div className="material-symbols-outlined mr-3">
+          <div className="profile-avatar-container-comment">
+            <div className="profile-avatar-comment">
+              <RenderAvatar isLoggedIn={false} />{" "}
+            </div>
+          </div>
+        </div>
       </div>
+
+      <span>{props.comment.user.username}</span>
+
       <div className="d-flex container">
         <div className="single-topic-content container d-flex ml-3 p-2 align-items-center col-11">
           {!isEdited && (
