@@ -14,6 +14,7 @@ function SingleComment(props) {
   const [isEdited, setIsEdited] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
   const [content, setContent] = useState(props.comment.content)
+  const [error, setError] = useState(false)
   const token = localStorage.getItem("constructionForumUserToken")
   const date = new Date(props.comment.createdAt).toLocaleDateString("utc", {
     year: "numeric",
@@ -46,6 +47,10 @@ function SingleComment(props) {
 
   async function handleSubmit(e) {
     e.preventDefault()
+    if (content.length <= 2) {
+      setError(true)
+      return
+    }
     const ourRequest = Axios.CancelToken.source()
     try {
       await Axios.put(
@@ -71,6 +76,7 @@ function SingleComment(props) {
 
   function handleUpdate() {
     setIsEdited(prevState => !prevState)
+    setError(false)
   }
 
   function deletePopup() {
@@ -174,6 +180,9 @@ function SingleComment(props) {
             <form onSubmit={handleSubmit} className="d-flex ml-auto mr-auto align-items-center container">
               <div className="container">
                 <input onChange={e => setContent(e.target.value)} value={content} type="text" className="container single-topic-content"></input>
+                <CSSTransition in={error} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+                  <div className="alert alert-danger small liveValidateMessage">Comment must be at least 2 characters long</div>
+                </CSSTransition>
               </div>
               <div className="ml-auto mr-4">
                 <button type="submit" className="material-symbols-outlined">
