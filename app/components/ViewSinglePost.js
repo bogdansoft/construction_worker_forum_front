@@ -224,11 +224,12 @@ function ViewSinglePost() {
       </h2>
       <div className="content d-flex flex-column mt-4">
         <div className="content d-flex flex-row">
-          <div className="profile-avatar">
+          <div className="profile-avatar d-flex flex-column align-items-center">
             <span className="material-symbols-outlined mr-3">
               {" "}
-              <RenderAvatar isLoggedIn={false} />{" "}
+              <RenderAvatar isLoggedIn={false} />
             </span>
+            <p className="mt-3">{post.user.username}</p>
           </div>
           <div className="post-content container mr-5">
             <div className="ml-4">
