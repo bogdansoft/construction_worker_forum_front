@@ -25,7 +25,6 @@ import ViewSingleTopic from "./components/ViewSingleTopic";
 import NotFound from "./components/NotFound";
 import Logout from "./components/Logout";
 import Chat from "./components/chat/Chat";
-import { ChatProvider } from "./components/chat/Chat.context";
 
 Axios.defaults.baseURL = "http://localhost:8080";
 
@@ -98,43 +97,41 @@ function Main() {
   return (
     <StateContext.Provider value={state}>
       <DispatchContext.Provider value={dispatch}>
-        <ChatProvider>
-          <BrowserRouter>
-            <FlashMessages messages={state.flashMessages} />
-            <Navbar />
-            <CSSTransition
-              timeout={330}
-              in={state.searchIsOpen}
-              classNames="search-overlay"
-              unmountOnExit
-            >
-              <div className="search-overlay">
-                <Search />
-              </div>
-            </CSSTransition>
-            <Routes>
-              <Route path="/" element={<Topics />} />
-              <Route path="/profile/:username/*" element={<UserProfile />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/logout" element={<Logout />} />
-              <Route path="/user/create" element={<RegisterForm />} />
-              <Route path="/post/create" element={<CreatePostForm />} />
-              <Route path="/topic/create" element={<CreateTopicForm />} />
-              <Route
-                path="/profile/changebio/:username"
-                element={<ChangeBIO />}
-              />
-              <Route path="/post/edit/:id" element={<EditPost />} />
-              <Route path="/topic/edit/:id" element={<EditTopic />} />
-              <Route path="/post/:id" element={<ViewSinglePost />} />
-              <Route path="/topic/:id" element={<ViewSingleTopic />} />
-              <Route path="*" element={<NotFound />} />
-              <Route path="/chat" element={<Chat />} />
-            </Routes>
-            {state.loggedIn ? <Logout /> : null}
-            <Footer />
-          </BrowserRouter>
-        </ChatProvider>
+        <BrowserRouter>
+          <FlashMessages messages={state.flashMessages} />
+          <Navbar />
+          <CSSTransition
+            timeout={330}
+            in={state.searchIsOpen}
+            classNames="search-overlay"
+            unmountOnExit
+          >
+            <div className="search-overlay">
+              <Search />
+            </div>
+          </CSSTransition>
+          <Routes>
+            <Route path="/" element={<Topics />} />
+            <Route path="/profile/:username/*" element={<UserProfile />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/logout" element={<Logout />} />
+            <Route path="/user/create" element={<RegisterForm />} />
+            <Route path="/post/create" element={<CreatePostForm />} />
+            <Route path="/topic/create" element={<CreateTopicForm />} />
+            <Route
+              path="/profile/changebio/:username"
+              element={<ChangeBIO />}
+            />
+            <Route path="/post/edit/:id" element={<EditPost />} />
+            <Route path="/topic/edit/:id" element={<EditTopic />} />
+            <Route path="/post/:id" element={<ViewSinglePost />} />
+            <Route path="/topic/:id" element={<ViewSingleTopic />} />
+            <Route path="*" element={<NotFound />} />
+            <Route path="/chat" element={<Chat />} />
+          </Routes>
+          {state.loggedIn ? <Logout /> : null}
+          <Footer />
+        </BrowserRouter>
       </DispatchContext.Provider>
     </StateContext.Provider>
   );

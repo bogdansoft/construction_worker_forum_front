@@ -3,28 +3,31 @@ import { localStorageService } from "../../services/localStorageService/localSto
 
 import { ContactList } from "./contactList/ContactList";
 import { ChatWindow } from "./ChatWindow";
+import { ChatProvider } from "./Chat.context";
 
 function Chat() {
   const currentUser = useMemo(() => localStorageService.getUser(), []);
 
   return (
-    <div
-      id="chat-window"
-      className="container chat-window flex-nowrap d-flex align-items-center"
-    >
+    <ChatProvider>
       <div
-        id="chat-wrapper"
-        className="col-4 chat-wrapper chat-wrapper--is-visible shadow border-top border-left border-right"
+        id="chat-window"
+        className="container chat-window flex-nowrap d-flex align-items-center"
       >
-        <ContactList />
+        <div
+          id="chat-wrapper"
+          className="col-4 chat-wrapper chat-wrapper--is-visible shadow border-top border-left border-right"
+        >
+          <ContactList />
+        </div>
+        <div
+          id="chat-wrapper"
+          className="col-8 chat-wrapper chat-wrapper--is-visible shadow border-top border-left border-right"
+        >
+          <ChatWindow currentUser={currentUser} />
+        </div>
       </div>
-      <div
-        id="chat-wrapper"
-        className="col-8 chat-wrapper chat-wrapper--is-visible shadow border-top border-left border-right"
-      >
-        <ChatWindow currentUser={currentUser} />
-      </div>
-    </div>
+    </ChatProvider>
   );
 }
 
