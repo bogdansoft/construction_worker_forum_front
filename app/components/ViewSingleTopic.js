@@ -1,17 +1,21 @@
 import React, { useEffect, useState, useContext } from "react"
 import { Link, useParams, useNavigate } from "react-router-dom"
+import { CSSTransition } from "react-transition-group"
 import ReactTooltip from "react-tooltip"
 import Axios from "axios"
 import { useImmer } from "use-immer"
 import Loading from "./Loading"
 import Post from "./Post"
+import DeleteModal from "./DeleteModal"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
+import { Pagination } from "@mui/material"
 
 function ViewSingleTopic(props) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
   const navigate = useNavigate()
+  const [isDeleting, setIsDeleting] = useState(false)
   const { id } = useParams()
   const [topic, setTopic] = useState([])
   const [posts, setPosts] = useState([])
@@ -19,17 +23,21 @@ function ViewSingleTopic(props) {
   const [state, setState] = useImmer({
     isLoading: true,
     reloadCounter: 0,
-    delete: 0
+    delete: 0,
+    paginationValue: 10,
+    pagesNumber: 1,
+    pageNumber: 1,
+    numberOfRecords: 1,
   })
 
   useEffect(() => {
+    appDispatch({ type: "closeSearch" })
     const ourRequest = Axios.CancelToken.source()
-
     async function fetchTopic() {
       try {
         const response = await Axios.get(`/api/topic/${id}`, { cancelToken: ourRequest.token })
         setTopic(response.data)
-        setState(draft => {
+        setState((draft) => {
           draft.isLoading = false
         })
       } catch (e) {
@@ -49,7 +57,11 @@ function ViewSingleTopic(props) {
     async function fetchPosts() {
       try {
         const response = await Axios.get(`/api/post/all_by_topicid/${id}`, { cancelToken: ourRequest.token })
-        setPosts(response.data)
+        setPosts(response.data.slice(0, 10))
+        setState((draft) => {
+          draft.numberOfRecords = response.data.length
+          draft.pagesNumber = Math.ceil(response.data.length / 10)
+        })
       } catch (e) {
         console.log("There was a problem or the request was cancelled." + e)
       }
@@ -61,35 +73,61 @@ function ViewSingleTopic(props) {
     }
   }, [id, state.reloadCounter])
 
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await Axios.get(`/api/post/all_by_topicid/${id}/number/${state.paginationValue}/page/${state.pageNumber}`)
+        setState((draft) => {
+          setPosts(response.data)
+          draft.isLoading = false
+        })
+      } catch (e) {
+        console.log("there was a problem fetching the data" + e)
+      }
+    }
+    fetchData()
+  }, [state.pageNumber, state.paginationValue])
+
   function reload() {
-    setState(draft => {
+    setState((draft) => {
       draft.reloadCounter++
     })
   }
 
-  useEffect(() => {
-    if (state.delete) {
-      const ourRequest = Axios.CancelToken.source()
+  function deletePopup() {
+    setIsDeleting((prev) => !prev)
+  }
 
-      async function handleDeleteTopic() {
-        const ourRequest = Axios.CancelToken.source()
-        try {
-          await Axios.delete(`/api/topic/${id}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
-          appDispatch({ type: "flashMessage", value: "Topic successfully deleted!", messageType: "message-green" })
-          navigate("/")
-        } catch (e) {
-          console.log("There was a problem while deleting the topic", e)
-        }
-      }
-      handleDeleteTopic()
+  function paginate(value) {
+    setState((draft) => {
+      draft.pageNumber = 1
+      draft.paginationValue = value
+      draft.pagesNumber = Math.ceil(state.numberOfRecords / value)
+    })
+  }
 
-      return () => {
-        ourRequest.cancel()
-      }
+  function handlePage(event) {
+    setState((draft) => {
+      draft.pageNumber = parseInt(event.target.textContent)
+      console.log(state.pageNumber)
+    })
+  }
+
+  async function handleDelete() {
+    const ourRequest = Axios.CancelToken.source()
+    try {
+      await Axios.delete(`/api/topic/${id}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+      appDispatch({ type: "flashMessage", value: "Topic successfully deleted!", messageType: "message-green" })
+      navigate("/")
+    } catch (e) {
+      console.log("There was a problem while deleting the topic", e)
     }
-  }, [state.delete])
+    return () => {
+      ourRequest.cancel()
+    }
+  }
 
-  function showContext() {
+  function showContextDependingOnPermission() {
     if (appState.user.isAdmin || appState.user.isSupport) {
       return (
         <div className="font-weight-bold text-left">
@@ -100,18 +138,16 @@ function ViewSingleTopic(props) {
             <span className="material-symbols-outlined link-black mr-2"> edit </span>
           </Link>
           <ReactTooltip id="edit" className="custom-tooltip" />
-          <span
-            onClick={() =>
-              setState(draft => {
-                draft.delete++
-              })
-            }
-            className="material-symbols-outlined link-black"
-            data-tip="Delete"
-            data-for="delete"
-          >
+          <span onClick={deletePopup} className="material-symbols-outlined link-black" data-tip="Delete" data-for="delete">
             delete
           </span>
+          <CSSTransition in={isDeleting} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+            <div class="delete-absolute container">
+              <div className="delete-pop col-4 ml-5 liveValidateMessage-delete ml-3">
+                <DeleteModal delete={handleDelete} noDelete={deletePopup} relatedItemsLength={posts.length} relatedItemsType={"post"} />
+              </div>
+            </div>
+          </CSSTransition>
           <ReactTooltip id="delete" className="custom-tooltip" />
         </div>
       )
@@ -132,7 +168,7 @@ function ViewSingleTopic(props) {
       <Link className="text-primary medium font-weight-bold mb-3" to={`/`}>
         &laquo; Back to topics
       </Link>
-      {showContext()}
+      {showContextDependingOnPermission()}
       <div className="content mt-2 mr-auto p-4">{topic.description}</div>
       <div className="content container d-flex flex-column mt-4">
         <div className="d-flex flex-row">
@@ -148,8 +184,17 @@ function ViewSingleTopic(props) {
                 <ReactTooltip id="add-new-post" className="custom-tooltip" />
               </button>
             ) : null}
-            <select className="mr-3" name="Pagination" id="pagination">
-              <option>Pagination</option>
+            <select
+              className="mr-3"
+              name="Pagination"
+              id="pagination"
+              onChange={(e) => {
+                paginate(e.target.value)
+              }}
+            >
+              <option value="" disabled selected>
+                Pagination
+              </option>
               <option>10</option>
               <option>20</option>
               <option>30</option>
@@ -170,10 +215,13 @@ function ViewSingleTopic(props) {
         {posts.length == 0 ? (
           <span className="font-weight-bold text-center p-5">There are no posts for this topic yet. Feel free to create one!</span>
         ) : (
-          posts.map(post => {
+          posts.map((post) => {
             return <Post post={post} key={post.id} author={post.user} reload={reload} />
           })
         )}
+        <div className="mt-2 align-items-right">
+          <Pagination count={state.pagesNumber} page={state.pageNumber} defaultPage={1} shape="rounded" onChange={handlePage} />
+        </div>
       </div>
     </div>
   )

@@ -176,7 +176,7 @@ function RegisterForm() {
               <div className="mt-3 mr-2 p-2 form-group">
                 <span className="ml-3">Password</span>
                 <br />
-                <input onChange={e => dispatch({ type: "passwordImmediately", value: e.target.value })} type="password" className="ml-3" placeholder="username" />
+                <input onChange={e => dispatch({ type: "passwordImmediately", value: e.target.value })} type="password" className="ml-3" placeholder="********" />
                 <CSSTransition in={state.password.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
                   <div className="alert alert-danger small liveValidateMessage ml-3">{state.password.message}</div>
                 </CSSTransition>
@@ -184,7 +184,7 @@ function RegisterForm() {
               <div className="mt-3 mr-2 p-2 form-group">
                 <span className="ml-3">Email</span>
                 <br />
-                <input onChange={e => dispatch({ type: "emailImmediately", value: e.target.value })} type="text" className="ml-3" placeholder="username" />
+                <input onChange={e => dispatch({ type: "emailImmediately", value: e.target.value })} type="text" className="ml-3" placeholder="john@test.com" />
                 <CSSTransition in={state.email.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
                   <div className="alert alert-danger small liveValidateMessage ml-3">{state.email.message}</div>
                 </CSSTransition>
@@ -192,7 +192,7 @@ function RegisterForm() {
               <div className="mt-3 mr-2 p-2 form-group">
                 <span className="ml-3">First name</span>
                 <br />
-                <input onChange={e => dispatch({ type: "firstNameImmediately", value: e.target.value })} type="text" className="ml-3" placeholder="username" />
+                <input onChange={e => dispatch({ type: "firstNameImmediately", value: e.target.value })} type="text" className="ml-3" placeholder="John" />
                 <CSSTransition in={state.firstName.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
                   <div className="alert alert-danger small liveValidateMessage ml-3">{state.firstName.message}</div>
                 </CSSTransition>
@@ -200,19 +200,14 @@ function RegisterForm() {
               <div className="mt-3 mr-2 p-2 form-group">
                 <span className="ml-3">Last name</span>
                 <br />
-                <input onChange={e => dispatch({ type: "lastNameImmediately", value: e.target.value })} type="text" className="ml-3" placeholder="username" />
+                <input onChange={e => dispatch({ type: "lastNameImmediately", value: e.target.value })} type="text" className="ml-3" placeholder="Doe" />
                 <CSSTransition in={state.lastName.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
                   <div className="alert alert-danger small liveValidateMessage ml-3">{state.lastName.message}</div>
                 </CSSTransition>
               </div>
             </div>
-            <div className="mt-4 align-self-center mr-5">
-              <button className="nav-button">REGISTER</button>
-            </div>
-            <div className="mt-3 form-label">
-              <span id="login-white">
-                No Account? Sign Up <span id="login-blue">Here</span>
-              </span>
+            <div className="mt-4 ml-5">
+              <button className="nav-button ml-3">REGISTER</button>
             </div>
           </form>
         </div>

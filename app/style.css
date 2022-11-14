@@ -32,6 +32,7 @@ nav {
 }
 .nav-right .material-symbols-outlined {
   font-size: 2.5em;
+  cursor: pointer;
 }
 .nav-left h1 {
   font-size: 2em;
@@ -50,7 +51,7 @@ nav {
 
 .main {
   background-color: var(--ultra-light-blue);
-  padding: 0px 50px;
+  padding: 0 50px;
 }
 .main h3 {
   font-size: 2em;
@@ -89,6 +90,7 @@ nav {
 }
 .main .material-symbols-outlined {
   font-size: 2em;
+  cursor: pointer;
 }
 
 /* FOOTER */
@@ -149,6 +151,19 @@ footer ul li {
   font-size: 2em;
 }
 
+.profile-avatar-container-comment {
+  width: 4rem;
+  height: 4rem;
+  position: relative;
+}
+
+.profile-avatar-comment {
+  width: 100%;
+  height: 100%;
+  border-radius: 100%;
+  background-color: #f5f5f5;
+  overflow: hidden;
+}
 /* PROFILE TABS */
 
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:400,600,700");
@@ -627,9 +642,11 @@ img {
   color: white;
   font-size: 1.5em;
 }
+
 select:focus {
   outline: none;
 }
+
 input:focus {
   outline: none;
 }
@@ -749,4 +766,279 @@ input:focus {
   background-color: var(--dark-violet);
   padding: 10px 30px;
   color: white;
+}
+
+.liveValidateMessage-delete {
+  position: relative;
+  left: -100px;
+  z-index: 1;
+}
+.delete-absolute {
+  font-size: 1em;
+  font-family: "Roboto", sans-serif;
+  position: absolute;
+}
+.delete-pop {
+  background-color: white;
+  color: black;
+  padding: 20px 30px;
+  border-radius: 15px;
+}
+.delete-button {
+  text-align: center;
+  border-radius: 10px;
+  font-size: 0.5em;
+}
+.delete-button-yes {
+  background-color: darkgreen;
+}
+.delete-button-yes:hover {
+  background-color: green;
+}
+.delete-button-no {
+  background-color: darkred;
+}
+.delete-button-no:hover {
+  background-color: red;
+}
+.avatar-container {
+  width: 10rem;
+  height: 10rem;
+  position: relative;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: #f5f5f5;
+  overflow: hidden;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+}
+
+.cro-container {
+  height: 40rem;
+  width: 60rem;
+  z-index: 10;
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.cro-container-cropper {
+  height: 90%;
+  padding: 10px;
+}
+
+.cro-cropper {
+  height: 90%;
+}
+
+.cro-container-buttons {
+  border: 1px solid #f5f5f5;
+  height: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+}
+
+/*Not Found component*/
+.notfound-content {
+  background-color: #efa00b;
+  padding-left: 320px;
+  padding-right: 320px;
+  align-content: inherit;
+}
+
+/* CHAT */
+.content {
+  background-color: var(--orange);
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.chat .material-symbols-outlined {
+  font-size: 3em;
+  font-weight: bold;
+}
+
+.sender {
+  background-color: var(--dark-violet);
+  border-radius: 15px;
+  border: 2px solid black;
+  color: white;
+  padding: 10px 20px;
+  text-align: right;
+}
+
+.recipient {
+  background-color: var(--light-blue);
+  color: white;
+  border-radius: 15px;
+  border: 2px solid black;
+  padding: 10px 20px;
+  text-align: left;
+}
+
+.chat input:focus {
+  border-top-style: hidden;
+  border-right-style: hidden;
+  border-left-style: hidden;
+  border-bottom: 1px solid black;
+}
+
+.chat input {
+  border-top-style: hidden;
+  border-right-style: hidden;
+  border-left-style: hidden;
+  border-bottom: 1px solid black;
+}
+
+/*.chat-input {*/
+/*  height: 40px;*/
+/*  background-color: var(--light-brown);*/
+/*  color: black;*/
+/*  border-radius: 10px;*/
+/*  border: 2px solid black;*/
+/*}*/
+
+/*.chat-field {*/
+/*  background-color: var(--light-brown);*/
+/*}*/
+
+.no-outline:focus {
+  outline: none;
+}
+
+::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: black;
+  opacity: 0.6; /* Firefox */
+}
+
+.chat .material-symbols-outlined:focus {
+  animation-name: scale;
+  animation-duration: 500ms;
+  animation-timing-function: ease-in;
+}
+
+.chat button {
+  border: none;
+  background-color: transparent;
+}
+
+.chat button:focus {
+  border: none;
+  outline: none;
+  background-color: transparent;
+}
+
+@keyframes scale {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.8);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.navbar-button button {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+}
+
+@keyframes animateLikeButtonClikcMe {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.7);
+  }
+  90% {
+    transform: scale(1);
+    transform: translate(-1px, 2px) rotate(-1deg);
+  }
+  92% {
+    transform: translate(-3px, 1px) rotate(0deg);
+  }
+  94% {
+    transform: translate(3px, 1px) rotate(-1deg);
+  }
+  96% {
+    transform: translate(-1px, -1px) rotate(1deg);
+  }
+  98% {
+    transform: translate(1px, 2px) rotate(0deg);
+  }
+  100% {
+    transform: translate(1px, -2px) rotate(-1deg);
+  }
+}
+
+@keyframes animateLikeButton {
+  10% {
+    transform: translateY(0%);
+  }
+  80% {
+    transform: translateY(-50%);
+  }
+  50% {
+    transform: translateY(0%);
+  }
+  from {
+    transform: translate(0%, 0%);
+  }
+  to {
+    transform: translate(0%, 0%) rotate(-360deg);
+  }
+}
+
+@keyframes animateUnlikeButton {
+  0% {
+    transform: translate(1px, 1px) rotate(0deg);
+  }
+  10% {
+    transform: translate(-1px, -2px) rotate(-1deg);
+  }
+  20% {
+    transform: translate(-3px, 0px) rotate(1deg);
+    color: rgba(255, 0, 0, 0.747);
+  }
+  30% {
+    transform: translate(3px, 2px) rotate(0deg);
+  }
+  40% {
+    transform: translate(1px, -1px) rotate(1deg);
+  }
+  50% {
+    transform: translate(-1px, 2px) rotate(-1deg);
+    color: darkred;
+  }
+  60% {
+    transform: translate(-3px, 1px) rotate(0deg);
+  }
+  70% {
+    transform: translate(3px, 1px) rotate(-1deg);
+  }
+  80% {
+    transform: translate(-1px, -1px) rotate(1deg);
+    color: rgba(255, 0, 0, 0.747);
+  }
+  90% {
+    transform: translate(1px, 2px) rotate(0deg);
+  }
+  100% {
+    transform: translate(1px, -2px) rotate(-1deg);
+  }
 }

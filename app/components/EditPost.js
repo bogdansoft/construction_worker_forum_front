@@ -1,31 +1,45 @@
-import React, { useEffect, useContext, useState } from "react"
-import { Link, useParams, useNavigate } from "react-router-dom"
+import React, { useContext, useEffect, useState } from "react"
+import { Link, useNavigate, useParams } from "react-router-dom"
+import { CSSTransition } from "react-transition-group"
 import { useImmerReducer } from "use-immer"
 import Axios from "axios"
 import StateContext from "../StateContext"
 import Loading from "./Loading"
+import DispatchContext from "../DispatchContext"
+import UnauthorizedAccessView from "./UnauthorizedAccessView"
+import ShowAuthor from "./ShowAuthor"
+import NotFound from "./NotFound"
 
 function EditPost() {
   const appState = useContext(StateContext)
   const navigate = useNavigate()
   const [topics, setTopics] = useState([])
   const [selectedTopic, setSelectedTopic] = useState()
+  const appDispatch = useContext(DispatchContext)
+
   const originalState = {
     title: "",
+    originalTitle: "",
     content: "",
+    postAuthor: undefined,
     topic: undefined,
     isFetching: true,
     isSaving: false,
     id: useParams().id,
     userId: undefined,
-    sendCount: 0
+    sendCount: 0,
+    hasTitleErrors: false,
+    hasContentErrors: false,
+    massage: ""
   }
 
   function ourReducer(draft, action) {
     switch (action.type) {
       case "fetchComplete":
         draft.title = action.value.title
+        draft.originalTitle = action.value.title
         draft.content = action.value.content
+        draft.postAuthor = action.value.user
         draft.topic = action.value.topic
         draft.isFetching = false
         draft.userId = appState.user.id
@@ -67,13 +81,13 @@ function EditPost() {
         if (response.data) {
           dispatch({ type: "fetchComplete", value: response.data })
           setSelectedTopic(response.data.topic)
-        } else {
-          dispatch({ type: "notFound" })
         }
       } catch (e) {
         console.log("There was a problem or the request was cancelled." + e)
+        dispatch({ type: "notFound" })
       }
     }
+
     fetchPost()
     return () => {
       ourRequest.cancel()
@@ -85,15 +99,33 @@ function EditPost() {
       dispatch({ type: "saveRequestStarted" })
       const ourRequest = Axios.CancelToken.source()
 
+      if (!state.title || state.title.length >= 50 || state.title.length < 3) {
+        appDispatch({ type: "flashMessage", value: "Invalid title", messageType: "message-red" })
+        return
+      } else if (!state.content || state.content.length >= 1000 || state.content.length < 3) {
+        appDispatch({ type: "flashMessage", value: "Invalid content", messageType: "message-red" })
+        return
+      }
+
       async function fetchPost() {
         try {
-          await Axios.put(`/api/post/${state.id}`, { title: state.title, content: state.content, userId: state.userId, topicId: state.topic.id }, { headers: { Authorization: `Bearer ${appState.user.token}` } })
+          await Axios.put(
+            `/api/post/${state.id}`,
+            {
+              title: state.title,
+              content: state.content,
+              userId: state.userId,
+              topicId: selectedTopic.id
+            },
+            { headers: { Authorization: `Bearer ${appState.user.token}` } }
+          )
           navigate(`/post/${state.id}`)
           dispatch({ type: "saveRequestFinished" })
         } catch (e) {
           console.log("There was a problem or the request was cancelled.")
         }
       }
+
       fetchPost()
       return () => {
         ourRequest.cancel()
@@ -103,6 +135,7 @@ function EditPost() {
 
   useEffect(() => {
     const ourRequest = Axios.CancelToken.source()
+
     async function fetchTopics() {
       try {
         const response = await Axios.get("/api/topic", { cancelToken: ourRequest.token })
@@ -111,6 +144,7 @@ function EditPost() {
         console.log("There was a problem fetching topics" + e.message)
       }
     }
+
     fetchTopics()
     return () => {
       ourRequest.cancel()
@@ -127,26 +161,32 @@ function EditPost() {
   function showWarningIfDefaultTopicIsChanged() {
     if (state.topic.id !== selectedTopic.id) {
       return (
-        <div className="ml-auto col-4" style={{ color: "FireBrick", font: "small-caps bold 14px/30px Georgia, serif" }}>
+        <div className="ml-auto" style={{ color: "FireBrick", font: "small-caps bold 14px/30px Georgia, serif" }}>
           original topic [<a style={{ color: "Navy" }}>{state.topic.name}</a>] changed!
         </div>
       )
     }
   }
 
+  if (!appState.loggedIn) return <UnauthorizedAccessView />
+  if (state.notFound) return <NotFound />
   if (state.isFetching) return <Loading />
+  if (!appState.user.isAdmin && state.userId != state.postAuthor.id && !appState.user.isSupport) return <UnauthorizedAccessView />
   return (
     <form onSubmit={handleSubmit}>
       <div className="main d-flex flex-column container">
         <div className="content d-flex flex-column mt-4">
-          <Link className="text-primary medium font-weight-bold mb-3" to={`/post/${state.id}`}>
-            &laquo; Back to post [{state.title}]
-          </Link>
-          <div className="d-flex flex-row">
+          <div className="p-2">
+            <Link className="text-primary medium font-weight-bold mb-3" to={`/post/${state.id}`}>
+              &laquo; Back to post [{state.originalTitle}]
+            </Link>
+            <ShowAuthor contentAuthor={state.postAuthor} onlyForAdmin={true} />
+          </div>
+          <div className="d-flex flex-row mt-2">
             <div className="ml-3 add-post-title">
               Title: <input onChange={e => dispatch({ type: "titleChange", value: e.target.value })} value={state.title} className="p-2 ml-3" type="text" />
             </div>
-            <div className="ml-auto mr-5 col-2">
+            <div className="mt-1 ml-auto">
               <select className="mr-3" name="Topics" id="topics" onChange={e => handleTopicSelect(e)}>
                 <option default>{state.topic.name}</option>
                 {topics.map(topic => {
@@ -156,10 +196,20 @@ function EditPost() {
               </select>
             </div>
           </div>
+          <span className="form-group ml-5 d-flex" style={{ fontSize: "13px" }}>
+            <CSSTransition in={!state.title || state.title.length < 3 || state.title.length > 50} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+              <div className="alert alert-danger mt-2 ml-5 liveValidateMessage">{!state.title || state.title.length > 50 ? "Empty title or too long (max. 50 sings)" : "Title too short (min. 3 signs)"}</div>
+            </CSSTransition>
+          </span>
           {showWarningIfDefaultTopicIsChanged()}
           <div className="mt-3 ml-auto mr-auto">
             <textarea onChange={e => dispatch({ type: "contentChange", value: e.target.value })} value={state.content} className="post-textarea p-2 ml-5" rows="10" cols="100"></textarea>
           </div>
+          <span className="form-group ml-5 d-flex" style={{ fontSize: "13px" }}>
+            <CSSTransition in={!state.content || state.content.length > 1000} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+              <div className="alert alert-danger ml-5 liveValidateMessage">{"Empty description or too long (max. 1000 signs)"}</div>
+            </CSSTransition>
+          </span>
           <div className="d-flex align-items-center mt-3">
             <div className="d-flex mt-3">
               <span className="mr-4">Tags: </span>
