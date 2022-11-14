@@ -8,6 +8,7 @@ import { CSSTransition } from "react-transition-group"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 import Loading from "./Loading"
+import NotFound from "./NotFound"
 import LikeButton from "./LikeButton"
 import RenderAvatar from "./Avatar"
 import DeleteModal from "./DeleteModal"
@@ -37,6 +38,7 @@ function ViewSinglePost() {
       message: ""
     },
     isLoading: true,
+    notFound: false,
     reloadCounter: 0,
     like: 0
   })
@@ -56,7 +58,15 @@ function ViewSinglePost() {
           draft.isLoading = false
         })
       } catch (e) {
-        console.log("There was a problem or the request was cancelled.")
+        if (e.response.status === 404) {
+          setState(draft => {
+            draft.notFound = true
+          })
+          console.log("Resource not found.")
+        } else {
+          console.log("There was a problem or the request was cancelled.")
+          navigate(`/`)
+        }
       }
     }
 
@@ -209,6 +219,7 @@ function ViewSinglePost() {
     }
   }
 
+  if (state.notFound) return <NotFound />
   if (state.isLoading) return <Loading />
   return (
     <div className="main d-flex flex-column container">
