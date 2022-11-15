@@ -5,7 +5,7 @@ import StateContext from "../StateContext"
 function ShowAuthor(props) {
   const appState = useContext(StateContext)
 
-  if (props.onlyForAdmin == true && !appState.user.isAdmin) return null
+  if ((props.onlyForAdmin == true && !appState.user.isAdmin) || (props.onlyForSuppAndAdmin == true && appState.user.isUser)) return null
 
   return (
     <span>

@@ -195,14 +195,23 @@ function ViewSinglePost() {
     setIsDeleting(prev => !prev)
   }
 
-  function showEditAndDeleteButtons() {
-    if (loggedIn && (appState.user.id == state.author.id || appState.user.isAdmin) && (appState.user.isSupport || appState.user.isAdmin)) {
+  function showEditButton() {
+    if (loggedIn && (appState.user.id == state.author.id || appState.user.isAdmin)) {
       return (
         <div className="d-flex flex-row ml-auto">
           <Link to={`/post/edit/${id}`} data-tip="Edit" data-for="edit" className="text-primary mr-2">
             <span className="material-symbols-outlined link-black mr-2"> edit </span>
           </Link>
           <ReactTooltip id="edit" className="custom-tooltip" />
+        </div>
+      )
+    }
+  }
+
+  function showDeleteButton() {
+    if (loggedIn && (appState.user.id == state.author.id || appState.user.isAdmin || appState.user.isSupport)) {
+      return (
+        <a>
           <span onClick={deletePopup} className="material-symbols-outlined link-black" data-tip="Delete" data-for="delete">
             delete
           </span>
@@ -214,7 +223,7 @@ function ViewSinglePost() {
             </div>
           </CSSTransition>
           <ReactTooltip id="delete" className="custom-tooltip" />
-        </div>
+        </a>
       )
     }
   }
@@ -248,7 +257,8 @@ function ViewSinglePost() {
               <p>{post.content}</p>
             </div>
           </div>
-          {showEditAndDeleteButtons()}
+          {showEditButton()}
+          {showDeleteButton()}
         </div>
         {loggedIn ? (
           <div>
