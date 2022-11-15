@@ -47,6 +47,7 @@
     "@mui/material": "^5.10.12",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^14.4.3",
     "buffer": "^6.0.3",
     "webpack-dev-server": "^4.11.1"
   }
