@@ -23,6 +23,7 @@
     "jest": "^29.3.1",
     "jest-environment-jsdom": "^29.3.0",
     "jwt-decode": "^3.1.2",
+    "msw": "^0.48.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-easy-crop": "^4.6.1",

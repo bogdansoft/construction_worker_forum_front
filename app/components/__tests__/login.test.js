@@ -1,17 +1,17 @@
 /**
  * @jest-environment jsdom
  */
-import { render, cleanup, screen, act, queryByAttribute } from "@testing-library/react"
+import { render, cleanup, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import "@testing-library/jest-dom"
 import React from "react"
 import Login from "../Login"
-import { MemoryRouter, Router } from "react-router"
+import { MemoryRouter } from "react-router"
 
 afterEach(cleanup)
 
 test("test login page render", () => {
-  const dom = render(
+  render(
     <MemoryRouter>
       <Login />
     </MemoryRouter>
@@ -23,7 +23,7 @@ test("test login page render", () => {
 test("when provided good credentials, should render popup message and correct navbar", async () => {
   const user = userEvent.setup()
 
-  const dom = render(
+  render(
     <MemoryRouter>
       <Login />
     </MemoryRouter>
