@@ -26,10 +26,10 @@ import NotFound from "./components/NotFound"
 import Logout from "./components/Logout"
 import Chat from "./components/chat/Chat"
 
-Axios.defaults.baseURL = "http://localhost:8080"
+Axios.defaults.baseURL = "https://localhost:443"
 
 function Main() {
-  //
+  
   const initialState = {
     loggedIn: Boolean(localStorage.getItem("constructionForumUserId")),
     searchIsOpen: false,
