@@ -12,12 +12,14 @@ import NotFound from "./NotFound"
 import LikeButton from "./LikeButton"
 import RenderAvatar from "./Avatar"
 import DeleteModal from "./DeleteModal"
+import CreateCommentForm from "./CreateCommentForm"
 
 function ViewSinglePost() {
   const navigate = useNavigate()
   const { id } = useParams()
   const [post, setPost] = useState([])
   const [comments, setComments] = useState([])
+  const [newComment, setNewComment] = useState()
   const loggedIn = Boolean(localStorage.getItem("constructionForumUserToken"))
   const appDispatch = useContext(DispatchContext)
   const appState = useContext(StateContext)
@@ -27,16 +29,6 @@ function ViewSinglePost() {
     postLikesCount: 0,
     isPostLikedByUser: false,
     isPostOwnedByUser: false,
-    commentToAdd: {
-      content: "",
-      userId: localStorage.getItem("constructionForumUserId"),
-      token: localStorage.getItem("constructionForumUserToken"),
-      postId: id,
-      listener: 0,
-      sendCount: 0,
-      hasErrors: false,
-      message: ""
-    },
     isLoading: true,
     notFound: false,
     reloadCounter: 0,
@@ -69,7 +61,6 @@ function ViewSinglePost() {
         }
       }
     }
-
     fetchPost()
     return () => {
       ourRequest.cancel()
@@ -92,39 +83,6 @@ function ViewSinglePost() {
       ourRequest.cancel()
     }
   }, [id, state.reloadCounter])
-
-  useEffect(() => {
-    if (state.commentToAdd.listener) {
-      const ourRequest = Axios.CancelToken.source()
-
-      async function postComment() {
-        try {
-          const response = await Axios.post(
-            `/api/comment`,
-            {
-              content: state.commentToAdd.content,
-              postId: state.commentToAdd.postId,
-              userId: state.commentToAdd.userId
-            },
-            { headers: { Authorization: `Bearer ${state.commentToAdd.token}` } },
-            { cancelToken: ourRequest.token }
-          )
-          appDispatch({ type: "flashMessage", value: "Comment succesfully created !", messageType: "message-green" })
-          setComments(comments.concat(response.data))
-        } catch (e) {
-          console.log("There was a problem or the request was cancelled." + e)
-        }
-      }
-
-      setState(draft => {
-        draft.commentToAdd.content = ""
-      })
-      postComment()
-      return () => {
-        ourRequest.cancel()
-      }
-    }
-  }, [state.commentToAdd.listener])
 
   useEffect(() => {
     if (state.like) {
@@ -157,6 +115,14 @@ function ViewSinglePost() {
     }
   }, [state.like])
 
+  useEffect(() => {
+    if (newComment) {
+      console.log(newComment)
+      setComments(comments.concat(newComment))
+      setNewComment(null)
+    }
+  }, [newComment])
+
   async function handleDelete() {
     const ourRequest = Axios.CancelToken.source()
     try {
@@ -169,20 +135,6 @@ function ViewSinglePost() {
     return () => {
       ourRequest.cancel()
     }
-  }
-
-  function handleSubmit(e) {
-    e.preventDefault()
-    if (state.commentToAdd.content.length < 2) {
-      setState(draft => {
-        draft.commentToAdd.hasErrors = true
-        draft.commentToAdd.message = "Must be at least 2 characters long"
-      })
-      return
-    }
-    setState(draft => {
-      draft.commentToAdd.listener++
-    })
   }
 
   function reload() {
@@ -287,32 +239,7 @@ function ViewSinglePost() {
       </div>
       {loggedIn ? (
         <>
-          <div className="comments d-flex col-11 ml-auto mr-auto mt-5 align-items-center">
-            <form onSubmit={handleSubmit} className="d-flex ml-auto mr-auto align-items-center container">
-              <div className="container mt-3">
-                <input
-                  onChange={e =>
-                    setState(draft => {
-                      draft.commentToAdd.hasErrors = false
-                      draft.commentToAdd.content = e.target.value
-                    })
-                  }
-                  value={state.commentToAdd.content}
-                  type="text"
-                  className="container single-topic-content p-2"
-                ></input>
-              </div>
-              <CSSTransition in={state.commentToAdd.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-                <div className="alert alert-danger small liveValidateMessage ml-3">{state.commentToAdd.message}</div>
-              </CSSTransition>
-              <div className="ml-auto mr-4 mt-4">
-                <button type="submit" className="material-symbols-outlined" data-tip="Send comment!" data-for="send">
-                  send
-                </button>
-                <ReactTooltip id="send" className="custom-tooltip" />
-              </div>
-            </form>
-          </div>
+          <CreateCommentForm targetId={id} onSubmit={setNewComment} />
           <div className="comments d-flex flex-column ml-auto mr-auto col-11 mt-5">{comments.length > 0 ? comments.map(comment => <SingleComment comment={comment} key={comment.id} reload={reload} />) : <div className="single-topic container d-flex mt-4">No comments yet!</div>}</div>
         </>
       ) : null}

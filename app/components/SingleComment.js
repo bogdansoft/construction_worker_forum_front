@@ -6,7 +6,7 @@ import DeleteModal from "./DeleteModal"
 import { CSSTransition } from "react-transition-group"
 import { useImmer } from "use-immer"
 import LikeButton from "./LikeButton"
-import RenderAvatar from "./Avatar"
+import ReactTooltip from "react-tooltip"
 
 function SingleComment(props) {
   const appDispatch = useContext(DispatchContext)
@@ -83,40 +83,33 @@ function SingleComment(props) {
     setIsDeleting(prev => !prev)
   }
 
-  function showEditAndDeleteButtons() {
-    if (appState.user.id == props.comment.user.id) {
+  function showDeleteButton() {
+    if (appState.user.id == props.comment.user.id || appState.user.isAdmin || appState.user.isSupport)
       return (
         <div className="icon-black">
+          <span onClick={deletePopup} data-for="delete" data-tip="delete comment" className="material-symbols-outlined">
+            delete
+            <CSSTransition in={isDeleting} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+              <div class="delete-absolute col-7">
+                <div className="delete-pop liveValidateMessage-delete ml-3">
+                  <DeleteModal delete={handleDelete} noDelete={deletePopup} />
+                </div>
+              </div>
+            </CSSTransition>
+          </span>
+          <ReactTooltip id="delete" className="custom-tooltip" />
+        </div>
+      )
+  }
+
+  function showEditButton() {
+    if (appState.user.id == props.comment.user.id) {
+      return (
+        <div className="icon-black" data-for="edit" data-tip="edit comment">
           <span onClick={handleUpdate} className="material-symbols-outlined">
             edit
           </span>
-          <span onClick={deletePopup} className="material-symbols-outlined">
-            {" "}
-            delete{" "}
-            <CSSTransition in={isDeleting} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-              <div class="delete-absolute col-7">
-                <div className="delete-pop liveValidateMessage-delete ml-3">
-                  <DeleteModal delete={handleDelete} noDelete={deletePopup} />
-                </div>
-              </div>
-            </CSSTransition>
-          </span>
-        </div>
-      )
-    } else if (appState.user.roles.includes("ADMINISTRATOR") || appState.user.roles.includes("SUPPORT")) {
-      return (
-        <div className="icon-black">
-          <span onClick={deletePopup} className="material-symbols-outlined">
-            {" "}
-            delete{" "}
-            <CSSTransition in={isDeleting} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-              <div class="delete-absolute col-7">
-                <div className="delete-pop liveValidateMessage-delete ml-3">
-                  <DeleteModal delete={handleDelete} noDelete={deletePopup} />
-                </div>
-              </div>
-            </CSSTransition>
-          </span>
+          <ReactTooltip id="edit" className="custom-tooltip" />
         </div>
       )
     }
@@ -172,7 +165,8 @@ function SingleComment(props) {
                   Created: {date} <span className="ml-2">by {props.comment.user.username}</span>
                 </span>
               </div>
-              {showEditAndDeleteButtons()}
+              {showEditButton()}
+              {showDeleteButton()}
             </div>
           )}
           {isEdited && (
