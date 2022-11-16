@@ -8,6 +8,7 @@ import DispatchContext from "../DispatchContext"
 import UnauthorizedAccessView from "./UnauthorizedAccessView"
 import NotFound from "./NotFound"
 import Loading from "./Loading"
+import ShowAuthor from "./ShowAuthor"
 
 function EditTopic() {
   const appState = useContext(StateContext)
@@ -17,6 +18,7 @@ function EditTopic() {
     name: "",
     originalName: "",
     description: "",
+    topicAuthor: undefined,
     isFetching: true,
     isSaving: false,
     id: useParams().id,
@@ -31,6 +33,7 @@ function EditTopic() {
         draft.name = action.value.name
         draft.originalName = action.value.name
         draft.description = action.value.description
+        draft.topicAuthor = action.value.user
         draft.isFetching = false
         draft.userId = appState.user.id
         return
@@ -111,17 +114,20 @@ function EditTopic() {
     }
   }, [state.sendCount])
 
-  if ((state.isFetching && !appState.loggedIn) || !appState.user.isAdmin) return <UnauthorizedAccessView />
+  if ((state.isFetching && !appState.loggedIn) || appState.user.isUser) return <UnauthorizedAccessView />
   if (state.notFound) return <NotFound />
   if (state.isFetching) return <Loading />
   return (
     <form onSubmit={handleSubmit}>
       <div className="main d-flex flex-column container">
-        <Link className="text-primary medium font-weight-bold mb-3 mt-5" to={`/topic/${state.id}`}>
-          &laquo; Back to topic [{state.originalName}]
-        </Link>
         <div className="content d-flex flex-column mt-4">
-          <div className="d-flex flex-row">
+          <div className="p-2">
+            <Link className="text-primary medium font-weight-bold mb-3 mt-5" to={`/topic/${state.id}`}>
+              &laquo; Back to topic [{state.originalName}]
+            </Link>
+            <ShowAuthor contentAuthor={state.topicAuthor} onlyForSuppAndAdmin={true} />
+          </div>
+          <div className="d-flex flex-row mt-2">
             <div className="ml-3 add-post-title">
               <text style={{ fontSize: "40px" }}>Title:</text>
               <input onChange={e => dispatch({ type: "nameChange", value: e.target.value })} value={state.name} className="p-2 ml-3" type="text" />

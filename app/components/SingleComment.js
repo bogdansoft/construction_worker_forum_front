@@ -84,7 +84,6 @@ function SingleComment(props) {
   }
 
   function showEditAndDeleteButtons() {
-    console.log(appState)
     if (appState.user.id == props.comment.user.id) {
       return (
         <div className="icon-black">
