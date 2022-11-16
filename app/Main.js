@@ -26,7 +26,7 @@ import NotFound from "./components/NotFound"
 import Logout from "./components/Logout"
 import Chat from "./components/chat/Chat"
 
-Axios.defaults.baseURL = "https://localhost:8443"
+Axios.defaults.baseURL = "https://localhost:443"
 
 function Main() {
   //
