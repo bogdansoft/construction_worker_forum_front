@@ -23,6 +23,7 @@ function EditPost() {
     content: "",
     postAuthor: undefined,
     topic: undefined,
+    isUpdateTimeExpired: undefined,
     isFetching: true,
     isSaving: false,
     id: useParams().id,
@@ -41,6 +42,7 @@ function EditPost() {
         draft.content = action.value.content
         draft.postAuthor = action.value.user
         draft.topic = action.value.topic
+        draft.isUpdateTimeExpired = new Date().getTime() > new Date(action.value.createdAt).getTime() + 15 * 60000
         draft.isFetching = false
         draft.userId = appState.user.id
         return
@@ -168,12 +170,27 @@ function EditPost() {
     }
   }
 
+  function showWarningIfUpdateTimeExpired() {
+    if (appState.user.isUser && state.isUpdateTimeExpired) {
+      return (
+        <div className="mt-3 ml-auto mr-auto form-group">
+          <a style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+            <h1 className="alert alert-danger liveValidateMessage mt-3" style={{ fontSize: "12px" }}>
+              UPDATE TIME EXPIRED. PLEASE CONTACT WITH <b>SUPPORT</b> !
+            </h1>
+          </a>
+        </div>
+      )
+    }
+  }
+
   if (!appState.loggedIn) return <UnauthorizedAccessView />
   if (state.notFound) return <NotFound />
   if (state.isFetching) return <Loading />
-  if (!appState.user.isAdmin && state.userId != state.postAuthor.id && !appState.user.isSupport) return <UnauthorizedAccessView />
+  if (appState.user.isUser && state.userId != state.postAuthor.id) return <UnauthorizedAccessView />
   return (
     <form onSubmit={handleSubmit}>
+      {showWarningIfUpdateTimeExpired()}
       <div className="main d-flex flex-column container">
         <div className="content d-flex flex-column mt-4">
           <div className="p-2">

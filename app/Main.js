@@ -29,7 +29,7 @@ import Chat from "./components/chat/Chat"
 Axios.defaults.baseURL = "https://localhost:443"
 
 function Main() {
-  //
+  
   const initialState = {
     loggedIn: Boolean(localStorage.getItem("constructionForumUserId")),
     searchIsOpen: false,
@@ -38,6 +38,7 @@ function Main() {
       username: localStorage.getItem("constructionForumUsername"),
       token: localStorage.getItem("constructionForumUserToken"),
       roles: [],
+      isUser: false,
       isAdmin: false,
       isSupport: false
     },
@@ -50,12 +51,14 @@ function Main() {
         state.loggedIn = true
         state.user = action.data
         state.user.roles = jwtDecode(state.user.token).roles
+        state.user.isUser = state.user.roles.includes("USER")
         state.user.isAdmin = state.user.roles.includes("ADMINISTRATOR")
         state.user.isSupport = state.user.roles.includes("SUPPORT")
         break
       case "logout":
         state.loggedIn = false
         state.user.roles = []
+        state.user.isUser = false
         state.user.isAdmin = false
         state.user.isSupport = false
         break
@@ -82,6 +85,7 @@ function Main() {
       localStorage.setItem("constructionForumUsername", state.user.username)
       localStorage.setItem("constructionForumUserToken", state.user.token)
       initialState.user.roles = jwtDecode(localStorage.getItem("constructionForumUserToken")).roles
+      initialState.user.isUser = initialState.user.roles.includes("USER")
       initialState.user.isAdmin = initialState.user.roles.includes("ADMINISTRATOR")
       initialState.user.isSupport = initialState.user.roles.includes("SUPPORT")
     } else {
