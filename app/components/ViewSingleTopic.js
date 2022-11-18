@@ -5,6 +5,7 @@ import ReactTooltip from "react-tooltip"
 import Axios from "axios"
 import { useImmer } from "use-immer"
 import Loading from "./Loading"
+import NotFound from "./NotFound"
 import Post from "./Post"
 import DeleteModal from "./DeleteModal"
 import StateContext from "../StateContext"
@@ -22,12 +23,13 @@ function ViewSingleTopic(props) {
   const loggedIn = Boolean(localStorage.getItem("constructionForumUserToken"))
   const [state, setState] = useImmer({
     isLoading: true,
+    notFound: false,
     reloadCounter: 0,
     delete: 0,
     paginationValue: 10,
     pagesNumber: 1,
     pageNumber: 1,
-    numberOfRecords: 1,
+    numberOfRecords: 1
   })
 
   useEffect(() => {
@@ -37,11 +39,19 @@ function ViewSingleTopic(props) {
       try {
         const response = await Axios.get(`/api/topic/${id}`, { cancelToken: ourRequest.token })
         setTopic(response.data)
-        setState((draft) => {
+        setState(draft => {
           draft.isLoading = false
         })
       } catch (e) {
-        console.log("There was a problem or the request was cancelled.")
+        if (e.response.status === 404) {
+          setState(draft => {
+            draft.notFound = true
+          })
+          console.log("Resource not found.")
+        } else {
+          console.log("There was a problem or the request was cancelled.")
+          navigate(`/`)
+        }
       }
     }
 
@@ -58,7 +68,7 @@ function ViewSingleTopic(props) {
       try {
         const response = await Axios.get(`/api/post/all_by_topicid/${id}`, { cancelToken: ourRequest.token })
         setPosts(response.data.slice(0, 10))
-        setState((draft) => {
+        setState(draft => {
           draft.numberOfRecords = response.data.length
           draft.pagesNumber = Math.ceil(response.data.length / 10)
         })
@@ -77,7 +87,7 @@ function ViewSingleTopic(props) {
     async function fetchData() {
       try {
         const response = await Axios.get(`/api/post/all_by_topicid/${id}/number/${state.paginationValue}/page/${state.pageNumber}`)
-        setState((draft) => {
+        setState(draft => {
           setPosts(response.data)
           draft.isLoading = false
         })
@@ -89,17 +99,17 @@ function ViewSingleTopic(props) {
   }, [state.pageNumber, state.paginationValue])
 
   function reload() {
-    setState((draft) => {
+    setState(draft => {
       draft.reloadCounter++
     })
   }
 
   function deletePopup() {
-    setIsDeleting((prev) => !prev)
+    setIsDeleting(prev => !prev)
   }
 
   function paginate(value) {
-    setState((draft) => {
+    setState(draft => {
       draft.pageNumber = 1
       draft.paginationValue = value
       draft.pagesNumber = Math.ceil(state.numberOfRecords / value)
@@ -107,7 +117,7 @@ function ViewSingleTopic(props) {
   }
 
   function handlePage(event) {
-    setState((draft) => {
+    setState(draft => {
       draft.pageNumber = parseInt(event.target.textContent)
       console.log(state.pageNumber)
     })
@@ -161,6 +171,7 @@ function ViewSingleTopic(props) {
     )
   }
 
+  if (state.notFound) return <NotFound />
   if (state.isLoading) return <Loading />
   return (
     <div className="main container d-flex flex-column">
@@ -188,7 +199,7 @@ function ViewSingleTopic(props) {
               className="mr-3"
               name="Pagination"
               id="pagination"
-              onChange={(e) => {
+              onChange={e => {
                 paginate(e.target.value)
               }}
             >
@@ -215,7 +226,7 @@ function ViewSingleTopic(props) {
         {posts.length == 0 ? (
           <span className="font-weight-bold text-center p-5">There are no posts for this topic yet. Feel free to create one!</span>
         ) : (
-          posts.map((post) => {
+          posts.map(post => {
             return <Post post={post} key={post.id} author={post.user} reload={reload} />
           })
         )}

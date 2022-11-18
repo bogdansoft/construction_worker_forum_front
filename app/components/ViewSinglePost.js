@@ -8,6 +8,7 @@ import { CSSTransition } from "react-transition-group"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 import Loading from "./Loading"
+import NotFound from "./NotFound"
 import LikeButton from "./LikeButton"
 import RenderAvatar from "./Avatar"
 import DeleteModal from "./DeleteModal"
@@ -37,6 +38,7 @@ function ViewSinglePost() {
       message: ""
     },
     isLoading: true,
+    notFound: false,
     reloadCounter: 0,
     like: 0
   })
@@ -56,7 +58,15 @@ function ViewSinglePost() {
           draft.isLoading = false
         })
       } catch (e) {
-        console.log("There was a problem or the request was cancelled.")
+        if (e.response.status === 404) {
+          setState(draft => {
+            draft.notFound = true
+          })
+          console.log("Resource not found.")
+        } else {
+          console.log("There was a problem or the request was cancelled.")
+          navigate(`/`)
+        }
       }
     }
 
@@ -185,14 +195,23 @@ function ViewSinglePost() {
     setIsDeleting(prev => !prev)
   }
 
-  function showEditAndDeleteButtons() {
-    if (loggedIn && (appState.user.id == state.author.id || appState.user.isAdmin) && (appState.user.isSupport || appState.user.isAdmin)) {
+  function showEditButton() {
+    if (loggedIn && (appState.user.id == state.author.id || appState.user.isAdmin)) {
       return (
         <div className="d-flex flex-row ml-auto">
           <Link to={`/post/edit/${id}`} data-tip="Edit" data-for="edit" className="text-primary mr-2">
             <span className="material-symbols-outlined link-black mr-2"> edit </span>
           </Link>
           <ReactTooltip id="edit" className="custom-tooltip" />
+        </div>
+      )
+    }
+  }
+
+  function showDeleteButton() {
+    if (loggedIn && (appState.user.id == state.author.id || appState.user.isAdmin || appState.user.isSupport)) {
+      return (
+        <a>
           <span onClick={deletePopup} className="material-symbols-outlined link-black" data-tip="Delete" data-for="delete">
             delete
           </span>
@@ -204,11 +223,12 @@ function ViewSinglePost() {
             </div>
           </CSSTransition>
           <ReactTooltip id="delete" className="custom-tooltip" />
-        </div>
+        </a>
       )
     }
   }
 
+  if (state.notFound) return <NotFound />
   if (state.isLoading) return <Loading />
   return (
     <div className="main d-flex flex-column container">
@@ -237,7 +257,8 @@ function ViewSinglePost() {
               <p>{post.content}</p>
             </div>
           </div>
-          {showEditAndDeleteButtons()}
+          {showEditButton()}
+          {showDeleteButton()}
         </div>
         {loggedIn ? (
           <div>

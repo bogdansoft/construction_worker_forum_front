@@ -4,8 +4,8 @@
   "description": "",
   "main": "test.js",
   "scripts": {
-    "dev": "webpack serve",
-    "test": "jest"
+    "test": "jest",
+    "dev": "webpack serve --https"
   },
   "keywords": [],
   "author": "",

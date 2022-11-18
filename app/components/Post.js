@@ -1,38 +1,17 @@
-import React, { useEffect, useContext } from "react"
+import React, { useEffect, useContext, useState } from "react"
 import ReactTooltip from "react-tooltip"
-import { useImmer } from "use-immer"
 import Axios from "axios"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
+import { CSSTransition } from "react-transition-group"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 import RenderAvatar from "./Avatar"
+import DeleteModal from "./DeleteModal"
 
 function Post(props) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
-  const [state, setState] = useImmer({
-    delete: 0
-  })
-
-  useEffect(() => {
-    if (state.delete) {
-      const ourRequest = Axios.CancelToken.source()
-
-      async function fetchData() {
-        try {
-          await Axios.delete(`/api/post/${props.post.id}`, { headers: { Authorization: `Bearer ${appState.user.token}` } })
-          appDispatch({ type: "flashMessage", value: "Post successfully deleted !", messageType: "message-green" })
-          props.reload()
-        } catch (e) {
-          console.log("there was a problem deleting post")
-        }
-      }
-      fetchData()
-      return () => {
-        ourRequest.cancel()
-      }
-    }
-  }, [state.delete])
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const date = new Date(props.post.createdAt).toLocaleDateString("utc", {
     year: "numeric",
@@ -40,28 +19,53 @@ function Post(props) {
     day: "numeric"
   })
 
-  function showEditAndDeleteButtons() {
-    if (appState.loggedIn && appState.user.id == props.post.user.id) {
+  async function handleDelete() {
+    const ourRequest = Axios.CancelToken.source()
+    try {
+      await Axios.delete(`/api/post/${props.post.id}`, { headers: { Authorization: `Bearer ${appState.user.token}` } })
+      appDispatch({ type: "flashMessage", value: "Post successfully deleted !", messageType: "message-green" })
+      props.reload()
+    } catch (e) {
+      console.log("there was a problem deleting post")
+    }
+    return () => {
+      ourRequest.cancel()
+    }
+  }
+
+  function deletePopup() {
+    setIsDeleting(prev => !prev)
+  }
+
+  function showEditButton() {
+    if (appState.loggedIn && (appState.user.id == props.post.user.id || appState.user.isAdmin)) {
       return (
         <div>
           <Link to={`/post/edit/${props.post.id}`} data-tip="Edit" data-for="edit" className="text-primary mr-2">
             <span class="material-symbols-outlined link-black"> edit </span>
           </Link>
           <ReactTooltip id="edit" className="custom-tooltip" />
-          <span
-            onClick={() =>
-              setState(draft => {
-                draft.delete++
-              })
-            }
-            className="material-symbols-outlined link-black mr-2"
-            data-tip="Delete"
-            data-for="delete"
-          >
+        </div>
+      )
+    }
+  }
+
+  function showDeleteButton() {
+    if (appState.loggedIn && (appState.user.id == props.post.user.id || !appState.user.isUser)) {
+      return (
+        <a>
+          <span onClick={deletePopup} className="material-symbols-outlined link-black mr-2" data-tip="Delete" data-for="delete">
             delete
           </span>
+          <CSSTransition in={isDeleting} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+            <div class="delete-absolute container col-5 ml-1 mt-5">
+              <div className="delete-pop col-5 p-2 liveValidateMessage-delete">
+                <DeleteModal delete={handleDelete} noDelete={deletePopup} relatedItemsLength={props.post.comments.length} relatedItemsType={"comment"} />
+              </div>
+            </div>
+          </CSSTransition>
           <ReactTooltip id="delete" className="custom-tooltip" />
-        </div>
+        </a>
       )
     }
   }
@@ -86,7 +90,8 @@ function Post(props) {
             Created: {date} By {props.author.username}
           </span>
         </div>
-        {showEditAndDeleteButtons()}
+        {showEditButton()}
+        {showDeleteButton()}
       </div>
     </div>
   )
