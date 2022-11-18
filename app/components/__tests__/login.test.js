@@ -1,18 +1,14 @@
 /**
  * @jest-environment jsdom
  */
-import { render, cleanup, screen } from "@testing-library/react"
+import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import React, { useContext, useEffect, useState } from "react"
 import "@testing-library/jest-dom"
-import React from "react"
 import Login from "../Login"
 import { MemoryRouter } from "react-router"
-import { server } from "../mocks/server"
-
-beforeAll(() => server.listen())
-afterEach(() => server.resetHandlers())
-afterEach(cleanup)
-afterAll(() => server.close())
+import axiosInstance from "axios"
+import MockAdapter from "axios-mock-adapter"
 
 test("test login page render", () => {
   render(
@@ -41,14 +37,15 @@ test("should allow user to type in credentials", async () => {
 
 test("should allow user to login", async () => {
   const user = userEvent.setup()
-
+  const mock = new MockAdapter(axiosInstance, { onNoMatch: "throwException" })
   render(
     <MemoryRouter>
       <Login />
     </MemoryRouter>
   )
+  mock.onPost("/api/login").reply(200, { id: 1, token: 123123123, username: "jake123" })
   await user.type(screen.getByRole("textbox"), "jake123")
   await user.type(screen.getByTestId("password-field"), "secret123")
-  user.click(screen.getByRole("button"))
-  expect(await screen.findByText("Succesfully logged in !")).toBeInTheDocument()
+  user.click(screen.getByRole("button", { name: /LOGIN/i }))
+  expect(await screen.findByText("Wrong credentials !")).toBeInTheDocument()
 })
