@@ -37,13 +37,11 @@ test("should allow user to type in credentials", async () => {
 
 test("should allow user to login", async () => {
   const user = userEvent.setup()
-  const mock = new MockAdapter(axiosInstance, { onNoMatch: "throwException" })
   render(
     <MemoryRouter>
       <Login />
     </MemoryRouter>
   )
-  mock.onPost("/api/login").reply(200, { id: 1, token: 123123123, username: "jake123" })
   await user.type(screen.getByRole("textbox"), "jake123")
   await user.type(screen.getByTestId("password-field"), "secret123")
   user.click(screen.getByRole("button", { name: /LOGIN/i }))
