@@ -20,7 +20,7 @@ function Login() {
         appDispatch({ type: "flashMessage", value: "Succesfully logged in !", messageType: "message-green" })
       }
     } catch (e) {
-      if (e.response.status === 401 || e.response.status === 400) {
+      if (e.response === 401 || e.response === 400) {
         appDispatch({ type: "flashMessage", value: "Wrong credentials !", messageType: "message-red" })
         console.log("Incorrect user credentials!")
       } else {

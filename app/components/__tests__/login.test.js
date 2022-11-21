@@ -3,12 +3,10 @@
  */
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import React, { useContext, useEffect, useState } from "react"
+import React from "react"
 import "@testing-library/jest-dom"
 import Login from "../Login"
 import { MemoryRouter } from "react-router"
-import axiosInstance from "axios"
-import MockAdapter from "axios-mock-adapter"
 
 test("test login page render", () => {
   render(
@@ -43,7 +41,7 @@ test("should allow user to login", async () => {
     </MemoryRouter>
   )
   await user.type(screen.getByRole("textbox"), "jake123")
-  await user.type(screen.getByTestId("password-field"), "secret123")
+  await user.type(screen.getByTestId("password-field"), "secret")
   user.click(screen.getByRole("button", { name: /LOGIN/i }))
-  expect(await screen.findByText("Wrong credentials !")).toBeInTheDocument()
+  expect(await screen.findByText("Succesfully logged in !")).toBeInTheDocument()
 })
