@@ -133,36 +133,43 @@ function CreatePost() {
               <div className="alert alert-danger ml-5 liveValidateMessage">{"Empty description or too long (max. 1000 signs)"}</div>
             </CSSTransition>
           </span>
-          <div className="d-flex align-items-center mt-3">
-            <div className="d-flex mt-3">
-              <span className="mr-4">Tags: </span>
-              <div className="ml-2">
-                <input type="checkbox" id="tag1" name="tag1" checked />
-                <label for="scales">tag1</label>
+          <div className="d-flex  flex-colum mt-3">
+            <div>
+              <div className="d-flex mt-3 d-flex">
+                <span className="mr-4">Tags: </span>
+                <div className="ml-2">
+                  <input
+                    type="checkbox"
+                    onClick={e => {
+                      handleCheckbox(e)
+                    }}
+                    id="tag1"
+                    value="tag1"
+                    name="tags"
+                    className="mr-1"
+                  />
+                  <label htmlFor="scales"> tag1</label>
+                </div>
+                <div className="ml-2">
+                  <input type="checkbox" onClick={e => handleCheckbox(e)} value="tag2" id="tag2" name="tags" className="mr-1" />
+                  <label htmlFor="scales"> tag2</label>
+                </div>
+                <div className="ml-2">
+                  <input type="checkbox" onClick={e => handleCheckbox(e)} value="tag3" id="tag3" name="tags" className="mr-1" />
+                  <label htmlFor="scales"> tag3</label>
+                </div>
+                <div className="ml-2">
+                  <input type="checkbox" onClick={e => handleCheckbox(e)} value="tag4" id="tag4" name="tags" className="mr-1" />
+                  <label htmlFor="scales"> tag4</label>
+                </div>
               </div>
-              <div className="ml-2">
-                <input type="checkbox" id="tag2" name="tag2" checked />
-                <label for="scales">tag2</label>
-              </div>
-              <div className="ml-2">
-                <input type="checkbox" id="tag2" name="tag2" checked />
-                <label for="scales">tag2</label>
-              </div>
-              <div className="ml-2">
-                <input type="checkbox" id="tag3" name="tag3" checked />
-                <label for="scales">tag3</label>
-              </div>
-              <div className="ml-2">
-                <input type="checkbox" id="tag4" name="tag4" checked />
-                <label for="scales">tag4</label>
-              </div>
-              <div className="ml-2">
-                <input type="checkbox" id="tag5" name="tag5" checked />
-                <label for="scales">tag5</label>
-              </div>
-              <div className="ml-2">
-                <input type="checkbox" id="tag6" name="tag6" checked />
-                <label for="scales">tag6</label>
+              <div>
+                <p>
+                  Selected:{" "}
+                  {tags.map(tag => (
+                    <span className="mr-2">{"• " + tag}</span>
+                  ))}
+                </p>
               </div>
             </div>
             <div className="ml-auto">
