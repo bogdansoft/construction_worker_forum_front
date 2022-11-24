@@ -16,6 +16,7 @@ function CreatePost() {
   const navigate = useNavigate()
   const location = useLocation()
   const [tags, setTags] = useState([])
+  const [availableTags, setAvailableTags] = useState([])
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
@@ -63,6 +64,23 @@ function CreatePost() {
       setSelectedTopic(location.state.topic)
     }
 
+    return () => {
+      ourRequest.cancel()
+    }
+  }, [])
+
+  useEffect(() => {
+    const ourRequest = Axios.CancelToken.source()
+    async function fetchAvailableTags() {
+      try {
+        const response = await Axios.get("/api/keyword", { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+        setAvailableTags(prev => prev.concat(response.data))
+        console.log(response.data)
+      } catch (e) {
+        console.log("There was a problem fetching tags" + e.message)
+      }
+    }
+    fetchAvailableTags()
     return () => {
       ourRequest.cancel()
     }
@@ -137,31 +155,20 @@ function CreatePost() {
             <div>
               <div className="d-flex mt-3 d-flex">
                 <span className="mr-4">Tags: </span>
-                <div className="ml-2">
-                  <input
-                    type="checkbox"
-                    onClick={e => {
-                      handleCheckbox(e)
-                    }}
-                    id="tag1"
-                    value="tag1"
-                    name="tags"
-                    className="mr-1"
-                  />
-                  <label htmlFor="scales"> tag1</label>
-                </div>
-                <div className="ml-2">
-                  <input type="checkbox" onClick={e => handleCheckbox(e)} value="tag2" id="tag2" name="tags" className="mr-1" />
-                  <label htmlFor="scales"> tag2</label>
-                </div>
-                <div className="ml-2">
-                  <input type="checkbox" onClick={e => handleCheckbox(e)} value="tag3" id="tag3" name="tags" className="mr-1" />
-                  <label htmlFor="scales"> tag3</label>
-                </div>
-                <div className="ml-2">
-                  <input type="checkbox" onClick={e => handleCheckbox(e)} value="tag4" id="tag4" name="tags" className="mr-1" />
-                  <label htmlFor="scales"> tag4</label>
-                </div>
+                {availableTags.map(availableTag => (
+                  <div className="ml-2">
+                    <input
+                      type="checkbox"
+                      onClick={e => {
+                        handleCheckbox(e)
+                      }}
+                      value={availableTag.name}
+                      name="tags"
+                      className="mr-1"
+                    />
+                    <label htmlFor="scales"> {availableTag.name}</label>
+                  </div>
+                ))}
               </div>
               <div>
                 <p>
