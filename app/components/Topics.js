@@ -18,6 +18,7 @@ function Topics(props) {
     pagesNumber: 1,
     pageNumber: 1,
     numberOfRecords: 1,
+    orderBy: "",
   })
 
   useEffect(() => {
@@ -40,7 +41,7 @@ function Topics(props) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const resposne = await Axios.get(`/api/topic/number/${state.paginationValue}/page/${state.pageNumber}`)
+        const resposne = await Axios.get(`/api/topic?limit=${state.paginationValue}&page=${state.pageNumber}`)
         setState((draft) => {
           draft.feed = resposne.data
           draft.isLoading = false
@@ -53,6 +54,22 @@ function Topics(props) {
     fetchData()
   }, [state.pageNumber, state.paginationValue])
 
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const resposne = await Axios.get(`/api/topic?orderby=${state.orderBy}`)
+        setState((draft) => {
+          draft.feed = resposne.data
+          draft.isLoading = false
+          renderTopics
+        })
+      } catch (e) {
+        console.log("there was a problem fetching the data" + e)
+      }
+    }
+    fetchData()
+  }, [state.orderBy])
+
   function handlePage(event) {
     setState((draft) => {
       draft.pageNumber = parseInt(event.target.textContent)
@@ -64,6 +81,12 @@ function Topics(props) {
       draft.pageNumber = 1
       draft.paginationValue = value
       draft.pagesNumber = Math.ceil(state.numberOfRecords / value)
+    })
+  }
+
+  function sort(value) {
+    setState((draft) => {
+      draft.orderBy = value
     })
   }
 
@@ -109,12 +132,21 @@ function Topics(props) {
               <option value="30">30</option>
               <option value="40">40</option>
             </select>
-            <select className="mr-3" name="Sorting" id="sorting">
-              <option>Sorting</option>
-              <option>Alphabetically</option>
-              <option>Most popular</option>
-              <option>Newest</option>
-              <option>Last updated</option>
+            <select
+              className="mr-3"
+              name="Sorting"
+              id="sorting"
+              onChange={(e) => {
+                sort(e.target.value)
+              }}
+            >
+              <option value="" disabled selected>
+                Sorting
+              </option>
+              <option value="name.asc">Alphabetically</option>
+              <option value="createdAt.asc">The newest topics</option>
+              <option value="createdAt.desc">The oldest topics</option>
+              <option value="updatedAt.desc">Last updated</option>
             </select>
             <div className="mr-4">
               <span className="material-symbols-outlined"> tune </span>
