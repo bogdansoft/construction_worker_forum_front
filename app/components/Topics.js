@@ -41,6 +41,12 @@ function Topics(props) {
   useEffect(() => {
     async function fetchData() {
       try {
+        if (state.orderBy !== "") {
+          const response = await Axios.get(`/api/topics?limit=${state.paginationValue}&page=${state.pageNumber}&orderby=${state.orderBy}`)
+          draft.feed = response.data
+          draft.isLoading = false
+          renderTopics
+        }
         const resposne = await Axios.get(`/api/topic?limit=${state.paginationValue}&page=${state.pageNumber}`)
         setState((draft) => {
           draft.feed = resposne.data
@@ -59,7 +65,7 @@ function Topics(props) {
       try {
         const resposne = await Axios.get(`/api/topic?orderby=${state.orderBy}`)
         setState((draft) => {
-          draft.feed = resposne.data
+          draft.feed = resposne.data.slice(0, 10)
           draft.isLoading = false
           renderTopics
         })
