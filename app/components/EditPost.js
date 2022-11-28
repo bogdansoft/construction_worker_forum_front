@@ -119,7 +119,6 @@ function EditPost() {
       }
 
       async function fetchPost() {
-        console.log(state.tags)
         try {
           await Axios.put(
             `/api/post/${state.id}`,
