@@ -69,7 +69,7 @@ function UserProfile() {
               {state.username}
             </div>
           </div>
-          <textarea value={state.bio} className="ml-4 post-textarea p-2" rows="5" cols="50"></textarea>
+          <textarea value={state.bio} className="ml-4 post-textarea p-2" rows="5" cols="50" disabled></textarea>
           <div className="ml-4 d-flex flex-column ml-5">
             {isLoggedIn && (
               <Link className="nav-button mt-2" to={`/profile/changebio/${username}`}>
