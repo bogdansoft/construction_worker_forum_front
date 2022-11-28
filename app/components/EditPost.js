@@ -119,6 +119,7 @@ function EditPost() {
       }
 
       async function fetchPost() {
+        console.log(state.tags)
         try {
           await Axios.put(
             `/api/post/${state.id}`,
@@ -126,7 +127,8 @@ function EditPost() {
               title: state.title,
               content: state.content,
               userId: state.userId,
-              topicId: selectedTopic.id
+              topicId: selectedTopic.id,
+              keywords: state.tags
             },
             { headers: { Authorization: `Bearer ${appState.user.token}` } }
           )
@@ -181,10 +183,8 @@ function EditPost() {
   function handleCheckbox(e) {
     if (e.target.checked) {
       dispatch({ type: "tagsAdd", value: e.target.value })
-      // setTags(prev => prev.concat(availableTags.find(tag => tag.name == e.target.value)))
     } else {
       dispatch({ type: "tagsRemove", value: e.target.value })
-      // setTags(prev => prev.filter(tag => tag.name != e.target.value))
     }
   }
 
@@ -276,6 +276,7 @@ function EditPost() {
                       value={availableTag.name}
                       name="tags"
                       className="mr-1"
+                      checked={state.tags.find(tag => tag.name == availableTag.name)}
                     />
                     <label htmlFor="scales"> {availableTag.name}</label>
                   </div>
