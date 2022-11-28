@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react"
 import Axios from "axios"
-import { useNavigate, Link, useLocation } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import { CSSTransition } from "react-transition-group"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
@@ -75,7 +75,6 @@ function CreatePost() {
       try {
         const response = await Axios.get("/api/keyword", { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
         setAvailableTags(prev => prev.concat(response.data))
-        console.log(response.data)
       } catch (e) {
         console.log("There was a problem fetching tags" + e.message)
       }
@@ -88,9 +87,9 @@ function CreatePost() {
 
   function handleCheckbox(e) {
     if (e.target.checked) {
-      setTags(prev => prev.concat(e.target.value))
+      setTags(prev => prev.concat(availableTags.find(tag => tag.name == e.target.value)))
     } else {
-      setTags(prev => prev.filter(tag => tag != e.target.value))
+      setTags(prev => prev.filter(tag => tag.name != e.target.value))
     }
   }
 
@@ -174,7 +173,7 @@ function CreatePost() {
                 <p>
                   Selected:{" "}
                   {tags.map(tag => (
-                    <span className="mr-2">{"• " + tag}</span>
+                    <span className="mr-2">{"• " + tag.name}</span>
                   ))}
                 </p>
               </div>
