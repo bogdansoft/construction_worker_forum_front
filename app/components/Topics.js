@@ -18,18 +18,14 @@ function Topics(props) {
     pagesNumber: 1,
     pageNumber: 1,
     numberOfRecords: 1,
+    orderBy: "",
+    isMounted: false,
   })
 
   useEffect(() => {
-    async function fetchData() {
+    function fetchData() {
       try {
-        const resposne = await Axios.get("/api/topic")
-        setState((draft) => {
-          draft.numberOfRecords = resposne.data.length
-          draft.feed = resposne.data.slice(0, 10)
-          draft.isLoading = false
-          draft.pagesNumber = Math.ceil(resposne.data.length / 10)
-        })
+        fetchingTopicsOnMount()
       } catch (e) {
         console.log("there was a problem fetching the data" + e)
       }
@@ -40,18 +36,70 @@ function Topics(props) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const resposne = await Axios.get(`/api/topic/number/${state.paginationValue}/page/${state.pageNumber}`)
-        setState((draft) => {
-          draft.feed = resposne.data
-          draft.isLoading = false
-          renderTopics
-        })
+        if (state.isMounted) {
+          if (state.orderBy !== "") {
+            getSortedAndPaginatedTopics()
+          } else {
+            getPaginatedTopics()
+          }
+        }
       } catch (e) {
         console.log("there was a problem fetching the data" + e)
       }
     }
     fetchData()
   }, [state.pageNumber, state.paginationValue])
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        if (state.isMounted) {
+          getSortedTopics()
+        }
+      } catch (e) {
+        console.log("there was a problem fetching the data" + e)
+      }
+    }
+    fetchData()
+  }, [state.orderBy])
+
+  async function getSortedTopics() {
+    const resposne = await Axios.get(`/api/topic?orderby=${state.orderBy}`)
+    setState((draft) => {
+      draft.feed = resposne.data.slice(0, state.paginationValue)
+      draft.isLoading = false
+      renderTopics
+    })
+  }
+
+  async function fetchingTopicsOnMount() {
+    const resposne = await Axios.get("/api/topic")
+    setState((draft) => {
+      draft.numberOfRecords = resposne.data.length
+      draft.feed = resposne.data.slice(0, 10)
+      draft.isLoading = false
+      draft.pagesNumber = Math.ceil(resposne.data.length / 10)
+      draft.isMounted = true
+    })
+  }
+
+  async function getPaginatedTopics() {
+    const resposne = await Axios.get(`/api/topic?limit=${state.paginationValue}&page=${state.pageNumber}`)
+    setState((draft) => {
+      draft.feed = resposne.data
+      draft.isLoading = false
+      renderTopics
+    })
+  }
+
+  async function getSortedAndPaginatedTopics() {
+    const response = await Axios.get(`/api/topic?orderby=${state.orderBy}&limit=${state.paginationValue}&page=${state.pageNumber}`)
+    setState((draft) => {
+      draft.feed = response.data
+      draft.isLoading = false
+      renderTopics
+    })
+  }
 
   function handlePage(event) {
     setState((draft) => {
@@ -64,6 +112,13 @@ function Topics(props) {
       draft.pageNumber = 1
       draft.paginationValue = value
       draft.pagesNumber = Math.ceil(state.numberOfRecords / value)
+    })
+  }
+
+  function sort(value) {
+    setState((draft) => {
+      draft.pageNumber = 1
+      draft.orderBy = value
     })
   }
 
@@ -101,7 +156,7 @@ function Topics(props) {
                 paginate(e.target.value)
               }}
             >
-              <option value="" disabled selected>
+              <option value="10" disabled selected>
                 Pagination
               </option>
               <option value="10">10</option>
@@ -109,12 +164,21 @@ function Topics(props) {
               <option value="30">30</option>
               <option value="40">40</option>
             </select>
-            <select className="mr-3" name="Sorting" id="sorting">
-              <option>Sorting</option>
-              <option>Alphabetically</option>
-              <option>Most popular</option>
-              <option>Newest</option>
-              <option>Last updated</option>
+            <select
+              className="mr-3"
+              name="Sorting"
+              id="sorting"
+              onChange={(e) => {
+                sort(e.target.value)
+              }}
+            >
+              <option value="id.asc" disabled selected>
+                Sorting
+              </option>
+              <option value="name.asc">Alphabetically</option>
+              <option value="createdAt.asc">The newest topics</option>
+              <option value="createdAt.desc">The oldest topics</option>
+              <option value="updatedAt.desc">Last updated</option>
             </select>
             <div className="mr-4">
               <span className="material-symbols-outlined"> tune </span>
