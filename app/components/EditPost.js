@@ -15,6 +15,7 @@ function EditPost() {
   const navigate = useNavigate()
   const [topics, setTopics] = useState([])
   const [selectedTopic, setSelectedTopic] = useState()
+  const [availableTags, setAvailableTags] = useState([])
   const appDispatch = useContext(DispatchContext)
 
   const originalState = {
@@ -31,7 +32,8 @@ function EditPost() {
     sendCount: 0,
     hasTitleErrors: false,
     hasContentErrors: false,
-    massage: ""
+    massage: "",
+    tags: []
   }
 
   function ourReducer(draft, action) {
@@ -45,12 +47,19 @@ function EditPost() {
         draft.isUpdateTimeExpired = new Date().getTime() > new Date(action.value.createdAt).getTime() + 15 * 60000
         draft.isFetching = false
         draft.userId = appState.user.id
+        draft.tags = action.value.keywords
         return
       case "titleChange":
         draft.title = action.value
         return
       case "contentChange":
         draft.content = action.value
+        return
+      case "tagsAdd":
+        draft.tags = draft.tags.concat(availableTags.find(tag => tag.name == action.value))
+        return
+      case "tagsRemove":
+        draft.tags = draft.tags.filter(tag => tag.name != action.value)
         return
       case "submitRequest":
         draft.sendCount++
@@ -117,7 +126,8 @@ function EditPost() {
               title: state.title,
               content: state.content,
               userId: state.userId,
-              topicId: selectedTopic.id
+              topicId: selectedTopic.id,
+              keywords: state.tags
             },
             { headers: { Authorization: `Bearer ${appState.user.token}` } }
           )
@@ -152,6 +162,30 @@ function EditPost() {
       ourRequest.cancel()
     }
   }, [])
+
+  useEffect(() => {
+    const ourRequest = Axios.CancelToken.source()
+    async function fetchAvailableTags() {
+      try {
+        const response = await Axios.get("/api/keyword", { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+        setAvailableTags(prev => prev.concat(response.data))
+      } catch (e) {
+        console.log("There was a problem fetching tags" + e.message)
+      }
+    }
+    fetchAvailableTags()
+    return () => {
+      ourRequest.cancel()
+    }
+  }, [])
+
+  function handleCheckbox(e) {
+    if (e.target.checked) {
+      dispatch({ type: "tagsAdd", value: e.target.value })
+    } else {
+      dispatch({ type: "tagsRemove", value: e.target.value })
+    }
+  }
 
   function handleTopicSelect(e) {
     const foundTopic = topics.find(obj => {
@@ -227,40 +261,37 @@ function EditPost() {
               <div className="alert alert-danger ml-5 liveValidateMessage">{"Empty description or too long (max. 1000 signs)"}</div>
             </CSSTransition>
           </span>
-          <div className="d-flex align-items-center mt-3">
-            <div className="d-flex mt-3">
-              <span className="mr-4">Tags: </span>
-              <div className="ml-2">
-                <input type="checkbox" id="tag1" name="tag1" checked />
-                <label htmlFor="scales">tag1</label>
+          <div className="d-flex  flex-colum mt-3">
+            <div>
+              <div className="d-flex mt-3 d-flex">
+                <span className="mr-4">Tags: </span>
+                {availableTags.map(availableTag => (
+                  <div className="ml-2">
+                    <input
+                      type="checkbox"
+                      onClick={e => {
+                        handleCheckbox(e)
+                      }}
+                      value={availableTag.name}
+                      name="tags"
+                      className="mr-1"
+                      checked={state.tags.find(tag => tag.name == availableTag.name)}
+                    />
+                    <label htmlFor="scales"> {availableTag.name}</label>
+                  </div>
+                ))}
               </div>
-              <div className="ml-2">
-                <input type="checkbox" id="tag2" name="tag2" checked />
-                <label htmlFor="scales">tag2</label>
-              </div>
-              <div className="ml-2">
-                <input type="checkbox" id="tag2" name="tag2" checked />
-                <label htmlFor="scales">tag2</label>
-              </div>
-              <div className="ml-2">
-                <input type="checkbox" id="tag3" name="tag3" checked />
-                <label htmlFor="scales">tag3</label>
-              </div>
-              <div className="ml-2">
-                <input type="checkbox" id="tag4" name="tag4" checked />
-                <label htmlFor="scales">tag4</label>
-              </div>
-              <div className="ml-2">
-                <input type="checkbox" id="tag5" name="tag5" checked />
-                <label htmlFor="scales">tag5</label>
-              </div>
-              <div className="ml-2">
-                <input type="checkbox" id="tag6" name="tag6" checked />
-                <label htmlFor="scales">tag6</label>
+              <div>
+                <p>
+                  Selected:{" "}
+                  {state.tags.map(tag => (
+                    <span className="mr-2">{"• " + tag.name}</span>
+                  ))}
+                </p>
               </div>
             </div>
             <div className="ml-auto">
-              <button className="nav-button">Update</button>
+              <button className="nav-button">Create</button>
             </div>
           </div>
         </div>

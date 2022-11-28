@@ -263,6 +263,13 @@ function ViewSinglePost() {
         {loggedIn ? (
           <div>
             <div className="d-flex flex-row mt-3">
+              <div className="d-flex align-items-center">
+                {post.keywords.map(keyword => (
+                  <div className="mr-2" id="post-keyword">
+                    {keyword.name}
+                  </div>
+                ))}
+              </div>
               <div className="ml-auto"></div>
               <div style={{ fontSize: "15px" }}>{state.postLikesCount}</div>
               <a

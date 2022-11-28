@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react"
 import Axios from "axios"
-import { useNavigate, Link, useLocation } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import { CSSTransition } from "react-transition-group"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
@@ -16,6 +16,7 @@ function CreatePost() {
   const navigate = useNavigate()
   const location = useLocation()
   const [tags, setTags] = useState([])
+  const [availableTags, setAvailableTags] = useState([])
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
@@ -33,7 +34,7 @@ function CreatePost() {
 
     async function fetchData() {
       try {
-        const response = await Axios.post("/api/post", { title, content, userId: appState.user.id, topicId: selectedTopic.id }, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+        const response = await Axios.post("/api/post", { title, content, userId: appState.user.id, topicId: selectedTopic.id, keywords: tags }, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
         appDispatch({ type: "flashMessage", value: "Post successfully created !", messageType: "message-green" })
         navigate(`/post/${response.data.id}`)
       } catch (e) {
@@ -68,11 +69,27 @@ function CreatePost() {
     }
   }, [])
 
+  useEffect(() => {
+    const ourRequest = Axios.CancelToken.source()
+    async function fetchAvailableTags() {
+      try {
+        const response = await Axios.get("/api/keyword", { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+        setAvailableTags(prev => prev.concat(response.data))
+      } catch (e) {
+        console.log("There was a problem fetching tags" + e.message)
+      }
+    }
+    fetchAvailableTags()
+    return () => {
+      ourRequest.cancel()
+    }
+  }, [])
+
   function handleCheckbox(e) {
     if (e.target.checked) {
-      setTags(prev => prev.concat(e.target.value))
+      setTags(prev => prev.concat(availableTags.find(tag => tag.name == e.target.value)))
     } else {
-      setTags(prev => prev.filter(tag => tag != e.target.value))
+      setTags(prev => prev.filter(tag => tag.name != e.target.value))
     }
   }
 
@@ -133,36 +150,32 @@ function CreatePost() {
               <div className="alert alert-danger ml-5 liveValidateMessage">{"Empty description or too long (max. 1000 signs)"}</div>
             </CSSTransition>
           </span>
-          <div className="d-flex align-items-center mt-3">
-            <div className="d-flex mt-3">
-              <span className="mr-4">Tags: </span>
-              <div className="ml-2">
-                <input type="checkbox" id="tag1" name="tag1" checked />
-                <label for="scales">tag1</label>
+          <div className="d-flex  flex-colum mt-3">
+            <div>
+              <div className="d-flex mt-3 d-flex">
+                <span className="mr-4">Tags: </span>
+                {availableTags.map(availableTag => (
+                  <div className="ml-2">
+                    <input
+                      type="checkbox"
+                      onClick={e => {
+                        handleCheckbox(e)
+                      }}
+                      value={availableTag.name}
+                      name="tags"
+                      className="mr-1"
+                    />
+                    <label htmlFor="scales"> {availableTag.name}</label>
+                  </div>
+                ))}
               </div>
-              <div className="ml-2">
-                <input type="checkbox" id="tag2" name="tag2" checked />
-                <label for="scales">tag2</label>
-              </div>
-              <div className="ml-2">
-                <input type="checkbox" id="tag2" name="tag2" checked />
-                <label for="scales">tag2</label>
-              </div>
-              <div className="ml-2">
-                <input type="checkbox" id="tag3" name="tag3" checked />
-                <label for="scales">tag3</label>
-              </div>
-              <div className="ml-2">
-                <input type="checkbox" id="tag4" name="tag4" checked />
-                <label for="scales">tag4</label>
-              </div>
-              <div className="ml-2">
-                <input type="checkbox" id="tag5" name="tag5" checked />
-                <label for="scales">tag5</label>
-              </div>
-              <div className="ml-2">
-                <input type="checkbox" id="tag6" name="tag6" checked />
-                <label for="scales">tag6</label>
+              <div>
+                <p>
+                  Selected:{" "}
+                  {tags.map(tag => (
+                    <span className="mr-2">{"• " + tag.name}</span>
+                  ))}
+                </p>
               </div>
             </div>
             <div className="ml-auto">
