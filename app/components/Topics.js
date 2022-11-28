@@ -95,7 +95,6 @@ function Topics(props) {
   async function getSortedAndPaginatedTopics() {
     const response = await Axios.get(`/api/topic?orderby=${state.orderBy}&limit=${state.paginationValue}&page=${state.pageNumber}`)
     setState((draft) => {
-      console.log(response.data)
       draft.feed = response.data
       draft.isLoading = false
       renderTopics
