@@ -19,18 +19,13 @@ function Topics(props) {
     pageNumber: 1,
     numberOfRecords: 1,
     orderBy: "",
+    isMounted: false,
   })
 
   useEffect(() => {
-    async function fetchData() {
+    function fetchData() {
       try {
-        const resposne = await Axios.get("/api/topic")
-        setState((draft) => {
-          draft.numberOfRecords = resposne.data.length
-          draft.feed = resposne.data.slice(0, 10)
-          draft.isLoading = false
-          draft.pagesNumber = Math.ceil(resposne.data.length / 10)
-        })
+        fetchingTopicsOnMount()
       } catch (e) {
         console.log("there was a problem fetching the data" + e)
       }
@@ -41,18 +36,13 @@ function Topics(props) {
   useEffect(() => {
     async function fetchData() {
       try {
-        if (state.orderBy !== "") {
-          const response = await Axios.get(`/api/topics?limit=${state.paginationValue}&page=${state.pageNumber}&orderby=${state.orderBy}`)
-          draft.feed = response.data
-          draft.isLoading = false
-          renderTopics
+        if (state.isMounted) {
+          if (state.orderBy !== "") {
+            getSortedAndPaginatedTopics()
+          } else {
+            getPaginatedTopics()
+          }
         }
-        const resposne = await Axios.get(`/api/topic?limit=${state.paginationValue}&page=${state.pageNumber}`)
-        setState((draft) => {
-          draft.feed = resposne.data
-          draft.isLoading = false
-          renderTopics
-        })
       } catch (e) {
         console.log("there was a problem fetching the data" + e)
       }
@@ -63,18 +53,54 @@ function Topics(props) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const resposne = await Axios.get(`/api/topic?orderby=${state.orderBy}`)
-        setState((draft) => {
-          draft.feed = resposne.data.slice(0, 10)
-          draft.isLoading = false
-          renderTopics
-        })
+        if (state.isMounted) {
+          getSortedTopics()
+        }
       } catch (e) {
         console.log("there was a problem fetching the data" + e)
       }
     }
     fetchData()
   }, [state.orderBy])
+
+  async function getSortedTopics() {
+    const resposne = await Axios.get(`/api/topic?orderby=${state.orderBy}`)
+    setState((draft) => {
+      draft.feed = resposne.data.slice(0, state.paginationValue)
+      draft.isLoading = false
+      renderTopics
+    })
+  }
+
+  async function fetchingTopicsOnMount() {
+    const resposne = await Axios.get("/api/topic")
+    setState((draft) => {
+      draft.numberOfRecords = resposne.data.length
+      draft.feed = resposne.data.slice(0, 10)
+      draft.isLoading = false
+      draft.pagesNumber = Math.ceil(resposne.data.length / 10)
+      draft.isMounted = true
+    })
+  }
+
+  async function getPaginatedTopics() {
+    const resposne = await Axios.get(`/api/topic?limit=${state.paginationValue}&page=${state.pageNumber}`)
+    setState((draft) => {
+      draft.feed = resposne.data
+      draft.isLoading = false
+      renderTopics
+    })
+  }
+
+  async function getSortedAndPaginatedTopics() {
+    const response = await Axios.get(`/api/topic?orderby=${state.orderBy}&limit=${state.paginationValue}&page=${state.pageNumber}`)
+    setState((draft) => {
+      console.log(response.data)
+      draft.feed = response.data
+      draft.isLoading = false
+      renderTopics
+    })
+  }
 
   function handlePage(event) {
     setState((draft) => {
@@ -92,6 +118,7 @@ function Topics(props) {
 
   function sort(value) {
     setState((draft) => {
+      draft.pageNumber = 1
       draft.orderBy = value
     })
   }
@@ -130,7 +157,7 @@ function Topics(props) {
                 paginate(e.target.value)
               }}
             >
-              <option value="" disabled selected>
+              <option value="10" disabled selected>
                 Pagination
               </option>
               <option value="10">10</option>
@@ -146,7 +173,7 @@ function Topics(props) {
                 sort(e.target.value)
               }}
             >
-              <option value="" disabled selected>
+              <option value="id.asc" disabled selected>
                 Sorting
               </option>
               <option value="name.asc">Alphabetically</option>
