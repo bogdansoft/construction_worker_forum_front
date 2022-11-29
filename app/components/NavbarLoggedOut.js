@@ -6,8 +6,8 @@ function NavbarLoggedOut() {
   const appDispatch = useContext(DispatchContext)
 
   return (
-    <div className=" mt-3">
-      <nav className="container ">
+    <div>
+      <nav className="container nav">
         <div className="nav-left ">
           <div>
             <Link to="/" className="mr-auto p-3">
@@ -36,9 +36,7 @@ function NavbarLoggedOut() {
               <button className="nav-button mr-4">Login</button>
             </Link>
           </div>
-          <Link to="/login">
-            <button className="nav-button-sm">=</button>
-          </Link>
+          <span className="material-symbols-outlined"> menu </span>
         </div>
       </nav>
     </div>

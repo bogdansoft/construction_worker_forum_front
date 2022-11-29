@@ -131,7 +131,7 @@ function Topics(props) {
   if (state.isLoading) return <Loading />
   return (
     <div className="main container d-flex flex-column">
-      <div className="mt-5">
+      <div>
         <h3 className="font-weight-bold text-center">Welcome to the forum about every aspect of construction working !</h3>
       </div>
       <div className="content container d-flex flex-column mt-4">
@@ -186,7 +186,7 @@ function Topics(props) {
           </div>
         </div>
         {renderTopics()}
-        <div className="mt-2 align-items-right">
+        <div className="mt-3 align-items-right">
           <Pagination count={state.pagesNumber} page={state.pageNumber} defaultPage={1} shape="rounded" onChange={handlePage} />
         </div>
       </div>

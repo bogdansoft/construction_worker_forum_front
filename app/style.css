@@ -22,7 +22,7 @@ body {
 
 /* NAVBAR */
 
-nav {
+.nav {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -68,18 +68,19 @@ nav {
   align-items: center;
 }
 @media screen and (max-width: 420px) {
-  nav {
+  .nav {
     padding: 1rem 0.5rem;
   }
   .nav-left .material-symbols-outlined {
-    font-size: 1rem;
+    font-size: 2rem;
     rotate: 45deg;
     font-weight: bold;
   }
 
   .nav-left h1 {
-    font-size: 1rem;
+    font-size: 1.3rem;
     color: white;
+    margin-top: 0.4rem;
   }
   .mobile-toggle {
     display: none;
@@ -97,6 +98,7 @@ nav {
 }
 .main h3 {
   font-size: 2rem;
+  margin-top: 3rem;
 }
 .content {
   background-color: var(--orange);
@@ -111,6 +113,7 @@ nav {
   }
   .main h3 {
     font-size: 1rem;
+    margin-top: 1rem;
   }
 }
 /* TOPICS */
@@ -120,6 +123,10 @@ nav {
 }
 .topics-upper h4 {
   padding-left: 2rem;
+}
+.single-topic {
+  display: flex;
+  flex-direction: row;
 }
 .single-topic-content {
   background-color: var(--light-brown);
@@ -165,6 +172,18 @@ nav {
     padding-left: 0.5rem;
     font-size: 1rem;
   }
+  .single-topic-content {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.6rem;
+  }
+  #topic-name {
+    font-size: 1rem;
+  }
+
+  .main {
+    padding-bottom: 2rem;
+  }
 }
 /* FOOTER */
 
@@ -180,7 +199,15 @@ footer ul {
 footer ul li {
   margin-right: 40px;
 }
-
+@media screen and (max-width: 420px) {
+  footer ul {
+    list-style-type: none;
+    font-size: 0.8rem;
+  }
+  footer ul li {
+    margin-right: 1.5rem;
+  }
+}
 /* POST */
 
 #post-avatar .material-symbols-outlined {
