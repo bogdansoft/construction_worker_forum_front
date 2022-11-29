@@ -36,7 +36,7 @@ function NavbarLoggedOut() {
               <button className="nav-button mr-4">Login</button>
             </Link>
           </div>
-          <span className="material-symbols-outlined"> menu </span>
+          <span className="material-symbols-outlined mobile-toggle-inverse"> menu </span>
         </div>
       </nav>
     </div>

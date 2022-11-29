@@ -67,6 +67,9 @@ body {
   flex-direction: row;
   align-items: center;
 }
+.mobile-toggle-inverse {
+  display: none;
+}
 @media screen and (max-width: 420px) {
   .nav {
     padding: 1rem 0.5rem;
@@ -80,7 +83,7 @@ body {
   .nav-left h1 {
     font-size: 1.3rem;
     color: white;
-    margin-top: 0.4rem;
+    margin-top: 0.3rem;
   }
   .mobile-toggle {
     display: none;
@@ -88,6 +91,9 @@ body {
   .nav-button-sm {
     display: block;
     font-size: 1rem;
+  }
+  .mobile-toggle-inverse {
+    display: block;
   }
 }
 /* MAIN */
