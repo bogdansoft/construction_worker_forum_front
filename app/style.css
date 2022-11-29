@@ -81,7 +81,7 @@ body {
   }
 
   .nav-left h1 {
-    font-size: 1.3rem;
+    font-size: 1rem;
     color: white;
     margin-top: 0.3rem;
   }
@@ -409,7 +409,25 @@ img {
   padding: 10px 100px 10px 10px;
   border-radius: 5px;
 }
-
+.centered {
+  margin-left: auto;
+  margin-right: auto;
+}
+.login .centered #login-white {
+  margin-left: 6rem;
+}
+@media screen and (max-width: 420px) {
+  .form-label input {
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+  }
+  .login h6 {
+    font-size: 1.5rem;
+  }
+  .login .centered #login-white {
+    margin-left: auto;
+  }
+}
 .floating-alert {
   display: none;
   position: absolute;

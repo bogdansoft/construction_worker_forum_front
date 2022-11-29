@@ -141,12 +141,14 @@ function Topics(props) {
           </div>
           <div className="ml-auto d-flex flex-row align-items-center">
             {appState.user.isAdmin || appState.user.isSupport ? (
-              <button className="single-topic-content p-1 mr-3" style={{ backgroundColor: "DarkBlue" }} onClick={() => navigate(`/topic/create`)}>
-                <text data-tip="Add new topic!" data-for="add-new-topic">
-                  New Topic
-                </text>
-                <ReactTooltip id="add-new-topic" className="custom-tooltip" />
-              </button>
+              <div className="mobile-toggle">
+                <button className="single-topic-content  p-1 mr-3" style={{ backgroundColor: "DarkBlue" }} onClick={() => navigate(`/topic/create`)}>
+                  <text data-tip="Add new topic!" data-for="add-new-topic">
+                    New Topic
+                  </text>
+                  <ReactTooltip id="add-new-topic" className="custom-tooltip" />
+                </button>
+              </div>
             ) : null}
             <select
               className="mr-3"
@@ -184,6 +186,18 @@ function Topics(props) {
               <span className="material-symbols-outlined"> tune </span>
             </div>
           </div>
+        </div>
+        <div>
+          {appState.user.isAdmin || appState.user.isSupport ? (
+            <div className="mobile-toggle-inverse ml-2">
+              <button className="single-topic-content  p-1 mr-3" style={{ backgroundColor: "DarkBlue" }} onClick={() => navigate(`/topic/create`)}>
+                <text data-tip="Add new topic!" data-for="add-new-topic">
+                  New Topic
+                </text>
+                <ReactTooltip id="add-new-topic" className="custom-tooltip" />
+              </button>
+            </div>
+          ) : null}
         </div>
         {renderTopics()}
         <div className="mt-3 align-items-right">
