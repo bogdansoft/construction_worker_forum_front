@@ -7,8 +7,8 @@ function NavbarLoggedOut() {
 
   return (
     <div className=" mt-3">
-      <nav className="container d-flex flex-row p-4">
-        <div className="nav-left d-flex align-items-center">
+      <nav className="container ">
+        <div className="nav-left ">
           <div>
             <Link to="/" className="mr-auto p-3">
               <span className="material-symbols-outlined"> settings </span>
@@ -18,21 +18,26 @@ function NavbarLoggedOut() {
             <h1>Constructor Worker Forum</h1>
           </div>
         </div>
-        <div className="nav-right d-flex ml-auto align-items-center">
-          <span
-            onClick={() => {
-              appDispatch({ type: "openSearch" })
-            }}
-            className="material-symbols-outlined mr-3"
-          >
-            {" "}
-            search{" "}
-          </span>
-          <Link to="/user/create">
-            <button className="nav-button mr-4">Sign up</button>
-          </Link>
+        <div className="nav-right ml-auto">
+          <div className="mobile-toggle">
+            <span
+              onClick={() => {
+                appDispatch({ type: "openSearch" })
+              }}
+              className="material-symbols-outlined mr-3"
+            >
+              {" "}
+              search{" "}
+            </span>
+            <Link to="/user/create">
+              <button className="nav-button mr-4">Sign up</button>
+            </Link>
+            <Link to="/login">
+              <button className="nav-button mr-4">Login</button>
+            </Link>
+          </div>
           <Link to="/login">
-            <button className="nav-button mr-4">Login</button>
+            <button className="nav-button-sm">=</button>
           </Link>
         </div>
       </nav>
