@@ -72,26 +72,36 @@ function Post(props) {
 
   return (
     <div className="single-topic container d-flex mt-4">
-      <div className="profile-avatar">
+      <div className="profile-avatar mobile-toggle">
         <span className="material-symbols-outlined mr-3">
           {" "}
           <RenderAvatar isLoggedIn={false} />{" "}
         </span>
       </div>
       <div className="single-topic-content container d-flex ml-3 p-2 align-items-center">
-        <div id="topic-name">
-          <Link to={`/post/${props.post.id}`}>
-            <h4>{props.post.title}</h4>
-          </Link>
+        <div className="d-flex flex-row container">
+          <div id="topic-name">
+            <Link to={`/post/${props.post.id}`}>
+              <h4>{props.post.title}</h4>
+            </Link>
+          </div>
+          <div className="mobile-toggle-inverse ml-auto">
+            <div className="d-flex">
+              {showEditButton()}
+              {showDeleteButton()}
+            </div>
+          </div>
         </div>
-        <div className="ml-auto mr-5">
+        <div className="container ml-auto mr-5">
           Comments: {props.post.comments.length}{" "}
           <span className="ml-3">
             Created: {date} By {props.author.username}
           </span>
         </div>
-        {showEditButton()}
-        {showDeleteButton()}
+        <div className="mobile-toggle">
+          {showEditButton()}
+          {showDeleteButton()}
+        </div>
       </div>
     </div>
   )

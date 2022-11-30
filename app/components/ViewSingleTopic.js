@@ -182,18 +182,20 @@ function ViewSingleTopic(props) {
       {showContextDependingOnPermission()}
       <div className="content mt-2 mr-auto p-4">{topic.description}</div>
       <div className="content container d-flex flex-column mt-4">
-        <div className="d-flex flex-row">
+        <div className="d-flex flex-row topics-upper">
           <div className="ml-4">
             <h4 className="font-weight-bold">Posts</h4>
           </div>
           <div className="ml-auto d-flex flex-row align-items-center">
             {loggedIn ? (
-              <button className="single-topic-content p-1 mr-3" style={{ backgroundColor: "DarkBlue" }} onClick={() => navigate(`/post/create`, { state: { topic: topic } })}>
-                <text data-tip="Add new post!" data-for="add-new-post">
-                  New Post
-                </text>
-                <ReactTooltip id="add-new-post" className="custom-tooltip" />
-              </button>
+              <>
+                <div className="mobile-toggle">
+                  <button className="single-topic-content p-1 mr-3" data-tip="Add new post!" data-for="add-new-post" style={{ backgroundColor: "DarkBlue" }} onClick={() => navigate(`/post/create`, { state: { topic: topic } })}>
+                    New post
+                  </button>
+                  <ReactTooltip id="add-new-post" className="custom-tooltip" />
+                </div>
+              </>
             ) : null}
             <select
               className="mr-3"
@@ -221,6 +223,14 @@ function ViewSingleTopic(props) {
             <div className="mr-4">
               <span className="material-symbols-outlined"> tune </span>
             </div>
+          </div>
+        </div>
+        <div className="mobile-toggle-inverse">
+          <div className="ml-4 mt-1">
+            <button className="single-topic-content p-1" style={{ backgroundColor: "DarkBlue" }} onClick={() => navigate(`/post/create`, { state: { topic: topic } })}>
+              New post
+            </button>
+            <ReactTooltip id="add-new-post" className="custom-tooltip" />
           </div>
         </div>
         {posts.length == 0 ? (
