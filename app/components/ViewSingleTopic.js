@@ -174,7 +174,7 @@ function ViewSingleTopic(props) {
   if (state.notFound) return <NotFound />
   if (state.isLoading) return <Loading />
   return (
-    <div className="main container d-flex flex-column">
+    <div className="main container  d-flex flex-column">
       <div className="mt-5"></div>
       <Link className="text-primary medium font-weight-bold mb-3" to={`/`}>
         &laquo; Back to topics

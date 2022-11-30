@@ -223,6 +223,7 @@ footer ul li {
   background-color: var(--light-brown);
   padding: 20px;
   border-radius: 15px;
+  margin-left: 20px;
 }
 .post-content h5 {
   font-weight: 600;
@@ -250,7 +251,11 @@ footer ul li {
 #post-keyword {
   color: rgba(0, 0, 0, 0.5);
 }
-
+@media screen and (max-width: 420px) {
+  .post-content {
+    margin-left: 0px;
+  }
+}
 /* PROFILE */
 
 .profile-avatar .material-symbols-outlined {
@@ -946,7 +951,29 @@ input:focus {
   width: 100%;
   height: 100%;
 }
-
+.single-post-layout {
+  display: flex;
+  flex-direction: row;
+}
+@media screen and (max-width: 420px) {
+  .single-post-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .post-content {
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 0.8rem;
+  }
+  .single-post-layout-row {
+    display: flex;
+    flex-direction: row;
+  }
+  .keywords {
+    flex-direction: column;
+  }
+}
 .cro-container {
   height: 40rem;
   width: 60rem;
