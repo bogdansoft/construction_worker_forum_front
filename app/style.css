@@ -70,7 +70,7 @@ body {
 .mobile-toggle-inverse {
   display: none;
 }
-@media screen and (max-width: 420px) {
+@media screen and (max-width: 1000px) {
   .nav {
     padding: 1rem 0.5rem;
   }
@@ -112,7 +112,7 @@ body {
   border-radius: 15px;
 }
 
-@media screen and (max-width: 420px) {
+@media screen and (max-width: 1000px) {
   .main {
     background-color: var(--ultra-light-blue);
     padding: 0rem 1rem;
@@ -162,7 +162,7 @@ body {
   font-size: 2em;
   cursor: pointer;
 }
-@media screen and (max-width: 420px) {
+@media screen and (max-width: 1000px) {
   .main select {
     border: 2px solid black;
     background-color: transparent;
@@ -205,7 +205,7 @@ footer ul {
 footer ul li {
   margin-right: 40px;
 }
-@media screen and (max-width: 420px) {
+@media screen and (max-width: 1000px) {
   footer ul {
     list-style-type: none;
     font-size: 0.8rem;
@@ -237,7 +237,7 @@ footer ul li {
 .add-post-title {
   font-size: 2rem;
 }
-@media screen and (max-width: 420px) {
+@media screen and (max-width: 1000px) {
   .add-post-title {
     font-size: 1rem;
   }
@@ -255,7 +255,7 @@ footer ul li {
 #post-keyword {
   color: rgba(0, 0, 0, 0.5);
 }
-@media screen and (max-width: 420px) {
+@media screen and (max-width: 1000px) {
   .post-content {
     margin-left: 0px;
   }
@@ -425,7 +425,7 @@ img {
 .login .centered #login-white {
   margin-left: 6rem;
 }
-@media screen and (max-width: 420px) {
+@media screen and (max-width: 1000px) {
   .form-label input {
     padding: 0.5rem 1rem;
     border-radius: 5px;
@@ -525,7 +525,7 @@ img {
   padding-left: 0.8rem;
   padding-right: 0.8rem;
 }
-@media screen and (max-width: 420px) {
+@media screen and (max-width: 1000px) {
   .liveValidateMessage {
     top: -5px;
     position: absolute;
@@ -969,7 +969,7 @@ input:focus {
   display: flex;
   flex-direction: row;
 }
-@media screen and (max-width: 420px) {
+@media screen and (max-width: 1000px) {
   .single-post-layout {
     display: flex;
     flex-direction: column;
@@ -1210,5 +1210,18 @@ input:focus {
     transform: translate(1px, -2px) rotate(-1deg);
   }
 }
-
+.hamb-menu {
+  padding: 2rem 0.5rem;
+  position: absolute;
+  background-color: var(--ultra-light-blue);
+  width: 100%;
+  z-index: 9999999999999;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+.hamb-menu .material-symbols-outlined {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
 /* RESPONSIVE */

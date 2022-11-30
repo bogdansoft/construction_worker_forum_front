@@ -29,10 +29,10 @@ import Chat from "./components/chat/Chat"
 Axios.defaults.baseURL = "https://localhost:443"
 
 function Main() {
-  
   const initialState = {
     loggedIn: Boolean(localStorage.getItem("constructionForumUserId")),
     searchIsOpen: false,
+    menuIsOpen: false,
     user: {
       id: localStorage.getItem("constructionForumUserId"),
       username: localStorage.getItem("constructionForumUsername"),
@@ -64,9 +64,16 @@ function Main() {
         break
       case "openSearch":
         state.searchIsOpen = true
+        state.menuIsOpen = false
         return
       case "closeSearch":
         state.searchIsOpen = false
+        return
+      case "toggleMenu":
+        state.menuIsOpen = !state.menuIsOpen
+        return
+      case "closeMenu":
+        state.menuIsOpen = false
         return
       case "flashMessage":
         state.flashMessages.push({

@@ -4,7 +4,7 @@ import { useNavigate, Link } from "react-router-dom"
 import { CSSTransition } from "react-transition-group"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
-import UnauthorizedAccessView from "./UnauthorizedAccessView"
+import { useEffect } from "react"
 
 function CreateTopicForm() {
   const [name, setName] = useState()
@@ -36,6 +36,10 @@ function CreateTopicForm() {
       ourRequest.cancel()
     }
   }
+
+  useEffect(() => {
+    appDispatch({ type: "toggleMenu" })
+  }, [])
 
   // if (!appState.loggedIn || !appState.user.isAdmin) return <UnauthorizedAccessView />
   return (

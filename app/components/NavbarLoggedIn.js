@@ -50,7 +50,7 @@ function NavbarLoggedIn() {
   }
 
   return (
-    <div className=" mt-3">
+    <div className="mt-3">
       <nav className="nav container d-flex flex-row p-4">
         <div className="nav-left d-flex align-items-center">
           <div>
@@ -101,9 +101,39 @@ function NavbarLoggedIn() {
               </CSSTransition>
             </div>
           </div>
-          <span className="material-symbols-outlined mobile-toggle-inverse"> menu </span>
+          <span
+            onClick={() => {
+              appDispatch({ type: "toggleMenu" })
+            }}
+            className="material-symbols-outlined mobile-toggle-inverse"
+          >
+            {" "}
+            menu{" "}
+          </span>
         </div>
       </nav>
+      {appState.menuIsOpen ? (
+        <div className="hamb-menu d-flex flex-column">
+          <Link to={`/topic/create`}>
+            <div>Add Topic</div>
+          </Link>
+          <Link to={`/post/create`}>
+            <div className="">Add Post</div>
+          </Link>
+          <span
+            onClick={() => {
+              appDispatch({ type: "openSearch" })
+            }}
+            className="material-symbols-outlined mr-3"
+          >
+            {" "}
+            search{" "}
+          </span>
+          <Link to="chat" className="">
+            <span className="material-symbols-outlined mt-1"> chat </span>
+          </Link>
+        </div>
+      ) : null}
     </div>
   )
 }

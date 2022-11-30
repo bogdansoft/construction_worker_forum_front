@@ -20,6 +20,10 @@ function CreatePost() {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
+  useEffect(() => {
+    appDispatch({ type: "toggleMenu" })
+  }, [])
+
   const handleSubmit = e => {
     e.preventDefault()
     const ourRequest = Axios.CancelToken.source()
