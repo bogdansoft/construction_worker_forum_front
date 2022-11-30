@@ -235,9 +235,13 @@ footer ul li {
 }
 
 .add-post-title {
-  font-size: 2em;
+  font-size: 2rem;
 }
-
+@media screen and (max-width: 420px) {
+  .add-post-title {
+    font-size: 1rem;
+  }
+}
 .add-post-title input[type="text"] {
   background-color: var(--light-brown);
   border-radius: 20px;
@@ -513,7 +517,7 @@ img {
 }
 
 .liveValidateMessage {
-  top: -24px;
+  top: -7px;
   position: absolute;
   z-index: 1;
   padding-top: 6px;
@@ -521,7 +525,17 @@ img {
   padding-left: 0.8rem;
   padding-right: 0.8rem;
 }
-
+@media screen and (max-width: 420px) {
+  .liveValidateMessage {
+    top: -5px;
+    position: absolute;
+    z-index: 1;
+    padding-top: 6px;
+    padding-bottom: 5px;
+    padding-left: 0.8rem;
+    padding-right: 0.8rem;
+  }
+}
 .liveValidateMessage--visible {
   opacity: 1;
   transform: translateY(0);

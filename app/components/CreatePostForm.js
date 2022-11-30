@@ -117,13 +117,22 @@ function CreatePost() {
   }
   return (
     <form onSubmit={handleSubmit}>
-      <div className="main d-flex flex-column container">
-        <div className="content d-flex flex-column mt-4">
+      <div className="main d-flex flex-column container create-post">
+        <div className=" content d-flex flex-column mt-4">
+          <div className="mobile-toggle-inverse mb-4">
+            <select className="mr-3" name="Topics" id="topics" onChange={e => handleTopicSelect(e)}>
+              <option default>{selectedTopic ? selectedTopic.name : "Topics:"}</option>
+              {topics.map(topic => {
+                if (selectedTopic && topic.id === selectedTopic.id) return
+                return <option>{topic.name}</option>
+              })}
+            </select>
+          </div>
           <div className="d-flex flex-row">
             <div>
               {" "}
               <div className="ml-3 add-post-title">
-                Title: <input onChange={e => setTitle(e.target.value)} className="p-2 ml-3" type="text" />
+                Title: <input onChange={e => setTitle(e.target.value)} type="text" />
               </div>
               <span className="form-group ml-5 d-flex" style={{ fontSize: "13px" }}>
                 <CSSTransition in={!title || title.length < 3 || title.length > 50} timeout={330} classNames="liveValidateMessage" unmountOnExit>
@@ -131,7 +140,7 @@ function CreatePost() {
                 </CSSTransition>
               </span>
             </div>
-            <div className="mt-1 ml-auto">
+            <div className="mt-1 ml-auto mobile-toggle">
               <select className="mr-3" name="Topics" id="topics" onChange={e => handleTopicSelect(e)}>
                 <option default>{selectedTopic ? selectedTopic.name : "Topics:"}</option>
                 {topics.map(topic => {
@@ -142,32 +151,58 @@ function CreatePost() {
             </div>
           </div>
           {showWarningIfDefaultTopicIsChanged()}
-          <div className="mt-3 ml-auto mr-auto">
-            <textarea onChange={e => setContent(e.target.value)} className="post-textarea p-2 ml-5" rows="10" cols="100"></textarea>
+          <div className="mt-5 mobile-toggle-inverse">
+            <textarea onChange={e => setContent(e.target.value)} className="post-textarea p-2" rows="10" cols="40"></textarea>
+          </div>
+          <div className="mt-4 ml-auto mr-auto mobile-toggle">
+            <textarea onChange={e => setContent(e.target.value)} className="post-textarea p-2" rows="10" cols="100"></textarea>
           </div>
           <span className="form-group ml-5 d-flex" style={{ fontSize: "13px" }}>
             <CSSTransition in={!content || content.length > 1000} timeout={330} classNames="liveValidateMessage" unmountOnExit>
               <div className="alert alert-danger ml-5 liveValidateMessage">{"Empty description or too long (max. 1000 signs)"}</div>
             </CSSTransition>
           </span>
-          <div className="d-flex  flex-colum mt-3">
+          <div className="d-flex  flex-colum mt-5">
             <div>
-              <div className="d-flex mt-3 d-flex">
-                <span className="mr-4">Tags: </span>
-                {availableTags.map(availableTag => (
-                  <div className="ml-2">
-                    <input
-                      type="checkbox"
-                      onClick={e => {
-                        handleCheckbox(e)
-                      }}
-                      value={availableTag.name}
-                      name="tags"
-                      className="mr-1"
-                    />
-                    <label htmlFor="scales"> {availableTag.name}</label>
-                  </div>
-                ))}
+              <div className="mobile-toggle">
+                <div className="d-flex mt-3 d-flex">
+                  <span className="mr-4">Tags: </span>
+                  {availableTags.map(availableTag => (
+                    <div className="ml-2">
+                      <input
+                        type="checkbox"
+                        onClick={e => {
+                          handleCheckbox(e)
+                        }}
+                        value={availableTag.name}
+                        name="tags"
+                        className="mr-1"
+                      />
+                      <label htmlFor="scales"> {availableTag.name}</label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="mobile-toggle-inverse">
+                <div className="d-flex mt-3 flex-column">
+                  <span className="mr-4">Tags: </span>
+                  {availableTags.map(availableTag => (
+                    <div className="ml-2 d-flex flex-row align-items-center">
+                      <input
+                        type="checkbox"
+                        onClick={e => {
+                          handleCheckbox(e)
+                        }}
+                        value={availableTag.name}
+                        name="tags"
+                        className="mr-1"
+                      />
+                      <div className="mt-3">
+                        <p> {availableTag.name}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
               <div>
                 <p>
@@ -178,9 +213,12 @@ function CreatePost() {
                 </p>
               </div>
             </div>
-            <div className="ml-auto">
+            <div className="mobile-toggle ml-auto">
               <button className="nav-button">Create</button>
             </div>
+          </div>
+          <div className="mobile-toggle-inverse ml-auto">
+            <button className="nav-button">Create</button>
           </div>
         </div>
       </div>
