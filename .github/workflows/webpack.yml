@@ -26,3 +26,4 @@ jobs:
       run: |
         npm install -f
         npx webpack
+        npm test
