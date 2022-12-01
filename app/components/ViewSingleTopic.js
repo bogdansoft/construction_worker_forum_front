@@ -31,7 +31,7 @@ function ViewSingleTopic(props) {
     pageNumber: 1,
     numberOfRecords: 1,
     orderBy: "",
-    isMounted: false,
+    isMounted: false
   })
 
   useEffect(() => {
@@ -41,12 +41,12 @@ function ViewSingleTopic(props) {
       try {
         const response = await Axios.get(`/api/topic/${id}`, { cancelToken: ourRequest.token })
         setTopic(response.data)
-        setState((draft) => {
+        setState(draft => {
           draft.isLoading = false
         })
       } catch (e) {
         if (e.response.status === 404) {
-          setState((draft) => {
+          setState(draft => {
             draft.notFound = true
           })
           console.log("Resource not found.")
@@ -70,7 +70,7 @@ function ViewSingleTopic(props) {
       try {
         const response = await Axios.get(`/api/post/all_by_topicid/${id}`, { cancelToken: ourRequest.token })
         setPosts(response.data.slice(0, 10))
-        setState((draft) => {
+        setState(draft => {
           draft.numberOfRecords = response.data.length
           draft.pagesNumber = Math.ceil(response.data.length / 10)
           draft.isMounted = true
@@ -105,7 +105,7 @@ function ViewSingleTopic(props) {
 
   async function getPaginatedPosts() {
     const response = await Axios.get(`/api/post/all_by_topicid/${id}?orderby=${state.orderBy}&limit=${state.paginationValue}&page=${state.pageNumber}`)
-    setState((draft) => {
+    setState(draft => {
       setPosts(response.data)
       draft.isLoading = false
     })
@@ -113,7 +113,7 @@ function ViewSingleTopic(props) {
 
   async function getPaginatedAndSortedPosts() {
     const response = await Axios.get(`/api/post/all_by_topicid/${id}?limit=${state.paginationValue}&page=${state.pageNumber}`)
-    setState((draft) => {
+    setState(draft => {
       setPosts(response.data)
       draft.isLoading = false
     })
@@ -134,31 +134,31 @@ function ViewSingleTopic(props) {
 
   async function getSortedPosts() {
     const resposne = await Axios.get(`/api/post/all_by_topicid/${id}?orderby=${state.orderBy}`)
-    setState((draft) => {
+    setState(draft => {
       setPosts(resposne.data.slice(0, state.paginationValue))
       draft.isLoading = false
     })
   }
 
   function reload() {
-    setState((draft) => {
+    setState(draft => {
       draft.reloadCounter++
     })
   }
 
   function sort(value) {
-    setState((draft) => {
+    setState(draft => {
       draft.pageNumber = 1
       draft.orderBy = value
     })
   }
 
   function deletePopup() {
-    setIsDeleting((prev) => !prev)
+    setIsDeleting(prev => !prev)
   }
 
   function paginate(value) {
-    setState((draft) => {
+    setState(draft => {
       draft.pageNumber = 1
       draft.paginationValue = value
       draft.pagesNumber = Math.ceil(state.numberOfRecords / value)
@@ -166,13 +166,13 @@ function ViewSingleTopic(props) {
   }
 
   function renderPosts() {
-    return posts.map((post) => {
+    return posts.map(post => {
       return <Post post={post} key={post.id} author={post.user} reload={reload} />
     })
   }
 
   function handlePage(event) {
-    setState((draft) => {
+    setState(draft => {
       draft.pageNumber = parseInt(event.target.textContent)
     })
   }
@@ -228,7 +228,7 @@ function ViewSingleTopic(props) {
   if (state.notFound) return <NotFound />
   if (state.isLoading) return <Loading />
   return (
-    <div className="main container d-flex flex-column">
+    <div className="main container  d-flex flex-column">
       <div className="mt-5"></div>
       <Link className="text-primary medium font-weight-bold mb-3" to={`/`}>
         &laquo; Back to topics
@@ -236,24 +236,26 @@ function ViewSingleTopic(props) {
       {showContextDependingOnPermission()}
       <div className="content mt-2 mr-auto p-4">{topic.description}</div>
       <div className="content container d-flex flex-column mt-4">
-        <div className="d-flex flex-row">
+        <div className="d-flex flex-row topics-upper">
           <div className="ml-4">
             <h4 className="font-weight-bold">Posts</h4>
           </div>
           <div className="ml-auto d-flex flex-row align-items-center">
             {loggedIn ? (
-              <button className="single-topic-content p-1 mr-3" style={{ backgroundColor: "DarkBlue" }} onClick={() => navigate(`/post/create`, { state: { topic: topic } })}>
-                <text data-tip="Add new post!" data-for="add-new-post">
-                  New Post
-                </text>
-                <ReactTooltip id="add-new-post" className="custom-tooltip" />
-              </button>
+              <>
+                <div className="mobile-toggle">
+                  <button className="single-topic-content p-1 mr-3" data-tip="Add new post!" data-for="add-new-post" style={{ backgroundColor: "DarkBlue" }} onClick={() => navigate(`/post/create`, { state: { topic: topic } })}>
+                    New post
+                  </button>
+                  <ReactTooltip id="add-new-post" className="custom-tooltip" />
+                </div>
+              </>
             ) : null}
             <select
               className="mr-3"
               name="Pagination"
               id="pagination"
-              onChange={(e) => {
+              onChange={e => {
                 paginate(e.target.value)
               }}
             >
@@ -269,7 +271,7 @@ function ViewSingleTopic(props) {
               className="mr-3"
               name="Sorting"
               id="sorting"
-              onChange={(e) => {
+              onChange={e => {
                 sort(e.target.value)
               }}
             >
@@ -286,7 +288,21 @@ function ViewSingleTopic(props) {
             </div>
           </div>
         </div>
-        {posts.length == 0 ? <span className="font-weight-bold text-center p-5">There are no posts for this topic yet. Feel free to create one!</span> : renderPosts()}
+        <div className="mobile-toggle-inverse">
+          <div className="ml-4 mt-1">
+            <button className="single-topic-content p-1" style={{ backgroundColor: "DarkBlue" }} onClick={() => navigate(`/post/create`, { state: { topic: topic } })}>
+              New post
+            </button>
+            <ReactTooltip id="add-new-post" className="custom-tooltip" />
+          </div>
+        </div>
+        {posts.length == 0 ? (
+          <span className="font-weight-bold text-center p-5">There are no posts for this topic yet. Feel free to create one!</span>
+        ) : (
+          posts.map(post => {
+            return <Post post={post} key={post.id} author={post.user} reload={reload} />
+          })
+        )}
         <div className="mt-2 align-items-right">
           <Pagination count={state.pagesNumber} page={state.pageNumber} defaultPage={1} shape="rounded" onChange={handlePage} />
         </div>

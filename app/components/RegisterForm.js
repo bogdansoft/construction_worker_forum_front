@@ -36,6 +36,10 @@ function RegisterForm() {
     }
   }
 
+  useEffect(() => {
+    appDispatch({ type: "closeMenu" })
+  }, [])
+
   function ourReducer(draft, action) {
     switch (action.type) {
       case "usernameImmediately":
@@ -159,13 +163,13 @@ function RegisterForm() {
   return (
     <div className="main d-flex flex-column container">
       <div className="content d-flex mt-4">
-        <div className="d-flex flex-column col-6 align-items-center">
+        <div className="d-flex flex-column container align-items-center">
           <form onSubmit={handleSubmit}>
             <div className="mt-4">
               <h6 className="input-text text-center">Sign into Construction Worker forum</h6>
             </div>
-            <div className="form-label mt-4">
-              <div className="mt-3 mr-2 p-2 form-group">
+            <div className="form-label mt-4 d-flex flex-column justify-content-center">
+              <div className="p-2 form-group">
                 <span className="ml-3">Username</span>
                 <br />
                 <input onChange={e => dispatch({ type: "usernameImmediately", value: e.target.value })} type="text" className="ml-3" placeholder="username" />
@@ -173,7 +177,7 @@ function RegisterForm() {
                   <div className="alert alert-danger small liveValidateMessage ml-3">{state.username.message}</div>
                 </CSSTransition>
               </div>
-              <div className="mt-3 mr-2 p-2 form-group">
+              <div className="p-2 form-group">
                 <span className="ml-3">Password</span>
                 <br />
                 <input onChange={e => dispatch({ type: "passwordImmediately", value: e.target.value })} type="password" className="ml-3" placeholder="********" />
@@ -181,7 +185,7 @@ function RegisterForm() {
                   <div className="alert alert-danger small liveValidateMessage ml-3">{state.password.message}</div>
                 </CSSTransition>
               </div>
-              <div className="mt-3 mr-2 p-2 form-group">
+              <div className="p-2 form-group">
                 <span className="ml-3">Email</span>
                 <br />
                 <input onChange={e => dispatch({ type: "emailImmediately", value: e.target.value })} type="text" className="ml-3" placeholder="john@test.com" />
@@ -189,7 +193,7 @@ function RegisterForm() {
                   <div className="alert alert-danger small liveValidateMessage ml-3">{state.email.message}</div>
                 </CSSTransition>
               </div>
-              <div className="mt-3 mr-2 p-2 form-group">
+              <div className="p-2 form-group">
                 <span className="ml-3">First name</span>
                 <br />
                 <input onChange={e => dispatch({ type: "firstNameImmediately", value: e.target.value })} type="text" className="ml-3" placeholder="John" />
@@ -197,7 +201,7 @@ function RegisterForm() {
                   <div className="alert alert-danger small liveValidateMessage ml-3">{state.firstName.message}</div>
                 </CSSTransition>
               </div>
-              <div className="mt-3 mr-2 p-2 form-group">
+              <div className="p-2 form-group">
                 <span className="ml-3">Last name</span>
                 <br />
                 <input onChange={e => dispatch({ type: "lastNameImmediately", value: e.target.value })} type="text" className="ml-3" placeholder="Doe" />
@@ -205,13 +209,13 @@ function RegisterForm() {
                   <div className="alert alert-danger small liveValidateMessage ml-3">{state.lastName.message}</div>
                 </CSSTransition>
               </div>
-            </div>
-            <div className="mt-4 ml-5">
-              <button className="nav-button ml-3">REGISTER</button>
+              <div className="align-self-center">
+                <button className="nav-button">REGISTER</button>
+              </div>
             </div>
           </form>
         </div>
-        <div className="col-6 align-self-center">
+        <div className="col-6 align-self-center mobile-toggle">
           <img src="https://static.timesofisrael.com/www/uploads/2017/12/managers.jpg" />
         </div>
       </div>

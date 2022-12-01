@@ -233,11 +233,20 @@ function EditPost() {
             </Link>
             <ShowAuthor contentAuthor={state.postAuthor} onlyForAdmin={true} />
           </div>
+          <div className="mobile-toggle-inverse mt-1 mb-2">
+            <select className="" name="Topics" id="topics" onChange={e => handleTopicSelect(e)}>
+              <option default>{state.topic.name}</option>
+              {topics.map(topic => {
+                if (topic.id === state.topic.id) return
+                return <option>{topic.name}</option>
+              })}
+            </select>
+          </div>
           <div className="d-flex flex-row mt-2">
             <div className="ml-3 add-post-title">
               Title: <input onChange={e => dispatch({ type: "titleChange", value: e.target.value })} value={state.title} className="p-2 ml-3" type="text" />
             </div>
-            <div className="mt-1 ml-auto">
+            <div className="mobile-toggle mt-1 ml-auto">
               <select className="mr-3" name="Topics" id="topics" onChange={e => handleTopicSelect(e)}>
                 <option default>{state.topic.name}</option>
                 {topics.map(topic => {
@@ -253,8 +262,11 @@ function EditPost() {
             </CSSTransition>
           </span>
           {showWarningIfDefaultTopicIsChanged()}
-          <div className="mt-3 ml-auto mr-auto">
+          <div className="mobile-toggle mt-3 ml-auto mr-auto">
             <textarea onChange={e => dispatch({ type: "contentChange", value: e.target.value })} value={state.content} className="post-textarea p-2 ml-5" rows="10" cols="100"></textarea>
+          </div>
+          <div className="mobile-toggle-inverse mt-3 ml-auto mr-auto">
+            <textarea onChange={e => dispatch({ type: "contentChange", value: e.target.value })} value={state.content} className="post-textarea p-2" rows="10" cols="40"></textarea>
           </div>
           <span className="form-group ml-5 d-flex" style={{ fontSize: "13px" }}>
             <CSSTransition in={!state.content || state.content.length > 1000} timeout={330} classNames="liveValidateMessage" unmountOnExit>
@@ -263,22 +275,37 @@ function EditPost() {
           </span>
           <div className="d-flex  flex-colum mt-3">
             <div>
-              <div className="d-flex mt-3 d-flex">
+              <div className="d-flex mt-3 flex-column">
                 <span className="mr-4">Tags: </span>
                 {availableTags.map(availableTag => (
-                  <div className="ml-2">
-                    <input
-                      type="checkbox"
-                      onClick={e => {
-                        handleCheckbox(e)
-                      }}
-                      value={availableTag.name}
-                      name="tags"
-                      className="mr-1"
-                      checked={state.tags.find(tag => tag.name == availableTag.name)}
-                    />
-                    <label htmlFor="scales"> {availableTag.name}</label>
-                  </div>
+                  <>
+                    <div className="mobile-toggle ml-2">
+                      <input
+                        type="checkbox"
+                        onClick={e => {
+                          handleCheckbox(e)
+                        }}
+                        value={availableTag.name}
+                        name="tags"
+                        className="mr-1"
+                        checked={state.tags.find(tag => tag.name == availableTag.name)}
+                      />
+                      <label htmlFor="scales"> {availableTag.name}</label>
+                    </div>
+                    <div className="mobile-toggle-inverse ml-2">
+                      <input
+                        type="checkbox"
+                        onClick={e => {
+                          handleCheckbox(e)
+                        }}
+                        value={availableTag.name}
+                        name="tags"
+                        className="mr-1"
+                        checked={state.tags.find(tag => tag.name == availableTag.name)}
+                      />
+                      <p> {availableTag.name}</p>
+                    </div>
+                  </>
                 ))}
               </div>
               <div>
@@ -290,9 +317,9 @@ function EditPost() {
                 </p>
               </div>
             </div>
-            <div className="ml-auto">
-              <button className="nav-button">Create</button>
-            </div>
+          </div>
+          <div className="ml-auto">
+            <button className="nav-button">Create</button>
           </div>
         </div>
       </div>
