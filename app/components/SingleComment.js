@@ -6,7 +6,6 @@ import DeleteModal from "./DeleteModal"
 import { CSSTransition } from "react-transition-group"
 import { useImmer } from "use-immer"
 import LikeButton from "./LikeButton"
-import RenderAvatar from "./Avatar"
 
 function SingleComment(props) {
   const appDispatch = useContext(DispatchContext)
@@ -155,21 +154,21 @@ function SingleComment(props) {
 
   return (
     <div className="single-topic container d-flex mt-4">
-      <div className="profile-avatar">
-        <div className="material-symbols-outlined mr-3"></div>
+      <div className="mobile-toggle">
+        <span>{props.comment.user.username}</span>
       </div>
-
-      <span>{props.comment.user.username}</span>
-
       <div className="d-flex container">
-        <div className="single-topic-content container d-flex ml-3 p-2 align-items-center col-11">
+        <div className="single-topic-content container d-flex p-2 align-items-center col-11">
           {!isEdited && (
             <div className="d-flex align-items-center container">
               {" "}
-              <div id="topic-name ">{props.comment.content}</div>
+              <div id="comment-content ">{props.comment.content}</div>
+              <div className="mobile-toggle-inverse">
+                <div className="container"></div>
+              </div>
               <div className="ml-auto mr-3">
-                <span className="ml-3">
-                  Created: {date} <span className="ml-2">by {props.comment.user.username}</span>
+                <span>
+                  Created: {date} <span>by {props.comment.user.username}</span>
                 </span>
               </div>
               {showEditAndDeleteButtons()}

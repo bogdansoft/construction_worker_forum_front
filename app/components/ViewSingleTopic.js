@@ -29,7 +29,9 @@ function ViewSingleTopic(props) {
     paginationValue: 10,
     pagesNumber: 1,
     pageNumber: 1,
-    numberOfRecords: 1
+    numberOfRecords: 1,
+    orderBy: "",
+    isMounted: false
   })
 
   useEffect(() => {
@@ -71,6 +73,7 @@ function ViewSingleTopic(props) {
         setState(draft => {
           draft.numberOfRecords = response.data.length
           draft.pagesNumber = Math.ceil(response.data.length / 10)
+          draft.isMounted = true
         })
       } catch (e) {
         console.log("There was a problem or the request was cancelled." + e)
@@ -86,11 +89,13 @@ function ViewSingleTopic(props) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await Axios.get(`/api/post/all_by_topicid/${id}/number/${state.paginationValue}/page/${state.pageNumber}`)
-        setState(draft => {
-          setPosts(response.data)
-          draft.isLoading = false
-        })
+        if (state.isMounted) {
+          if (state.orderBy !== "") {
+            getPaginatedPosts()
+          } else {
+            getPaginatedAndSortedPosts()
+          }
+        }
       } catch (e) {
         console.log("there was a problem fetching the data" + e)
       }
@@ -98,9 +103,53 @@ function ViewSingleTopic(props) {
     fetchData()
   }, [state.pageNumber, state.paginationValue])
 
+  async function getPaginatedPosts() {
+    const response = await Axios.get(`/api/post/all_by_topicid/${id}?orderby=${state.orderBy}&limit=${state.paginationValue}&page=${state.pageNumber}`)
+    setState(draft => {
+      setPosts(response.data)
+      draft.isLoading = false
+    })
+  }
+
+  async function getPaginatedAndSortedPosts() {
+    const response = await Axios.get(`/api/post/all_by_topicid/${id}?limit=${state.paginationValue}&page=${state.pageNumber}`)
+    setState(draft => {
+      setPosts(response.data)
+      draft.isLoading = false
+    })
+  }
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        if (state.isMounted) {
+          getSortedPosts()
+        }
+      } catch (e) {
+        console.log("there was a problem fetching the data" + e)
+      }
+    }
+    fetchData()
+  }, [state.orderBy])
+
+  async function getSortedPosts() {
+    const resposne = await Axios.get(`/api/post/all_by_topicid/${id}?orderby=${state.orderBy}`)
+    setState(draft => {
+      setPosts(resposne.data.slice(0, state.paginationValue))
+      draft.isLoading = false
+    })
+  }
+
   function reload() {
     setState(draft => {
       draft.reloadCounter++
+    })
+  }
+
+  function sort(value) {
+    setState(draft => {
+      draft.pageNumber = 1
+      draft.orderBy = value
     })
   }
 
@@ -116,10 +165,15 @@ function ViewSingleTopic(props) {
     })
   }
 
+  function renderPosts() {
+    return posts.map(post => {
+      return <Post post={post} key={post.id} author={post.user} reload={reload} />
+    })
+  }
+
   function handlePage(event) {
     setState(draft => {
       draft.pageNumber = parseInt(event.target.textContent)
-      console.log(state.pageNumber)
     })
   }
 
@@ -152,7 +206,7 @@ function ViewSingleTopic(props) {
             delete
           </span>
           <CSSTransition in={isDeleting} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-            <div class="delete-absolute container">
+            <div className="delete-absolute container">
               <div className="delete-pop col-4 ml-5 liveValidateMessage-delete ml-3">
                 <DeleteModal delete={handleDelete} noDelete={deletePopup} relatedItemsLength={posts.length} relatedItemsType={"post"} />
               </div>
@@ -174,7 +228,7 @@ function ViewSingleTopic(props) {
   if (state.notFound) return <NotFound />
   if (state.isLoading) return <Loading />
   return (
-    <div className="main container d-flex flex-column">
+    <div className="main container  d-flex flex-column">
       <div className="mt-5"></div>
       <Link className="text-primary medium font-weight-bold mb-3" to={`/`}>
         &laquo; Back to topics
@@ -182,18 +236,20 @@ function ViewSingleTopic(props) {
       {showContextDependingOnPermission()}
       <div className="content mt-2 mr-auto p-4">{topic.description}</div>
       <div className="content container d-flex flex-column mt-4">
-        <div className="d-flex flex-row">
+        <div className="d-flex flex-row topics-upper">
           <div className="ml-4">
             <h4 className="font-weight-bold">Posts</h4>
           </div>
           <div className="ml-auto d-flex flex-row align-items-center">
             {loggedIn ? (
-              <button className="single-topic-content p-1 mr-3" style={{ backgroundColor: "DarkBlue" }} onClick={() => navigate(`/post/create`, { state: { topic: topic } })}>
-                <text data-tip="Add new post!" data-for="add-new-post">
-                  New Post
-                </text>
-                <ReactTooltip id="add-new-post" className="custom-tooltip" />
-              </button>
+              <>
+                <div className="mobile-toggle">
+                  <button className="single-topic-content p-1 mr-3" data-tip="Add new post!" data-for="add-new-post" style={{ backgroundColor: "DarkBlue" }} onClick={() => navigate(`/post/create`, { state: { topic: topic } })}>
+                    New post
+                  </button>
+                  <ReactTooltip id="add-new-post" className="custom-tooltip" />
+                </div>
+              </>
             ) : null}
             <select
               className="mr-3"
@@ -211,16 +267,33 @@ function ViewSingleTopic(props) {
               <option>30</option>
               <option>40</option>
             </select>
-            <select className="mr-3" name="Sorting" id="sorting">
-              <option>Sorting</option>
-              <option>Alphabetically</option>
-              <option>Most popular</option>
-              <option>Newest</option>
-              <option>Last updated</option>
+            <select
+              className="mr-3"
+              name="Sorting"
+              id="sorting"
+              onChange={e => {
+                sort(e.target.value)
+              }}
+            >
+              <option value="id.asc" disabled selected>
+                Sorting
+              </option>
+              <option value="title.asc">Alphabetically</option>
+              <option value="createdAt.desc">The newest topics</option>
+              <option value="createdAt.asc">The oldest topics</option>
+              <option value="updatedAt.desc">Last updated</option>
             </select>
             <div className="mr-4">
               <span className="material-symbols-outlined"> tune </span>
             </div>
+          </div>
+        </div>
+        <div className="mobile-toggle-inverse">
+          <div className="ml-4 mt-1">
+            <button className="single-topic-content p-1" style={{ backgroundColor: "DarkBlue" }} onClick={() => navigate(`/post/create`, { state: { topic: topic } })}>
+              New post
+            </button>
+            <ReactTooltip id="add-new-post" className="custom-tooltip" />
           </div>
         </div>
         {posts.length == 0 ? (

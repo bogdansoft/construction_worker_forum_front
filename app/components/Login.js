@@ -10,6 +10,10 @@ function Login() {
 
   const appDispatch = useContext(DispatchContext)
 
+  useEffect(() => {
+    appDispatch({ type: "closeMenu" })
+  }, [])
+
   async function handleSubmit(e) {
     e.preventDefault()
 
@@ -32,9 +36,9 @@ function Login() {
   }
 
   return (
-    <div className="main d-flex flex-column container">
+    <div className="main login container">
       <div className="content d-flex mt-4">
-        <div className="d-flex flex-column col-6 align-items-center">
+        <div className="d-flex flex-column align-items-center">
           <div className="mt-4">
             <h6 className="input-text text-center">
               Log into Construction
@@ -52,13 +56,13 @@ function Login() {
               <br />
               <input onChange={e => setPassword(e.target.value)} type="password" className="form-button" />
             </div>
-            <div className="mt-4 align-self-end mr-5">
-              <button type="submit" className="nav-button">
+            <div className="mt-4 mr-5 centered">
+              <button type="submit" className="nav-button ">
                 LOGIN
               </button>
             </div>
           </form>
-          <div className="mt-3 form-label">
+          <div className="mt-3 form-label centered">
             <span id="login-white">
               No Account? Sign Up{" "}
               <Link to="/user/create">
@@ -67,7 +71,7 @@ function Login() {
             </span>
           </div>
         </div>
-        <div className="col-6 align-self-center">
+        <div className="col-6 align-self-center mobile-toggle">
           <img src="https://static.timesofisrael.com/www/uploads/2017/12/managers.jpg" />
         </div>
       </div>

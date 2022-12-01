@@ -8,14 +8,14 @@ function SingleCommentProfile(props) {
   })
   return (
     <>
-      <div className="single-item-profile container d-flex mt-3 ml-3 p-2 align-items-center">
+      <div className="single-item-profile container d-flex mt-3 p-2 align-items-center">
         <div id="topic-name">
           <Link to={`/post/${props.post.id}`}>{props.post.title}</Link>
         </div>
         <div className="ml-auto mr-3">
           <span className="ml-3">Created: {date}</span>
         </div>
-        <div className="icon-black">
+        <div className="icon-black d-flex flex-column">
           <span className="material-symbols-outlined"> edit </span>
           <span className="material-symbols-outlined"> delete </span>
         </div>
