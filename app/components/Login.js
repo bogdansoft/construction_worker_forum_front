@@ -7,12 +7,7 @@ function Login() {
   const [username, setUsername] = useState()
   const [password, setPassword] = useState()
   const navigate = useNavigate()
-
   const appDispatch = useContext(DispatchContext)
-
-  useEffect(() => {
-    appDispatch({ type: "closeMenu" })
-  }, [])
 
   async function handleSubmit(e) {
     e.preventDefault()
