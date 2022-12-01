@@ -51,22 +51,20 @@ function NavbarLoggedOut() {
       {appState.menuIsOpen ? (
         <div className="hamb-menu d-flex flex-column">
           <Link to="/user/create">
-            <span className="material-symbols-outlined">add_circle</span>
+            <span>Register</span>
           </Link>
           <Link to="/login">
-            <span className="material-symbols-outlined">login</span>
+            <span>Login</span>
           </Link>
           <span
             onClick={() => {
               appDispatch({ type: "openSearch" })
             }}
-            className="material-symbols-outlined"
           >
-            {" "}
-            search{" "}
+            Search
           </span>
           <Link to="chat" className="">
-            <span className="material-symbols-outlined"> chat </span>
+            <span> Chat </span>
           </Link>
         </div>
       ) : null}

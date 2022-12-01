@@ -11,7 +11,7 @@ function Login() {
   const appDispatch = useContext(DispatchContext)
 
   useEffect(() => {
-    appDispatch({ type: "toggleMenu" })
+    appDispatch({ type: "closeMenu" })
   }, [])
 
   async function handleSubmit(e) {

@@ -54,6 +54,7 @@ function Main() {
         state.user.isUser = state.user.roles.includes("USER")
         state.user.isAdmin = state.user.roles.includes("ADMINISTRATOR")
         state.user.isSupport = state.user.roles.includes("SUPPORT")
+        state.menuIsOpen = false
         break
       case "logout":
         state.loggedIn = false
@@ -61,6 +62,7 @@ function Main() {
         state.user.isUser = false
         state.user.isAdmin = false
         state.user.isSupport = false
+        state.menuIsOpen = false
         break
       case "openSearch":
         state.searchIsOpen = true
