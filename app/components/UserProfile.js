@@ -5,6 +5,7 @@ import UserProfilePosts from "./UserProfilePosts"
 import Axios from "axios"
 import StateContext from "../StateContext"
 import RenderAvatar from "./Avatar"
+import DispatchContext from "../DispatchContext"
 
 function UserProfile() {
   const navigate = useNavigate()
@@ -12,6 +13,8 @@ function UserProfile() {
   const [isBioPresent, setIsBioPresent] = useState(false)
   const appState = useContext(StateContext)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const appDispatch = useContext(DispatchContext)
+
   const [state, setState] = useState({
     avatar: "https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png",
     bio: "There is no BIO yet",
@@ -53,7 +56,9 @@ function UserProfile() {
       console.log("There was a problem")
     }
   }
-
+  useEffect(() => {
+    appDispatch({ type: "closeMenu" })
+  }, [])
   return (
     <div className="main d-flex flex-column container">
       <div className="content d-flex flex-column mt-4">
@@ -82,7 +87,7 @@ function UserProfile() {
               {state.username}
             </div>
           </div>
-          <div className="ml-4 p-2">About me : {state.bio.length > 3 ? state.bio : null}</div>
+          {state.bio ? <div className="ml-4 p-2">About me : {state.bio.length > 3 ? state.bio : null}</div> : null}
           <div className="ml-auto d-flex flex-column ml-5">
             <div className="mobile-toggle">
               {isLoggedIn && (

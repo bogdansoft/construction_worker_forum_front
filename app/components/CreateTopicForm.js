@@ -37,7 +37,7 @@ function CreateTopicForm() {
   }
 
   useEffect(() => {
-    appDispatch({ type: "toggleMenu" })
+    appDispatch({ type: "closeMenu" })
   }, [])
 
   if (!appState.loggedIn || !appState.user.isAdmin) return <UnauthorizedAccessView />

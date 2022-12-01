@@ -114,9 +114,12 @@ function NavbarLoggedIn() {
       </nav>
       {appState.menuIsOpen ? (
         <div className="hamb-menu d-flex flex-column">
-          <Link to={`/topic/create`}>
-            <div>Add Topic</div>
-          </Link>
+          {appState.user.isAdmin || appState.user.isSupport ? (
+            <Link to={`/topic/create`}>
+              <div>Add Topic</div>
+            </Link>
+          ) : null}
+
           <Link to={`/post/create`}>
             <div className="">Add Post</div>
           </Link>
@@ -124,13 +127,14 @@ function NavbarLoggedIn() {
             onClick={() => {
               appDispatch({ type: "openSearch" })
             }}
-            className="material-symbols-outlined mr-3"
           >
-            {" "}
-            search{" "}
+            <span> Search </span>
           </span>
           <Link to="chat" className="">
-            <span className="material-symbols-outlined mt-1"> chat </span>
+            <span> Chat </span>
+          </Link>
+          <Link onClick={() => setProfileOptions(prev => !prev)} to={`/profile/${appState.user.username}`}>
+            <div>Profile</div>
           </Link>
           <div onClick={handleLoggedOut}>Logout</div>
         </div>

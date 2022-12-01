@@ -5,11 +5,13 @@ import Axios from "axios"
 import Topic from "./Topic"
 import Loading from "./Loading"
 import StateContext from "../StateContext"
+import DispatchContext from "../DispatchContext"
 import ReactTooltip from "react-tooltip"
 import { Pagination } from "@mui/material"
 
 function Topics(props) {
   const appState = useContext(StateContext)
+  const appDispatch = useContext(DispatchContext)
   const navigate = useNavigate()
   const [state, setState] = useImmer({
     feed: [],
@@ -31,6 +33,10 @@ function Topics(props) {
       }
     }
     fetchData()
+  }, [])
+
+  useEffect(() => {
+    appDispatch({ type: "closeMenu" })
   }, [])
 
   useEffect(() => {
