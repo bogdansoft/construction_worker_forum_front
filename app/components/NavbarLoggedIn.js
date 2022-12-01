@@ -132,6 +132,7 @@ function NavbarLoggedIn() {
           <Link to="chat" className="">
             <span className="material-symbols-outlined mt-1"> chat </span>
           </Link>
+          <div onClick={handleLoggedOut}>Logout</div>
         </div>
       ) : null}
     </div>

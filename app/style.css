@@ -76,13 +76,10 @@ body {
   }
   .nav-left .material-symbols-outlined {
     font-size: 2rem;
-    rotate: 45deg;
-    font-weight: bold;
   }
 
   .nav-left h1 {
     font-size: 1rem;
-    color: white;
     margin-top: 0.3rem;
   }
   .mobile-toggle {

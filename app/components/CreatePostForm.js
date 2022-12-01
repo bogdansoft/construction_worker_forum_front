@@ -21,7 +21,7 @@ function CreatePost() {
   const appDispatch = useContext(DispatchContext)
 
   useEffect(() => {
-    appDispatch({ type: "toggleMenu" })
+    appDispatch({ type: "closeMenu" })
   }, [])
 
   const handleSubmit = e => {

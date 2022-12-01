@@ -1,10 +1,11 @@
 import React, { useContext } from "react"
 import DispatchContext from "../DispatchContext"
 import { Link } from "react-router-dom"
+import StateContext from "../StateContext"
 
 function NavbarLoggedOut() {
   const appDispatch = useContext(DispatchContext)
-
+  const appState = useContext(StateContext)
   return (
     <div>
       <nav className="container nav">
@@ -36,9 +37,39 @@ function NavbarLoggedOut() {
               <button className="nav-button mr-4">Login</button>
             </Link>
           </div>
-          <span className="material-symbols-outlined mobile-toggle-inverse"> menu </span>
+          <span
+            onClick={() => {
+              appDispatch({ type: "toggleMenu" })
+            }}
+            className="material-symbols-outlined mobile-toggle-inverse"
+          >
+            {" "}
+            menu{" "}
+          </span>
         </div>
       </nav>
+      {appState.menuIsOpen ? (
+        <div className="hamb-menu d-flex flex-column">
+          <Link to="/user/create">
+            <span class="material-symbols-outlined">add_circle</span>
+          </Link>
+          <Link to="/login">
+            <span className="material-symbols-outlined">login</span>
+          </Link>
+          <span
+            onClick={() => {
+              appDispatch({ type: "openSearch" })
+            }}
+            className="material-symbols-outlined"
+          >
+            {" "}
+            search{" "}
+          </span>
+          <Link to="chat" className="">
+            <span className="material-symbols-outlined"> chat </span>
+          </Link>
+        </div>
+      ) : null}
     </div>
   )
 }

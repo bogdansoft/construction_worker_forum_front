@@ -10,6 +10,10 @@ function Login() {
 
   const appDispatch = useContext(DispatchContext)
 
+  useEffect(() => {
+    appDispatch({ type: "toggleMenu" })
+  }, [])
+
   async function handleSubmit(e) {
     e.preventDefault()
 
