@@ -111,8 +111,11 @@ function ChangeBIO() {
           <label htmlFor="post-body" className="ml-3 add-post-title">
             <h3 className="display-3">New BIO</h3>
           </label>
-          <div className="mt-3 ml-auto mr-auto">
+          <div className="mt-3 ml-auto mr-auto mobile-toggle">
             <textarea onBlur={e => dispatch({ type: "bodyRules", value: e.target.value })} onChange={e => dispatch({ type: "bodyChange", value: e.target.value })} name="body" id="post-body" className="post-textarea p-2 ml-5" rows="10" cols="100" type="text" value={state.body.value} />
+          </div>
+          <div className="mt-3 ml-auto mr-auto mobile-toggle-inverse">
+            <textarea onBlur={e => dispatch({ type: "bodyRules", value: e.target.value })} onChange={e => dispatch({ type: "bodyChange", value: e.target.value })} name="body" id="post-body" className="post-textarea p-2" rows="10" cols="40" type="text" value={state.body.value} />
           </div>
           <div className="d-flex align-items-center mt-3">
             <div className="ml-auto" disabled={state.IsSaving}>

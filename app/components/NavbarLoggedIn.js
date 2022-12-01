@@ -1,7 +1,7 @@
-import React, {useContext, useState} from "react"
-import {Link, useNavigate} from "react-router-dom"
+import React, { useContext, useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
 import DispatchContext from "../DispatchContext"
-import {CSSTransition} from "react-transition-group"
+import { CSSTransition } from "react-transition-group"
 import StateContext from "../StateContext"
 
 function NavbarLoggedIn() {
@@ -27,43 +27,44 @@ function NavbarLoggedIn() {
 
   function showAddOptionsDependingOnUserRole() {
     const postLink = (
-        <Link onClick={() => setAddOptions(prev => !prev)} to={`/post/create`}>
-          <div className="mt-4">Post</div>
-        </Link>
+      <Link onClick={() => setAddOptions(prev => !prev)} to={`/post/create`}>
+        <div className="mt-4">Post</div>
+      </Link>
     )
 
     if (appState.user.isAdmin || appState.user.isSupport) {
       return (
-          <div className="option-box small userOptions ml-3">
-            <Link onClick={() => setAddOptions(prev => !prev)} to={`/topic/create`}>
-              <div>Topic</div>
-            </Link>
-            {postLink}
-          </div>
+        <div className="option-box small userOptions ml-3">
+          <Link onClick={() => setAddOptions(prev => !prev)} to={`/topic/create`}>
+            <div>Topic</div>
+          </Link>
+          {postLink}
+        </div>
       )
     }
     return (
-        <div className="option-box small userOptions ml-3" style={{ padding: "2px 50px 20px 20px" }}>
-          {postLink}
-        </div>
+      <div className="option-box small userOptions ml-3" style={{ padding: "2px 50px 20px 20px" }}>
+        {postLink}
+      </div>
     )
   }
 
   return (
-      <div className=" mt-3">
-        <nav className="container d-flex flex-row p-4">
-          <div className="nav-left d-flex align-items-center">
-            <div>
-              <Link to="/" className="mr-auto p-3">
-                <span className="material-symbols-outlined"> settings </span>
-              </Link>
-            </div>
-            <div className="ml-3">
-              <h1>Constructor Worker Forum</h1>
-            </div>
+    <div className="mt-3">
+      <nav className="nav container d-flex flex-row p-4">
+        <div className="nav-left d-flex align-items-center">
+          <div>
+            <Link to="/" className="mr-auto p-3">
+              <span className="material-symbols-outlined"> settings </span>
+            </Link>
           </div>
-          <div className="nav-right d-flex ml-auto align-items-center">
-            <div class="relative">
+          <div className="ml-3">
+            <h1>Constructor Worker Forum</h1>
+          </div>
+        </div>
+        <div className="nav-right d-flex ml-auto align-items-center">
+          <div className="mobile-toggle">
+            <div className="relative">
               <span onClick={toggleAddOptions} className="material-symbols-outlined mr-3">
                 add
               </span>
@@ -72,10 +73,10 @@ function NavbarLoggedIn() {
               </CSSTransition>
             </div>
             <span
-                onClick={() => {
-                  appDispatch({ type: "openSearch" })
-                }}
-                className="material-symbols-outlined mr-3"
+              onClick={() => {
+                appDispatch({ type: "openSearch" })
+              }}
+              className="material-symbols-outlined mr-3"
             >
               {" "}
               search{" "}
@@ -100,8 +101,45 @@ function NavbarLoggedIn() {
               </CSSTransition>
             </div>
           </div>
-        </nav>
-      </div>
+          <span
+            onClick={() => {
+              appDispatch({ type: "toggleMenu" })
+            }}
+            className="material-symbols-outlined mobile-toggle-inverse"
+          >
+            {" "}
+            menu{" "}
+          </span>
+        </div>
+      </nav>
+      {appState.menuIsOpen ? (
+        <div className="hamb-menu d-flex flex-column">
+          {appState.user.isAdmin || appState.user.isSupport ? (
+            <Link to={`/topic/create`}>
+              <div>Add Topic</div>
+            </Link>
+          ) : null}
+
+          <Link to={`/post/create`}>
+            <div className="">Add Post</div>
+          </Link>
+          <span
+            onClick={() => {
+              appDispatch({ type: "openSearch" })
+            }}
+          >
+            <span> Search </span>
+          </span>
+          <Link to="chat" className="">
+            <span> Chat </span>
+          </Link>
+          <Link onClick={() => setProfileOptions(prev => !prev)} to={`/profile/${appState.user.username}`}>
+            <div>Profile</div>
+          </Link>
+          <div onClick={handleLoggedOut}>Logout</div>
+        </div>
+      ) : null}
+    </div>
   )
 }
 
