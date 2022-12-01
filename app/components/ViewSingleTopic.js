@@ -33,6 +33,7 @@ function ViewSingleTopic(props) {
     numberOfRecords: 1,
     orderBy: "",
     isMounted: false,
+    keywords: [],
   })
 
   useEffect(() => {
@@ -133,6 +134,19 @@ function ViewSingleTopic(props) {
     fetchData()
   }, [state.orderBy])
 
+  useEffect(() => {
+    async function fetchData() {
+      if (state.isMounted) {
+        const response = await Axios.get(`/api/post/all_by_topicid/${id}?keywords=${state.keywords}`)
+        setState((draft) => {
+          setPosts(response.data.slice(0, state.paginationValue))
+          draft.isLoading = false
+        })
+      }
+    }
+    fetchData()
+  }, [state.keywords])
+
   async function getSortedPosts() {
     const resposne = await Axios.get(`/api/post/all_by_topicid/${id}?orderby=${state.orderBy}`)
     setState((draft) => {
@@ -166,10 +180,17 @@ function ViewSingleTopic(props) {
     })
   }
 
-  function renderPosts() {
-    return posts.map((post) => {
-      return <Post post={post} key={post.id} author={post.user} reload={reload} />
-    })
+  function sortByKeywords(value) {
+    var checkbox = document.getElementById("painting")
+    if (checkbox.checked === true) {
+      setState((draft) => {
+        draft.keywords.push(value)
+      })
+    } else {
+      setState((draft) => {
+        draft.keywords.pop(value)
+      })
+    }
   }
 
   function handlePage(event) {
@@ -289,7 +310,15 @@ function ViewSingleTopic(props) {
                 <div className="absolute">
                   <div className="filters">
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="Painting" id="painting" />
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        value="Painting"
+                        id="painting"
+                        onClick={(e) => {
+                          sortByKeywords(e.target.value)
+                        }}
+                      />
                       <label class="form-check-label" for="painting">
                         Painting
                       </label>
