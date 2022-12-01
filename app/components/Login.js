@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from "react"
-import { BrowserRouter as Router, Route, Link, Routes, useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import Axios from "axios"
 import DispatchContext from "../DispatchContext"
 
 function Login() {
   const [username, setUsername] = useState()
   const [password, setPassword] = useState()
+  const navigate = useNavigate()
 
   const appDispatch = useContext(DispatchContext)
 
@@ -22,6 +23,7 @@ function Login() {
       if (response.data) {
         appDispatch({ type: "login", data: response.data })
         appDispatch({ type: "flashMessage", value: "Succesfully logged in !", messageType: "message-green" })
+        navigate("/")
       }
     } catch (e) {
       if (e.response.status === 401 || e.response.status === 400) {
@@ -52,7 +54,7 @@ function Login() {
               <br />
               <span>Password</span>
               <br />
-              <input onChange={e => setPassword(e.target.value)} type="password" className="form-button" data-testid="password-field" />
+              <input onChange={e => setPassword(e.target.value)} type="password" className="form-button" />
             </div>
             <div className="mt-4 mr-5 centered">
               <button type="submit" className="nav-button ">
