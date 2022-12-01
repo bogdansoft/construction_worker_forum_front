@@ -910,7 +910,27 @@ input:focus {
   padding: 10px 30px;
   color: white;
 }
-
+@media screen and (max-width: 1000px) {
+  .search-bar {
+    background-color: var(--light-brown);
+    border: 1px solid black;
+    padding: 1rem 1.5rem;
+    color: white;
+    font-size: 0.8rem;
+    border-radius: 20px;
+  }
+  .search-overlay .material-symbols-outlined {
+    font-size: 2em;
+    margin-left: 10px;
+  }
+  .search-result {
+    padding: 0.8rem 1rem;
+    font-size: 0.8rem;
+  }
+  .list-group {
+    padding: 1rem 1.5rem;
+  }
+}
 .liveValidateMessage-delete {
   position: relative;
   left: -100px;
