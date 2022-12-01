@@ -74,7 +74,6 @@ function Topics(props) {
     setState(draft => {
       draft.feed = resposne.data.slice(0, state.paginationValue)
       draft.isLoading = false
-      renderTopics
     })
   }
 
@@ -94,7 +93,6 @@ function Topics(props) {
     setState(draft => {
       draft.feed = resposne.data
       draft.isLoading = false
-      renderTopics
     })
   }
 
@@ -103,7 +101,6 @@ function Topics(props) {
     setState(draft => {
       draft.feed = response.data
       draft.isLoading = false
-      renderTopics
     })
   }
 
@@ -184,8 +181,8 @@ function Topics(props) {
                 Sorting
               </option>
               <option value="name.asc">Alphabetically</option>
-              <option value="createdAt.asc">The newest topics</option>
-              <option value="createdAt.desc">The oldest topics</option>
+              <option value="createdAt.desc">The newest topics</option>
+              <option value="createdAt.asc">The oldest topics</option>
               <option value="updatedAt.desc">Last updated</option>
             </select>
             <div className="mr-4">
