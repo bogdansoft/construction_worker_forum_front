@@ -64,7 +64,7 @@ function NavbarLoggedIn() {
         </div>
         <div className="nav-right d-flex ml-auto align-items-center">
           <div className="mobile-toggle">
-            <div class="relative">
+            <div className="relative">
               <span onClick={toggleAddOptions} className="material-symbols-outlined mr-3">
                 add
               </span>

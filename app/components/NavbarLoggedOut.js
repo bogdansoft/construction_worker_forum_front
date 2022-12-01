@@ -51,7 +51,7 @@ function NavbarLoggedOut() {
       {appState.menuIsOpen ? (
         <div className="hamb-menu d-flex flex-column">
           <Link to="/user/create">
-            <span class="material-symbols-outlined">add_circle</span>
+            <span className="material-symbols-outlined">add_circle</span>
           </Link>
           <Link to="/login">
             <span className="material-symbols-outlined">login</span>

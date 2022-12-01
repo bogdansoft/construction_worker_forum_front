@@ -1,10 +1,9 @@
-import React, { useState, useContext } from "react"
+import React, { useState, useContext, useEffect } from "react"
 import Axios from "axios"
-import { useNavigate, Link } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { CSSTransition } from "react-transition-group"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
-import { useEffect } from "react"
 
 function CreateTopicForm() {
   const [name, setName] = useState()
@@ -41,7 +40,7 @@ function CreateTopicForm() {
     appDispatch({ type: "toggleMenu" })
   }, [])
 
-  // if (!appState.loggedIn || !appState.user.isAdmin) return <UnauthorizedAccessView />
+  if (!appState.loggedIn || !appState.user.isAdmin) return <UnauthorizedAccessView />
   return (
     <form onSubmit={handleSubmit}>
       <div className="main d-flex flex-column container create-post">

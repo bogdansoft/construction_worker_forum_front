@@ -42,7 +42,7 @@ function Post(props) {
       return (
         <div>
           <Link to={`/post/edit/${props.post.id}`} data-tip="Edit" data-for="edit" className="text-primary mr-2">
-            <span class="material-symbols-outlined link-black"> edit </span>
+            <span className="material-symbols-outlined link-black"> edit </span>
           </Link>
           <ReactTooltip id="edit" className="custom-tooltip" />
         </div>
@@ -58,7 +58,7 @@ function Post(props) {
             delete
           </span>
           <CSSTransition in={isDeleting} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-            <div class="delete-absolute container col-5 ml-1 mt-5">
+            <div className="delete-absolute container col-5 ml-1 mt-5">
               <div className="delete-pop col-5 p-2 liveValidateMessage-delete">
                 <DeleteModal delete={handleDelete} noDelete={deletePopup} relatedItemsLength={props.post.comments.length} relatedItemsType={"comment"} />
               </div>
