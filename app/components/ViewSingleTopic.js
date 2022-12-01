@@ -20,6 +20,7 @@ function ViewSingleTopic(props) {
   const { id } = useParams()
   const [topic, setTopic] = useState([])
   const [posts, setPosts] = useState([])
+  const [filters, setFilters] = useState(false)
   const loggedIn = Boolean(localStorage.getItem("constructionForumUserToken"))
   const [state, setState] = useImmer({
     isLoading: true,
@@ -31,7 +32,7 @@ function ViewSingleTopic(props) {
     pageNumber: 1,
     numberOfRecords: 1,
     orderBy: "",
-    isMounted: false
+    isMounted: false,
   })
 
   useEffect(() => {
@@ -41,12 +42,12 @@ function ViewSingleTopic(props) {
       try {
         const response = await Axios.get(`/api/topic/${id}`, { cancelToken: ourRequest.token })
         setTopic(response.data)
-        setState(draft => {
+        setState((draft) => {
           draft.isLoading = false
         })
       } catch (e) {
         if (e.response.status === 404) {
-          setState(draft => {
+          setState((draft) => {
             draft.notFound = true
           })
           console.log("Resource not found.")
@@ -70,7 +71,7 @@ function ViewSingleTopic(props) {
       try {
         const response = await Axios.get(`/api/post/all_by_topicid/${id}`, { cancelToken: ourRequest.token })
         setPosts(response.data.slice(0, 10))
-        setState(draft => {
+        setState((draft) => {
           draft.numberOfRecords = response.data.length
           draft.pagesNumber = Math.ceil(response.data.length / 10)
           draft.isMounted = true
@@ -105,7 +106,7 @@ function ViewSingleTopic(props) {
 
   async function getPaginatedPosts() {
     const response = await Axios.get(`/api/post/all_by_topicid/${id}?orderby=${state.orderBy}&limit=${state.paginationValue}&page=${state.pageNumber}`)
-    setState(draft => {
+    setState((draft) => {
       setPosts(response.data)
       draft.isLoading = false
     })
@@ -113,7 +114,7 @@ function ViewSingleTopic(props) {
 
   async function getPaginatedAndSortedPosts() {
     const response = await Axios.get(`/api/post/all_by_topicid/${id}?limit=${state.paginationValue}&page=${state.pageNumber}`)
-    setState(draft => {
+    setState((draft) => {
       setPosts(response.data)
       draft.isLoading = false
     })
@@ -134,31 +135,31 @@ function ViewSingleTopic(props) {
 
   async function getSortedPosts() {
     const resposne = await Axios.get(`/api/post/all_by_topicid/${id}?orderby=${state.orderBy}`)
-    setState(draft => {
+    setState((draft) => {
       setPosts(resposne.data.slice(0, state.paginationValue))
       draft.isLoading = false
     })
   }
 
   function reload() {
-    setState(draft => {
+    setState((draft) => {
       draft.reloadCounter++
     })
   }
 
   function sort(value) {
-    setState(draft => {
+    setState((draft) => {
       draft.pageNumber = 1
       draft.orderBy = value
     })
   }
 
   function deletePopup() {
-    setIsDeleting(prev => !prev)
+    setIsDeleting((prev) => !prev)
   }
 
   function paginate(value) {
-    setState(draft => {
+    setState((draft) => {
       draft.pageNumber = 1
       draft.paginationValue = value
       draft.pagesNumber = Math.ceil(state.numberOfRecords / value)
@@ -166,13 +167,13 @@ function ViewSingleTopic(props) {
   }
 
   function renderPosts() {
-    return posts.map(post => {
+    return posts.map((post) => {
       return <Post post={post} key={post.id} author={post.user} reload={reload} />
     })
   }
 
   function handlePage(event) {
-    setState(draft => {
+    setState((draft) => {
       draft.pageNumber = parseInt(event.target.textContent)
     })
   }
@@ -255,7 +256,7 @@ function ViewSingleTopic(props) {
               className="mr-3"
               name="Pagination"
               id="pagination"
-              onChange={e => {
+              onChange={(e) => {
                 paginate(e.target.value)
               }}
             >
@@ -267,24 +268,67 @@ function ViewSingleTopic(props) {
               <option>30</option>
               <option>40</option>
             </select>
-            <select
-              className="mr-3"
-              name="Sorting"
-              id="sorting"
-              onChange={e => {
-                sort(e.target.value)
-              }}
-            >
-              <option value="id.asc" disabled selected>
-                Sorting
-              </option>
-              <option value="title.asc">Alphabetically</option>
-              <option value="createdAt.desc">The newest topics</option>
-              <option value="createdAt.asc">The oldest topics</option>
-              <option value="updatedAt.desc">Last updated</option>
-            </select>
+            <div>
+              <select
+                className="mr-3"
+                name="Sorting"
+                id="sorting"
+                onChange={(e) => {
+                  sort(e.target.value)
+                }}
+              >
+                <option value="id.asc" disabled selected>
+                  Sorting
+                </option>
+                <option value="title.asc">Alphabetically</option>
+                <option value="createdAt.desc">The newest topics</option>
+                <option value="createdAt.asc">The oldest topics</option>
+                <option value="updatedAt.desc">Last updated</option>
+              </select>
+              <CSSTransition in={filters} timeout={330} classNames="" unmountOnExit>
+                <div className="absolute">
+                  <div className="filters">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="Painting" id="painting" />
+                      <label class="form-check-label" for="painting">
+                        Painting
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="Brick layering" id="brickLayering" />
+                      <label class="form-check-label" for="brickLayering">
+                        Brick layering
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="Tile layering" id="tileLayering" />
+                      <label class="form-check-label" for="tileLayering">
+                        Tile layering
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="Hydraulics" id="hydraulics" />
+                      <label class="form-check-label" for="hydraulics">
+                        Hydraulics
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="Carpentry" id="carpentry" />
+                      <label class="form-check-label" for="carpentry">
+                        Carpentry
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </CSSTransition>
+            </div>
             <div className="mr-4">
-              <span className="material-symbols-outlined"> tune </span>
+              <div>
+                <span className="material-symbols-outlined" onClick={() => setFilters((prev) => !prev)}>
+                  {" "}
+                  tune{" "}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -299,7 +343,7 @@ function ViewSingleTopic(props) {
         {posts.length == 0 ? (
           <span className="font-weight-bold text-center p-5">There are no posts for this topic yet. Feel free to create one!</span>
         ) : (
-          posts.map(post => {
+          posts.map((post) => {
             return <Post post={post} key={post.id} author={post.user} reload={reload} />
           })
         )}
