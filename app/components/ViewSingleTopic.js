@@ -71,10 +71,10 @@ function ViewSingleTopic(props) {
     async function fetchPosts() {
       try {
         const response = await Axios.get(`/api/post/all_by_topicid/${id}`, { cancelToken: ourRequest.token })
-        setPosts(response.data.slice(0, 10))
+        setPosts(response.data.slice(0, state.paginationValue))
         setState((draft) => {
           draft.numberOfRecords = response.data.length
-          draft.pagesNumber = Math.ceil(response.data.length / 10)
+          draft.pagesNumber = Math.ceil(response.data.length / state.paginationValue)
           draft.isMounted = true
         })
       } catch (e) {
@@ -93,9 +93,9 @@ function ViewSingleTopic(props) {
       try {
         if (state.isMounted) {
           if (state.orderBy !== "") {
-            getPaginatedPosts()
-          } else {
             getPaginatedAndSortedPosts()
+          } else {
+            getPaginatedPosts()
           }
         }
       } catch (e) {
@@ -105,7 +105,7 @@ function ViewSingleTopic(props) {
     fetchData()
   }, [state.pageNumber, state.paginationValue])
 
-  async function getPaginatedPosts() {
+  async function getPaginatedAndSortedPosts() {
     const response = await Axios.get(`/api/post/all_by_topicid/${id}?orderby=${state.orderBy}&limit=${state.paginationValue}&page=${state.pageNumber}`)
     setState((draft) => {
       setPosts(response.data)
@@ -113,7 +113,7 @@ function ViewSingleTopic(props) {
     })
   }
 
-  async function getPaginatedAndSortedPosts() {
+  async function getPaginatedPosts() {
     const response = await Axios.get(`/api/post/all_by_topicid/${id}?limit=${state.paginationValue}&page=${state.pageNumber}`)
     setState((draft) => {
       setPosts(response.data)
@@ -137,11 +137,23 @@ function ViewSingleTopic(props) {
   useEffect(() => {
     async function fetchData() {
       if (state.isMounted) {
-        const response = await Axios.get(`/api/post/all_by_topicid/${id}?keywords=${state.keywords}`)
-        setState((draft) => {
+        if (typeof state.keywords !== "undefined" && state.keywords.length > 0) {
+          const response = await Axios.get(`/api/post/all_by_topicid/${id}?keywords=${state.keywords}`)
+          setState((draft) => {
+            setPosts(response.data.slice(0, state.paginationValue))
+            draft.numberOfRecords = response.data.length
+            draft.pagesNumber = Math.ceil(response.data.length / state.paginationValue)
+            draft.isLoading = false
+            draft.pageNumber = 1
+          })
+        } else {
+          const response = await Axios.get(`/api/post/all_by_topicid/${id}`)
           setPosts(response.data.slice(0, state.paginationValue))
-          draft.isLoading = false
-        })
+          setState((draft) => {
+            draft.numberOfRecords = response.data.length
+            draft.pagesNumber = Math.ceil(response.data.length / state.paginationValue)
+          })
+        }
       }
     }
     fetchData()
@@ -181,14 +193,17 @@ function ViewSingleTopic(props) {
   }
 
   function sortByKeywords(value) {
-    var checkbox = document.getElementById("painting")
+    var checkbox = document.getElementById(value)
     if (checkbox.checked === true) {
       setState((draft) => {
         draft.keywords.push(value)
       })
     } else {
       setState((draft) => {
-        draft.keywords.pop(value)
+        const index = draft.keywords.indexOf(value)
+        if (index > -1) {
+          draft.keywords.splice(index, 1)
+        }
       })
     }
   }
@@ -314,8 +329,9 @@ function ViewSingleTopic(props) {
                         class="form-check-input"
                         type="checkbox"
                         value="Painting"
-                        id="painting"
-                        onClick={(e) => {
+                        id="Painting"
+                        checked={state.keywords.includes("Painting")}
+                        onChange={(e) => {
                           sortByKeywords(e.target.value)
                         }}
                       />
@@ -324,25 +340,61 @@ function ViewSingleTopic(props) {
                       </label>
                     </div>
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="Brick layering" id="brickLayering" />
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        value="Brick layering"
+                        id="Brick layering"
+                        checked={state.keywords.includes("Brick layering")}
+                        onChange={(e) => {
+                          sortByKeywords(e.target.value)
+                        }}
+                      />
                       <label class="form-check-label" for="brickLayering">
                         Brick layering
                       </label>
                     </div>
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="Tile layering" id="tileLayering" />
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        value="Tile layering"
+                        id="Tile layering"
+                        checked={state.keywords.includes("Tile layering")}
+                        onChange={(e) => {
+                          sortByKeywords(e.target.value)
+                        }}
+                      />
                       <label class="form-check-label" for="tileLayering">
                         Tile layering
                       </label>
                     </div>
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="Hydraulics" id="hydraulics" />
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        value="Hydraulics"
+                        id="Hydraulics"
+                        checked={state.keywords.includes("Hydraulics")}
+                        onChange={(e) => {
+                          sortByKeywords(e.target.value)
+                        }}
+                      />
                       <label class="form-check-label" for="hydraulics">
                         Hydraulics
                       </label>
                     </div>
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="Carpentry" id="carpentry" />
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        value="Carpentry"
+                        id="Carpentry"
+                        checked={state.keywords.includes("Carpentry")}
+                        onChange={(e) => {
+                          sortByKeywords(e.target.value)
+                        }}
+                      />
                       <label class="form-check-label" for="carpentry">
                         Carpentry
                       </label>
