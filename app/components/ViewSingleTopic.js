@@ -94,6 +94,9 @@ function ViewSingleTopic(props) {
         if (state.isMounted) {
           if (state.orderBy !== "") {
             getPaginatedAndSortedPosts()
+          }
+          if (state.keywords.length > 0) {
+            getPaginatedAndFilteredByKeywordsPosts()
           } else {
             getPaginatedPosts()
           }
@@ -107,6 +110,14 @@ function ViewSingleTopic(props) {
 
   async function getPaginatedAndSortedPosts() {
     const response = await Axios.get(`/api/post/all_by_topicid/${id}?orderby=${state.orderBy}&limit=${state.paginationValue}&page=${state.pageNumber}`)
+    setState((draft) => {
+      setPosts(response.data)
+      draft.isLoading = false
+    })
+  }
+
+  async function getPaginatedAndFilteredByKeywordsPosts() {
+    const response = await Axios.get(`/api/post/all_by_topicid/${id}?limit=${state.paginationValue}&page=${state.pageNumber}&keywords=${state.keywords}`)
     setState((draft) => {
       setPosts(response.data)
       draft.isLoading = false
