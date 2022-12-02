@@ -10,6 +10,8 @@ import CameraAltIcon from "@material-ui/icons/CameraAlt"
 import { makeStyles } from "@material-ui/core/styles"
 import { IconButton } from "@material-ui/core"
 import RenderCropper from "./cropper"
+import Axios from "axios"
+import StateContext from "../StateContext"
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -33,10 +35,29 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function RenderAvatar(props) {
+  const appState = useContext(StateContext)
   const classes = useStyles()
   const [open, setOpen] = React.useState(false)
   const anchorRef = React.useRef(null)
   const [avatar, setAvatar] = useState("https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png")
+
+  useEffect(() => {
+    const ourRequest = Axios.CancelToken.source()
+
+    async function fetchData() {
+      try {
+        const response = await Axios.get(`/api/user/getavatar?username=${props.username}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+        setAvatar(response.data)
+        console.log(response.data)
+      } catch (e) {
+        console.log("There was a problem" + e.message)
+      }
+    }
+    fetchData()
+    return () => {
+      ourRequest.cancel()
+    }
+  })
 
   const handleToggle = () => {
     setOpen(prevOpen => !prevOpen)
@@ -50,12 +71,27 @@ export default function RenderAvatar(props) {
     setOpen(false)
   }
 
+  async function handleRemove(e) {
+    e.preventDefault()
+    setAvatar("https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png")
+    try {
+      Axios.delete(`/api/user/getavatar?username=${username}`)
+      console.log("Avatar deleted")
+    } catch {
+      console.log("There was a problem")
+    }
+  }
+
   function handleListKeyDown(event) {
     if (event.key === "Tab") {
       event.preventDefault()
       setOpen(false)
     }
   }
+
+  useEffect(() => {
+    console.log("Blob " + JSON.stringify(avatar))
+  }, [avatar])
 
   // return focus to the button when we transitioned from !open -> open
   const prevOpen = React.useRef(open)
@@ -103,7 +139,7 @@ export default function RenderAvatar(props) {
                     >
                       Change
                     </MenuItem>
-                    <MenuItem onClick={handleClose}>Remove</MenuItem>
+                    <MenuItem onClick={handleRemove}>Remove</MenuItem>
                   </MenuList>
                 </ClickAwayListener>
               </Paper>

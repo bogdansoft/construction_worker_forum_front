@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react"
+import React, { useState, useContext, useEffect } from "react"
 import Cropper from "react-easy-crop"
 import Slider from "@material-ui/core/Slider"
 import Button from "@material-ui/core/Button"
@@ -30,6 +30,9 @@ export default function RenderCropper({ handleCropper, username, setAvatar }) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
   const classes = useStyles()
+  const [user, setUser] = useState({
+    avatarBytes: ""
+  })
 
   const inputRef = React.useRef()
 
@@ -72,10 +75,28 @@ export default function RenderCropper({ handleCropper, username, setAvatar }) {
       formData.append("file", convertedUrlToFile)
       formData.append("username", username)
       console.log(formData)
-      const response = await Axios.put(`/api/user/changeavatar`, formData, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { responseType: "arraybuffer" })
+      const response = await Axios.put(`/api/user/changeavatar`, formData, { headers: { Authorization: `Bearer ${appState.user.token}` } })
       console.log("Response" + response)
-      let base64ImageString = Buffer.from(response.data, "binary").toString("base64")
-      console.log(base64ImageString)
+      console.log("Response data" + response.data)
+      // setUser(response.data)
+      // const imageBytes = await response.data.avatarBytes
+      // console.log("Image Bytes" + imageBytes)
+      // var blob = new Blob([imageBytes], { type: "image/jpeg" })
+      // console.log("Blob " + blob)
+      // var imageUrl = URL.createObjectURL(blob)
+      // console.log("Image URL " + imageUrl)
+      setAvatar(response.data)
+
+      // setUser(response)
+      // let base64ImageString = Buffer.from(user.avatarBytes, "binary").toString("base64")
+      // console.log(base64ImageString)
+      // const byteCharacters = atob(base64ImageString)
+      // const byteNumbers = new Array(byteCharacters.length)
+      // for (let i = 0; i < byteCharacters.length; i++) {
+      //   byteNumbers[i] = byteCharacters.charCodeAt(i)
+      // }
+      // const byteArray = new Uint8Array(byteNumbers)
+      // const blob = new Blob([byteArray], { type: contentType })
     } catch (e) {
       console.log("There was a problem " + e)
     }
