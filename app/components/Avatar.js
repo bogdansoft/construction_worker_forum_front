@@ -47,8 +47,10 @@ export default function RenderAvatar(props) {
     async function fetchData() {
       try {
         const response = await Axios.get(`/api/user/getavatar?username=${props.username}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
-        setAvatar(response.data)
-        console.log(response.data)
+        if (response.data !== "Avatar not found") {
+          setAvatar(response.data)
+          console.log(response.data)
+        }
       } catch (e) {
         console.log("There was a problem" + e.message)
       }
@@ -73,12 +75,12 @@ export default function RenderAvatar(props) {
 
   async function handleRemove(e) {
     e.preventDefault()
-    setAvatar("https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png")
     try {
-      Axios.delete(`/api/user/getavatar?username=${username}`)
+      Axios.delete(`/api/user/deleteavatar?username=${props.username}`, { headers: { Authorization: `Bearer ${appState.user.token}` } })
       console.log("Avatar deleted")
-    } catch {
-      console.log("There was a problem")
+      setAvatar("https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png")
+    } catch (e) {
+      console.log("There was a problem " + e.message)
     }
   }
 
@@ -88,10 +90,6 @@ export default function RenderAvatar(props) {
       setOpen(false)
     }
   }
-
-  useEffect(() => {
-    console.log("Blob " + JSON.stringify(avatar))
-  }, [avatar])
 
   // return focus to the button when we transitioned from !open -> open
   const prevOpen = React.useRef(open)
