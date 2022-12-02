@@ -7,12 +7,7 @@ function Login() {
   const [username, setUsername] = useState()
   const [password, setPassword] = useState()
   const navigate = useNavigate()
-
   const appDispatch = useContext(DispatchContext)
-
-  useEffect(() => {
-    appDispatch({ type: "closeMenu" })
-  }, [])
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -54,7 +49,7 @@ function Login() {
               <br />
               <span>Password</span>
               <br />
-              <input onChange={e => setPassword(e.target.value)} type="password" className="form-button" />
+              <input onChange={e => setPassword(e.target.value)} type="password" className="form-button" data-testid="password-field" />
             </div>
             <div className="mt-4 mr-5 centered">
               <button type="submit" className="nav-button ">
