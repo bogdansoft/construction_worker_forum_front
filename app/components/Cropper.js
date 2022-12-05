@@ -70,12 +70,10 @@ export default function RenderCropper({ handleCropper, username, setAvatar }) {
     const canvas = await getCroppedImg(image, croppedArea)
     const canvasDataUrl = canvas.toDataURL("image/jpeg")
     const convertedUrlToFile = dataURLtoFile(canvasDataUrl, "cropped-image.jpeg")
-    console.log(convertedUrlToFile)
     try {
       const formData = new FormData()
       formData.append("file", convertedUrlToFile)
       formData.append("username", username)
-      console.log(formData)
       const response = await Axios.put(`/api/user/changeavatar`, formData, { headers: { Authorization: `Bearer ${appState.user.token}` } })
       console.log("Response" + response)
       console.log("Response data" + response.data)
