@@ -9,7 +9,7 @@ import MenuList from "@material-ui/core/MenuList"
 import CameraAltIcon from "@material-ui/icons/CameraAlt"
 import { makeStyles } from "@material-ui/core/styles"
 import { IconButton } from "@material-ui/core"
-import RenderCropper from "./cropper"
+import RenderCropper from "./Cropper"
 
 const useStyles = makeStyles(theme => ({
   root: {
