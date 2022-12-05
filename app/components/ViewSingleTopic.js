@@ -92,7 +92,10 @@ function ViewSingleTopic(props) {
     async function fetchData() {
       try {
         if (state.isMounted) {
-          if (state.orderBy !== "") {
+          if (typeof state.keywords !== "undefined" && state.orderBy !== "" && state.keywords.length > 0) {
+            getPaginatedAndSortedAndFilteredByKeywordsPosts()
+          }
+          if (typeof state.keywords !== "undefined" && state.orderBy !== "") {
             getPaginatedAndSortedPosts()
           }
           if (state.keywords.length > 0) {
@@ -107,6 +110,17 @@ function ViewSingleTopic(props) {
     }
     fetchData()
   }, [state.pageNumber, state.paginationValue])
+
+  async function getPaginatedAndSortedAndFilteredByKeywordsPosts() {
+    const response = await Axios.get(`/api/post/all_by_topicid/${id}?orderby=${state.orderBy}&limit=${state.paginationValue}&page=${state.pageNumber}&keywords=${state.keywords}`)
+    setState((draft) => {
+      setPosts(response.data.slice(0, state.paginationValue))
+      draft.numberOfRecords = response.data.length
+      draft.pagesNumber = Math.ceil(response.data.length / state.paginationValue)
+      draft.isLoading = false
+      draft.pageNumber = 1
+    })
+  }
 
   async function getPaginatedAndSortedPosts() {
     const response = await Axios.get(`/api/post/all_by_topicid/${id}?orderby=${state.orderBy}&limit=${state.paginationValue}&page=${state.pageNumber}`)
@@ -136,7 +150,7 @@ function ViewSingleTopic(props) {
     async function fetchData() {
       try {
         if (state.isMounted) {
-          getSortedPosts()
+          getPaginatedAndSortedPosts()
         }
       } catch (e) {
         console.log("there was a problem fetching the data" + e)
@@ -149,7 +163,7 @@ function ViewSingleTopic(props) {
     async function fetchData() {
       if (state.isMounted) {
         if (typeof state.keywords !== "undefined" && state.keywords.length > 0) {
-          const response = await Axios.get(`/api/post/all_by_topicid/${id}?keywords=${state.keywords}`)
+          const response = await Axios.get(`/api/post/all_by_topicid/${id}?limit=${state.paginationValue}&page=${state.pageNumber}&keywords=${state.keywords}`)
           setState((draft) => {
             setPosts(response.data.slice(0, state.paginationValue))
             draft.numberOfRecords = response.data.length
@@ -169,14 +183,6 @@ function ViewSingleTopic(props) {
     }
     fetchData()
   }, [state.keywords])
-
-  async function getSortedPosts() {
-    const resposne = await Axios.get(`/api/post/all_by_topicid/${id}?orderby=${state.orderBy}`)
-    setState((draft) => {
-      setPosts(resposne.data.slice(0, state.paginationValue))
-      draft.isLoading = false
-    })
-  }
 
   function reload() {
     setState((draft) => {
