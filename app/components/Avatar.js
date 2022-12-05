@@ -9,7 +9,7 @@ import MenuList from "@material-ui/core/MenuList"
 import CameraAltIcon from "@material-ui/icons/CameraAlt"
 import { makeStyles } from "@material-ui/core/styles"
 import { IconButton } from "@material-ui/core"
-import RenderCropper from "./cropper"
+import RenderCropper from "./Cropper"
 import Axios from "axios"
 import StateContext from "../StateContext"
 
@@ -49,7 +49,6 @@ export default function RenderAvatar(props) {
         const response = await Axios.get(`/api/user/getavatar?username=${props.username}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
         if (response.data !== "Avatar not found") {
           setAvatar(response.data)
-          console.log(response.data)
         }
       } catch (e) {
         console.log("There was a problem" + e.message)
@@ -77,7 +76,6 @@ export default function RenderAvatar(props) {
     e.preventDefault()
     try {
       await Axios.delete(`/api/user/deleteavatar?username=${props.username}`, { headers: { Authorization: `Bearer ${appState.user.token}` } })
-      console.log("Avatar deleted")
       setAvatar("https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png")
     } catch (e) {
       console.log("There was a problem " + e.message)
