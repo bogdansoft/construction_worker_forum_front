@@ -10,6 +10,8 @@ import CameraAltIcon from "@material-ui/icons/CameraAlt"
 import { makeStyles } from "@material-ui/core/styles"
 import { IconButton } from "@material-ui/core"
 import RenderCropper from "./Cropper"
+import Axios from "axios"
+import StateContext from "../StateContext"
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -33,10 +35,30 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function RenderAvatar(props) {
+  const appState = useContext(StateContext)
   const classes = useStyles()
   const [open, setOpen] = React.useState(false)
   const anchorRef = React.useRef(null)
   const [avatar, setAvatar] = useState("https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png")
+
+  useEffect(() => {
+    const ourRequest = Axios.CancelToken.source()
+
+    async function fetchData() {
+      try {
+        const response = await Axios.get(`/api/user/getavatar?username=${props.username}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+        if (response.data !== "Avatar not found") {
+          setAvatar(response.data)
+        }
+      } catch (e) {
+        console.log("There was a problem" + e.message)
+      }
+    }
+    fetchData()
+    return () => {
+      ourRequest.cancel()
+    }
+  })
 
   const handleToggle = () => {
     setOpen(prevOpen => !prevOpen)
@@ -48,6 +70,16 @@ export default function RenderAvatar(props) {
     }
 
     setOpen(false)
+  }
+
+  async function handleRemove(e) {
+    e.preventDefault()
+    try {
+      await Axios.delete(`/api/user/deleteavatar?username=${props.username}`, { headers: { Authorization: `Bearer ${appState.user.token}` } })
+      setAvatar("https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png")
+    } catch (e) {
+      console.log("There was a problem " + e.message)
+    }
   }
 
   function handleListKeyDown(event) {
@@ -103,7 +135,7 @@ export default function RenderAvatar(props) {
                     >
                       Change
                     </MenuItem>
-                    <MenuItem onClick={handleClose}>Remove</MenuItem>
+                    <MenuItem onClick={handleRemove}>Remove</MenuItem>
                   </MenuList>
                 </ClickAwayListener>
               </Paper>
@@ -112,7 +144,7 @@ export default function RenderAvatar(props) {
         </Popper>
       </div>
 
-      {showCropper && <RenderCropper username={props.username} handleCropper={handleCropper} setAvatar={setAvatar} />}
+      {showCropper && <RenderCropper username={props.username} handleCropper={handleCropper} setShowCropper={setShowCropper} setAvatar={setAvatar} />}
     </>
   )
 }

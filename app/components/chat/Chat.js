@@ -10,7 +10,7 @@ function Chat() {
   const appDispatch = useContext(DispatchContext)
   const currentUser = useMemo(() => localStorageService.getUser(), [])
   useEffect(() => {
-    appDispatch({ type: "toggleMenu" })
+    appDispatch({ type: "closeMenu" })
   }, [])
   return (
     <ChatProvider>
