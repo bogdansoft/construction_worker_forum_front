@@ -5,6 +5,7 @@ import UserProfilePosts from "./UserProfilePosts"
 import Axios from "axios"
 import StateContext from "../StateContext"
 import RenderAvatar from "./Avatar"
+import DispatchContext from "../DispatchContext"
 
 function UserProfile() {
   const navigate = useNavigate()
@@ -12,6 +13,8 @@ function UserProfile() {
   const [isBioPresent, setIsBioPresent] = useState(false)
   const appState = useContext(StateContext)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const appDispatch = useContext(DispatchContext)
+
   const [state, setState] = useState({
     avatar: "https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png",
     bio: "There is no BIO yet",
@@ -53,54 +56,84 @@ function UserProfile() {
       console.log("There was a problem")
     }
   }
-
+  useEffect(() => {
+    appDispatch({ type: "closeMenu" })
+  }, [])
   return (
     <div className="main d-flex flex-column container">
       <div className="content d-flex flex-column mt-4">
+        <div className="mobile-toggle-inverse mb-5">
+          {isLoggedIn && (
+            <Link className="nav-button mt-2" to={`/profile/changebio/${username}`}>
+              Change BIO
+            </Link>
+          )}
+
+          {isLoggedIn && (
+            <button onClick={handleDelete} className="nav-button mt-3">
+              Delete account
+            </button>
+          )}
+        </div>
         <div className="d-flex text-center align-items-start">
-          <div className="d-flex align-items-center">
+          <div className="d-flex flex-column align-items-center">
             <div className="profile-avatar">
               <span className="material-symbols-outlined mr-3">
                 {" "}
                 <RenderAvatar username={state.username} isLoggedIn={isLoggedIn} />{" "}
               </span>
             </div>
-            <div className="mt" id="profile-username">
+            <div className="" id="profile-username">
               {state.username}
             </div>
           </div>
-          <textarea value={state.bio} className="ml-4 post-textarea p-2" rows="5" cols="50" disabled></textarea>
-          <div className="ml-4 d-flex flex-column ml-5">
-            {isLoggedIn && (
-              <Link className="nav-button mt-2" to={`/profile/changebio/${username}`}>
-                Change BIO
-              </Link>
-            )}
-            {isLoggedIn && (
-              <button onClick={handleDelete} className="nav-button mt-3">
-                Delete account
-              </button>
-            )}
+          {state.bio ? <div className="ml-4 p-2">About me : {state.bio.length > 3 ? state.bio : null}</div> : null}
+          <div className="ml-auto d-flex flex-column ml-5">
+            <div className="mobile-toggle">
+              {isLoggedIn && (
+                <Link className="nav-button mt-2" to={`/profile/changebio/${username}`}>
+                  Change BIO
+                </Link>
+              )}
+
+              {isLoggedIn && (
+                <button onClick={handleDelete} className="nav-button ml-2 mt-2">
+                  Delete account
+                </button>
+              )}
+            </div>
           </div>
         </div>
         <div>
-          <div className="profile-tabs mt-5">
-            <main>
+          <div className="profile-tabs mt-5 mobile-toggle-inverse">
+            <main className="d-flex">
               <NavLink to="posts">
                 <input id="tab1" type="radio" name="tabs" />
-                <label htmlFor="tab1">Posts</label>
+                <p>Posts</p>
               </NavLink>
-              <NavLink to="comments">
+              <NavLink to="comments" className="ml-2">
                 <input id="tab2" type="radio" name="tabs" />
-                <label htmlFor="tab2">Comments</label>
+                <p>Comments</p>
               </NavLink>
             </main>
           </div>
+          <div className="profile-tabs mt-5 mobile-toggle">
+            <main className="d-flex">
+              <NavLink to="posts">
+                <input id="tab1" type="radio" name="tabs" />
+                <p>Posts</p>
+              </NavLink>
+              <NavLink to="comments" className="ml-2">
+                <input id="tab2" type="radio" name="tabs" />
+                <p>Comments</p>
+              </NavLink>
+            </main>
+          </div>
+          <Routes>
+            <Route path="posts" element={<UserProfilePosts />} />
+            <Route path="comments" element={<UserProfileComments />} />
+          </Routes>
         </div>
-        <Routes>
-          <Route path="posts" element={<UserProfilePosts />} />
-          <Route path="comments" element={<UserProfileComments />} />
-        </Routes>
       </div>
     </div>
   )
