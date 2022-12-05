@@ -79,25 +79,7 @@ export default function RenderCropper({ handleCropper, username, setAvatar }) {
       const response = await Axios.put(`/api/user/changeavatar`, formData, { headers: { Authorization: `Bearer ${appState.user.token}` } })
       console.log("Response" + response)
       console.log("Response data" + response.data)
-      // setUser(response.data)
-      // const imageBytes = await response.data.avatarBytes
-      // console.log("Image Bytes" + imageBytes)
-      // var blob = new Blob([imageBytes], { type: "image/jpeg" })
-      // console.log("Blob " + blob)
-      // var imageUrl = URL.createObjectURL(blob)
-      // console.log("Image URL " + imageUrl)
       setAvatar(response.data)
-      //prop.setShowCropper(false)
-      // setUser(response)
-      // let base64ImageString = Buffer.from(user.avatarBytes, "binary").toString("base64")
-      // console.log(base64ImageString)
-      // const byteCharacters = atob(base64ImageString)
-      // const byteNumbers = new Array(byteCharacters.length)
-      // for (let i = 0; i < byteCharacters.length; i++) {
-      //   byteNumbers[i] = byteCharacters.charCodeAt(i)
-      // }
-      // const byteArray = new Uint8Array(byteNumbers)
-      // const blob = new Blob([byteArray], { type: contentType })
     } catch (e) {
       console.log("There was a problem " + e)
     }
