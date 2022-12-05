@@ -76,7 +76,7 @@ export default function RenderAvatar(props) {
   async function handleRemove(e) {
     e.preventDefault()
     try {
-      Axios.delete(`/api/user/deleteavatar?username=${props.username}`, { headers: { Authorization: `Bearer ${appState.user.token}` } })
+      await Axios.delete(`/api/user/deleteavatar?username=${props.username}`, { headers: { Authorization: `Bearer ${appState.user.token}` } })
       console.log("Avatar deleted")
       setAvatar("https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png")
     } catch (e) {
@@ -146,7 +146,7 @@ export default function RenderAvatar(props) {
         </Popper>
       </div>
 
-      {showCropper && <RenderCropper username={props.username} handleCropper={handleCropper} setAvatar={setAvatar} />}
+      {showCropper && <RenderCropper username={props.username} handleCropper={handleCropper} setShowCropper={setShowCropper} setAvatar={setAvatar} />}
     </>
   )
 }

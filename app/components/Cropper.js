@@ -10,6 +10,7 @@ import Axios from "axios"
 import { Buffer } from "buffer"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
+import { proposalPlugins } from "@babel/preset-env/lib/shipped-proposals"
 
 const useStyles = makeStyles({
   iconButton: {
@@ -86,7 +87,7 @@ export default function RenderCropper({ handleCropper, username, setAvatar }) {
       // var imageUrl = URL.createObjectURL(blob)
       // console.log("Image URL " + imageUrl)
       setAvatar(response.data)
-
+      //prop.setShowCropper(false)
       // setUser(response)
       // let base64ImageString = Buffer.from(user.avatarBytes, "binary").toString("base64")
       // console.log(base64ImageString)
