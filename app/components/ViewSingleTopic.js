@@ -66,15 +66,10 @@ function ViewSingleTopic(props) {
   }, [id])
 
   useEffect(() => {
-    const ourRequest = Axios.CancelToken.source()
-
     async function fetchPosts() {
       try {
-        const response = await Axios.get(`/api/post/all_by_topicid/${id}`, { cancelToken: ourRequest.token })
-        setPosts(response.data.slice(0, state.paginationValue))
+        getAllPostsByTopicId()
         setState((draft) => {
-          draft.numberOfRecords = response.data.length
-          draft.pagesNumber = Math.ceil(response.data.length / state.paginationValue)
           draft.isMounted = true
         })
       } catch (e) {
@@ -88,21 +83,30 @@ function ViewSingleTopic(props) {
     }
   }, [id, state.reloadCounter])
 
+  async function getAllPostsByTopicId() {
+    const ourRequest = Axios.CancelToken.source()
+    const response = await Axios.get(`/api/post/all_by_topicid/${id}`, { cancelToken: ourRequest.token })
+    setPosts(response.data.slice(0, state.paginationValue))
+    setState((draft) => {
+      draft.numberOfRecords = response.data.length
+      draft.pagesNumber = Math.ceil(response.data.length / state.paginationValue)
+    })
+  }
+
   useEffect(() => {
     async function fetchData() {
       try {
         if (state.isMounted) {
-          if (typeof state.keywords !== "undefined" && state.orderBy !== "" && state.keywords.length > 0) {
-            getPaginatedAndSortedAndFilteredByKeywordsPosts()
+          if (typeof state.keywords !== "undefined" && state.keywords.length > 0 && state.orderBy !== "") {
+            return getPaginatedAndSortedAndFilteredByKeywordsPosts()
           }
-          if (typeof state.keywords !== "undefined" && state.orderBy !== "") {
-            getPaginatedAndSortedPosts()
+          if (state.orderBy !== "") {
+            return getPaginatedAndSortedPosts()
           }
-          if (state.keywords.length > 0) {
-            getPaginatedAndFilteredByKeywordsPosts()
-          } else {
-            getPaginatedPosts()
+          if (typeof state.keywords !== "undefined" && state.keywords.length > 0) {
+            return getPaginatedAndFilteredByKeywordsPosts()
           }
+          return getPaginatedPosts()
         }
       } catch (e) {
         console.log("there was a problem fetching the data" + e)
@@ -150,7 +154,10 @@ function ViewSingleTopic(props) {
     async function fetchData() {
       try {
         if (state.isMounted) {
-          getPaginatedAndSortedPosts()
+          if (typeof state.keywords !== "undefined" && state.keywords.length > 0) {
+            return getPaginatedAndSortedAndFilteredByKeywordsPosts()
+          }
+          return getPaginatedAndSortedPosts()
         }
       } catch (e) {
         console.log("there was a problem fetching the data" + e)
@@ -163,7 +170,11 @@ function ViewSingleTopic(props) {
     async function fetchData() {
       if (state.isMounted) {
         if (typeof state.keywords !== "undefined" && state.keywords.length > 0) {
-          const response = await Axios.get(`/api/post/all_by_topicid/${id}?limit=${state.paginationValue}&page=${state.pageNumber}&keywords=${state.keywords}`)
+          var response = await Axios.get(`/api/post/all_by_topicid/${id}?limit=${state.paginationValue}&page=${state.pageNumber}&keywords=${state.keywords}`)
+          if (state.orderBy !== "") {
+            response = await Axios.get(`/api/post/all_by_topicid/${id}?orderby=${state.orderBy}&limit=${state.paginationValue}&page=${state.pageNumber}&keywords=${state.keywords}`)
+          }
+
           setState((draft) => {
             setPosts(response.data.slice(0, state.paginationValue))
             draft.numberOfRecords = response.data.length
@@ -172,12 +183,7 @@ function ViewSingleTopic(props) {
             draft.pageNumber = 1
           })
         } else {
-          const response = await Axios.get(`/api/post/all_by_topicid/${id}`)
-          setPosts(response.data.slice(0, state.paginationValue))
-          setState((draft) => {
-            draft.numberOfRecords = response.data.length
-            draft.pagesNumber = Math.ceil(response.data.length / state.paginationValue)
-          })
+          getAllPostsByTopicId()
         }
       }
     }
