@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react"
+import React, { useEffect, useContext, useState, useRef } from "react"
 import ReactTooltip from "react-tooltip"
 import Axios from "axios"
 import { useImmer } from "use-immer"
@@ -9,6 +9,12 @@ import DispatchContext from "../DispatchContext"
 function CreateCommentForm(props) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
+  const [fix, setFix] = useState(false)
+  const ref = useRef(this)
+  const [focus, setFocus] = useState(false)
+  const [positionY, setPositionY] = useState()
+  const [maxWidth, setMaxWidth] = useState()
+
   const [state, setState] = useImmer({
     commentToAdd: {
       content: "",
@@ -21,6 +27,28 @@ function CreateCommentForm(props) {
     },
     newComment: null
   })
+
+  useEffect(() => {
+    setPositionY(ref.current.getBoundingClientRect().top - 15)
+    setMaxWidth(ref.current.getBoundingClientRect().width)
+  }, [])
+
+  function setFixed() {
+    if (window.scrollY > positionY) {
+      setFix(true)
+    } else {
+      setFix(false)
+    }
+  }
+  window.addEventListener("scroll", setFixed)
+
+  useEffect(() => {
+    if (focus && fix) {
+      props.handleFocus(true)
+    } else {
+      props.handleFocus(false)
+    }
+  }, [focus, fix])
 
   useEffect(() => {
     if (state.commentToAdd.listener) {
@@ -42,7 +70,6 @@ function CreateCommentForm(props) {
 
           if (response.data) {
             props.onSubmit(response.data)
-            console.log("TUTAJ" + response.data)
           }
         } catch (e) {
           console.log("There was a problem or the request was cancelled." + e)
@@ -71,13 +98,16 @@ function CreateCommentForm(props) {
     setState(draft => {
       draft.commentToAdd.listener++
     })
+    setFocus(false)
   }
 
   return (
-    <div className="comments d-flex col-11 ml-auto mr-auto mt-5 align-items-center">
+    <div ref={ref} className="comments d-flex col-11 ml-auto mr-auto mt-5 align-items-center" style={fix ? { position: "sticky", left: 0, right: 0, top: 0, zIndex: 1, backgroundColor: "OrangeRed", width: maxWidth, transitionDuration: "2.5s" } : {}}>
       <form onSubmit={handleSubmit} className="d-flex ml-auto mr-auto align-items-center container">
         <div className="container mt-3">
           <input
+            onFocus={() => setFocus(true)}
+            onBlur={() => setFocus(false)}
             onChange={e =>
               setState(draft => {
                 draft.commentToAdd.hasErrors = false

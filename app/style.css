@@ -126,6 +126,24 @@ footer ul li {
   border-radius: 15px;
   padding-bottom: 20px;
 }
+.comments-reply {
+  border-radius: 15px;
+  border: solid rgb(231, 109, 64);
+  background-color: #f8bd4e;
+  border-width: 2px;
+}
+.comments-reply-list {
+  border-radius: 15px;
+  border: solid rgb(231, 109, 64);
+  background-color: #f8bd4e;
+  border-width: 2px;
+  margin-top: 20px;
+  margin-right: 20px;
+  margin-bottom: 10px;
+  padding-bottom: 20px;
+  padding-right: 10px;
+  float: right;
+}
 
 .add-post-title {
   font-size: 2em;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react"
+import React, { useEffect, useState, useContext, useRef } from "react"
 import { Link, useParams, useNavigate } from "react-router-dom"
 import ReactTooltip from "react-tooltip"
 import Axios from "axios"
@@ -24,6 +24,8 @@ function ViewSinglePost() {
   const appDispatch = useContext(DispatchContext)
   const appState = useContext(StateContext)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [focus, setFocus] = useState(true)
+
   const [state, setState] = useImmer({
     author: "",
     postLikesCount: 0,
@@ -72,7 +74,7 @@ function ViewSinglePost() {
     async function fetchPost() {
       try {
         const response = await Axios.get(`/api/comment/post/${id}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
-        setComments(response.data)
+        setComments(extractOnlyPrimaryComments(response.data))
       } catch (e) {
         console.log("There was a problem or the request was cancelled." + e)
       }
@@ -117,7 +119,6 @@ function ViewSinglePost() {
 
   useEffect(() => {
     if (newComment) {
-      console.log(newComment)
       setComments(comments.concat(newComment))
       setNewComment(null)
     }
@@ -135,6 +136,14 @@ function ViewSinglePost() {
     return () => {
       ourRequest.cancel()
     }
+  }
+
+  function extractOnlyPrimaryComments(postComments) {
+    return postComments.filter(comment => comment.parentComment === null)
+  }
+
+  function handleFocus(componentOnFocus) {
+    setFocus(componentOnFocus)
   }
 
   function reload() {
@@ -239,8 +248,10 @@ function ViewSinglePost() {
       </div>
       {loggedIn ? (
         <>
-          <CreateCommentForm targetId={id} onSubmit={setNewComment} />
-          <div className="comments d-flex flex-column ml-auto mr-auto col-11 mt-5">{comments.length > 0 ? comments.map(comment => <SingleComment comment={comment} key={comment.id} reload={reload} />) : <div className="single-topic container d-flex mt-4">No comments yet!</div>}</div>
+          <CreateCommentForm targetId={id} onSubmit={setNewComment} handleFocus={handleFocus} />
+          <div className="comments d-flex flex-column ml-auto mr-auto col-11 mt-5" style={focus ? { opacity: 0.5 } : {}}>
+            {comments.length > 0 ? comments.map(comment => <SingleComment comment={comment} key={comment.id} reload={reload} />) : <div className="single-topic container d-flex mt-4">No comments yet!</div>}
+          </div>
         </>
       ) : null}
     </div>
