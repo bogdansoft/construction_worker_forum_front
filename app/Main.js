@@ -25,6 +25,7 @@ import ViewSingleTopic from "./components/ViewSingleTopic";
 import NotFound from "./components/NotFound";
 import Logout from "./components/Logout";
 import Chat from "./components/chat/Chat";
+import { notification } from "antd";
 
 Axios.defaults.baseURL = "https://localhost:443";
 
@@ -88,10 +89,45 @@ function Main() {
 
   const [state, dispatch] = useImmerReducer(ourReducer, initialState);
 
+  const initListener = () => {
+    let notificationListener = new EventSource(
+      "https://localhost:444/notification-service/stream"
+    );
+
+    notificationListener.onopen = (e) => console.log("OPEN");
+    notificationListener.onerror = (e) => {
+      e.readyState === EventSource.CLOSED.valueOf()
+        ? console.log("ERROR")
+        : console.log(e);
+      notificationListener.close();
+    };
+
+    notificationListener.onmessage = (event) => {
+      handleNotification(event);
+    };
+  };
+
+  const handleNotification = (event) => {
+    const jsonNotification = JSON.parse(event.data);
+    console.log(jsonNotification);
+
+    notification.config({
+      placement: "topLeft",
+    });
+
+    notification.open({
+      message: (
+        <div>
+          <b>{jsonNotification.from}</b> {jsonNotification.message}
+        </div>
+      ),
+    });
+  };
+
   //TODO init lister for new events
   useEffect(() => {
     if (state.loggedIn) {
-      console.log("Here we will subscribe to listening to new events");
+      initListener();
     }
   });
 
