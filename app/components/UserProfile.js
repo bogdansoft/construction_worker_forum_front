@@ -91,27 +91,29 @@ function UserProfile() {
             </div>
           </div>
           {state.bio ? <div className="bioField">About me : {state.bio.length > 3 ? state.bio : null}</div> : null}
-          <div className="ml-4 d-flex flex-column">
-            <div className="row pt-3">
-              {isLoggedIn && (
-                <Link className="nav-bio-button" to={`/profile/changebio/${username}`}>
-                  Change BIO
-                </Link>
-              )}
-            </div>
-            <div className="row">
-              {isLoggedIn && (
-                <button onClick={handleDelete} className="nav-bio-button">
-                  Delete account
-                </button>
-              )}
-            </div>
-            <div className="row">
-              {isLoggedIn && (
-                <button onClick={handleFollow} className="nav-bio-button">
-                  Follow
-                </button>
-              )}
+          <div className="mobile-toggle">
+            <div className="ml-4 d-flex flex-column">
+              <div className="row pt-3">
+                {isLoggedIn && (
+                  <Link className="nav-bio-button" to={`/profile/changebio/${username}`}>
+                    Change BIO
+                  </Link>
+                )}
+              </div>
+              <div className="row">
+                {isLoggedIn && (
+                  <button onClick={handleDelete} className="nav-bio-button">
+                    Delete account
+                  </button>
+                )}
+              </div>
+              <div className="row">
+                {isLoggedIn && (
+                  <button onClick={handleFollow} className="nav-bio-button">
+                    Follow
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
