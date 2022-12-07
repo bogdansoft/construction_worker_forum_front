@@ -248,8 +248,12 @@ function ViewSinglePost() {
         <div className="content single-post-layout">
           <div className="single-post-layout-row">
             <div className="profile-avatar d-flex flex-column align-items-center">
-              <RenderAvatar isLoggedIn={false} />
-              <p className="mt-3">{post.user.username}</p>
+              <Link to={`/profile/${state.author.username}`}>
+                <RenderAvatar isLoggedIn={false} username={state.author.username} />{" "}
+              </Link>
+              <Link to={`/profile/${state.author.username}`}>
+                <p className="mt-3">{post.user.username}</p>
+              </Link>
             </div>
             <div className="mobile-toggle-inverse">
               <div className="d-flex flex-row ml-5">

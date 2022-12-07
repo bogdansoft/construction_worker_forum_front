@@ -6,6 +6,7 @@ import DeleteModal from "./DeleteModal"
 import { CSSTransition } from "react-transition-group"
 import { useImmer } from "use-immer"
 import LikeButton from "./LikeButton"
+import { Link } from "react-router-dom"
 
 function SingleComment(props) {
   const appDispatch = useContext(DispatchContext)
@@ -155,7 +156,9 @@ function SingleComment(props) {
   return (
     <div className="single-topic container d-flex mt-4">
       <div className="mobile-toggle">
-        <span>{props.comment.user.username}</span>
+        <Link to={`/profile/${props.comment.user.username}`}>
+          <span>{props.comment.user.username}</span>
+        </Link>
       </div>
       <div className="d-flex container">
         <div className="single-topic-content container d-flex p-2 align-items-center col-11">
