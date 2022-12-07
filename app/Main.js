@@ -29,6 +29,8 @@ import { notification } from "antd";
 
 Axios.defaults.baseURL = "https://localhost:443";
 
+let notificationListener;
+
 function Main() {
   const initialState = {
     loggedIn: Boolean(localStorage.getItem("constructionForumUserId")),
@@ -64,6 +66,7 @@ function Main() {
         state.user.isAdmin = false;
         state.user.isSupport = false;
         state.menuIsOpen = false;
+        notificationListener.close();
         break;
       case "openSearch":
         state.searchIsOpen = true;
@@ -90,8 +93,8 @@ function Main() {
   const [state, dispatch] = useImmerReducer(ourReducer, initialState);
 
   const initListener = () => {
-    let notificationListener = new EventSource(
-      "https://localhost:444/notification-service/stream"
+    notificationListener = new EventSource(
+      `https://localhost:444/notification-service/stream/${state.user.id}`
     );
 
     notificationListener.onopen = (e) => console.log("OPEN");
@@ -111,16 +114,13 @@ function Main() {
     const jsonNotification = JSON.parse(event.data);
     console.log(jsonNotification);
 
-    notification.config({
-      placement: "topLeft",
-    });
-
     notification.open({
       message: (
         <div>
           <b>{jsonNotification.from}</b> {jsonNotification.message}
         </div>
       ),
+      placement: "topLeft",
     });
   };
 
