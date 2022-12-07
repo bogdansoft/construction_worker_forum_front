@@ -275,11 +275,11 @@ function ViewSinglePost() {
           <div>
             <div className="container d-flex flex-row mt-3">
               <div className="d-flex keywords align-items-center">
-                {/* {post.keywords.map(keyword => (
+                {post.keywords.map(keyword => (
                   <div className="mr-2" id="post-keyword">
                     {keyword.name}
                   </div>
-                ))} */}
+                ))}
               </div>
               <div className="ml-auto">
                 <div style={{ fontSize: "15px" }}>{state.postLikesCount}</div>
