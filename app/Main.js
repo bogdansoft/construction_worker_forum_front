@@ -121,7 +121,14 @@ function Main() {
         </div>
       ),
       placement: "topLeft",
+      onClick: () => {
+        redirectTo(jsonNotification.redirectTo);
+      },
     });
+  };
+
+  const redirectTo = (url) => {
+    window.location.href = url;
   };
 
   //TODO init lister for new events
