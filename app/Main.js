@@ -121,6 +121,7 @@ function Main() {
         </div>
       ),
       placement: "topLeft",
+      duration: 5,
       onClick: () => {
         redirectTo(jsonNotification.redirectTo);
       },
