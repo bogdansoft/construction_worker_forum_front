@@ -66,9 +66,15 @@ function ViewSingleTopic(props) {
   }, [id])
 
   useEffect(() => {
+    const ourRequest = Axios.CancelToken.source()
     async function fetchPosts() {
       try {
-        getAllPostsByTopicId()
+        const response = await Axios.get(`/api/post/all_by_topicid/${id}`, { cancelToken: ourRequest.token })
+        setPosts(response.data.slice(0, state.paginationValue))
+        setState((draft) => {
+          draft.numberOfRecords = response.data.length
+          draft.pagesNumber = Math.ceil(response.data.length / state.paginationValue)
+        })
         setState((draft) => {
           draft.isMounted = true
         })
@@ -82,16 +88,6 @@ function ViewSingleTopic(props) {
       ourRequest.cancel()
     }
   }, [id, state.reloadCounter])
-
-  async function getAllPostsByTopicId() {
-    const ourRequest = Axios.CancelToken.source()
-    const response = await Axios.get(`/api/post/all_by_topicid/${id}`, { cancelToken: ourRequest.token })
-    setPosts(response.data.slice(0, state.paginationValue))
-    setState((draft) => {
-      draft.numberOfRecords = response.data.length
-      draft.pagesNumber = Math.ceil(response.data.length / state.paginationValue)
-    })
-  }
 
   useEffect(() => {
     async function fetchData() {
@@ -183,7 +179,12 @@ function ViewSingleTopic(props) {
             draft.pageNumber = 1
           })
         } else {
-          getAllPostsByTopicId()
+          const response = await Axios.get(`/api/post/all_by_topicid/${id}`)
+          setPosts(response.data.slice(0, state.paginationValue))
+          setState((draft) => {
+            draft.numberOfRecords = response.data.length
+            draft.pagesNumber = Math.ceil(response.data.length / state.paginationValue)
+          })
         }
       }
     }
