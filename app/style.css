@@ -1242,3 +1242,51 @@ input:focus {
   font-size: 1.2rem;
 }
 /* RESPONSIVE */
+.bioField {
+  background-color: var(--light-brown);
+  height: 80%;
+  width: 50%;
+  text-align: justify;
+  margin: 10px;
+  padding: 1rem 0.5rem;
+  color: black;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 20px;
+  border: 2px solid black;
+  overflow: auto;
+}
+.nav-bio-button {
+  border-radius: 35px;
+  background-color: var(--dark-violet);
+  color: white;
+  margin-bottom: 15px;
+  margin-left: 30px;
+  padding: 5px 30px;
+  border: none;
+  font-size: 1.2rem;
+  width: 100%;
+}
+.tabs-user-profile {
+  background-color: var(--orange);
+  color: black;
+  font-weight: bold;
+}
+.single-tab-user-profile-light-brown {
+  border-radius: 20px;
+  border: 2px solid black;
+  color: black;
+  font-weight: bold;
+  width: 80%;
+  padding: 10px;
+  background-color: var(--light-brown);
+}
+.tab-posts-user-profile-light-blue {
+  background-color: var(--light-blue);
+  border-radius: 20px;
+  border: 2px solid black;
+  color: black;
+  font-weight: bold;
+  width: 80%;
+  padding: 10px;
+}

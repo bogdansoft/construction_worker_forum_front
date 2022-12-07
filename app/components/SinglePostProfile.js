@@ -4,7 +4,7 @@ function SingleCommentProfile(props) {
   const date = new Date(props.post.createdAt).toLocaleDateString("utc", {
     year: "numeric",
     month: "short",
-    day: "numeric"
+    day: "numeric",
   })
   return (
     <>
@@ -15,7 +15,7 @@ function SingleCommentProfile(props) {
         <div className="ml-auto mr-3">
           <span className="ml-3">Created: {date}</span>
         </div>
-        <div className="icon-black d-flex flex-column">
+        <div className="icon-black">
           <span className="material-symbols-outlined"> edit </span>
           <span className="material-symbols-outlined"> delete </span>
         </div>
