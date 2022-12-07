@@ -70,6 +70,11 @@ export default function RenderCropper({ handleCropper, username, setAvatar }) {
     const canvas = await getCroppedImg(image, croppedArea)
     const canvasDataUrl = canvas.toDataURL("image/jpeg")
     const convertedUrlToFile = dataURLtoFile(canvasDataUrl, "cropped-image.jpeg")
+    const fileSize = convertedUrlToFile.size / 1024 / 1024
+    if (fileSize > 2) {
+      appDispatch({ type: "flashMessage", value: "Size of the file is too big!", messageType: "message-red" })
+      return
+    }
     try {
       const formData = new FormData()
       formData.append("file", convertedUrlToFile)
