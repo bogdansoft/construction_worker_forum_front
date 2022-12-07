@@ -75,7 +75,9 @@ function Post(props) {
       <div className="profile-avatar mobile-toggle">
         <span className="material-symbols-outlined mr-3">
           {" "}
-          <RenderAvatar isLoggedIn={false} />{" "}
+          <Link to={`/profile/${props.author.username}`}>
+            <RenderAvatar isLoggedIn={false} username={props.author.username} />{" "}
+          </Link>
         </span>
       </div>
       <div className="single-topic-content container d-flex ml-3 p-2 align-items-center">
@@ -95,7 +97,10 @@ function Post(props) {
         <div className="container ml-auto mr-5">
           Comments: {props.post.comments.length}{" "}
           <span className="ml-3">
-            Created: {date} By {props.author.username}
+            Created: {date} By{" "}
+            <Link to={`/profile/${props.author.username}`}>
+              <h6>{props.author.username}</h6>
+            </Link>
           </span>
         </div>
         <div className="mobile-toggle">

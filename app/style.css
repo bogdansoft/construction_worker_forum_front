@@ -1241,7 +1241,9 @@ input:focus {
   font-weight: bold;
   font-size: 1.2rem;
 }
-/* RESPONSIVE */
+.absolute {
+  position: absolute;
+}
 .bioField {
   background-color: var(--light-brown);
   height: 80%;
@@ -1289,4 +1291,24 @@ input:focus {
   font-weight: bold;
   width: 80%;
   padding: 10px;
+}
+
+.filters {
+  position: relative;
+  background-color: var(--ultra-light-blue);
+  color: black;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  top: 20px;
+  left: 100px;
+  border: 1px solid black;
+}
+
+@media screen and (max-width: 1000px) {
+  .filters {
+    left: 0px;
+    font-size: 0.7rem;
+  }
 }
