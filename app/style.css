@@ -1242,3 +1242,20 @@ input:focus {
   font-size: 1.2rem;
 }
 /* RESPONSIVE */
+
+/* NOTIFICATIONS */
+.item-read {
+  background-color: white;
+}
+
+.item-not-read {
+  background-color: var(--orange);
+}
+
+.icon-dimmed {
+  color: black;
+}
+
+.icon-active {
+  color: whitesmoke;
+}

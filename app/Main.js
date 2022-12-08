@@ -89,8 +89,6 @@ function Main() {
 
   const [state, dispatch] = useImmerReducer(ourReducer, initialState);
 
-  const initListener = () => {};
-
   const handleNotification = (event) => {
     const jsonNotification = JSON.parse(event.data);
     console.log(jsonNotification);
