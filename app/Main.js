@@ -29,8 +29,6 @@ import { notification } from "antd";
 
 Axios.defaults.baseURL = "https://localhost:443";
 
-let notificationListener;
-
 function Main() {
   const initialState = {
     loggedIn: Boolean(localStorage.getItem("constructionForumUserId")),
@@ -91,23 +89,7 @@ function Main() {
 
   const [state, dispatch] = useImmerReducer(ourReducer, initialState);
 
-  const initListener = () => {
-    notificationListener = new EventSource(
-      `https://localhost:444/notification-service/stream/${state.user.id}`
-    );
-
-    notificationListener.onopen = (e) => console.log("OPEN");
-    notificationListener.onerror = (e) => {
-      e.readyState === EventSource.CLOSED.valueOf()
-        ? console.log("ERROR")
-        : console.log(e);
-      notificationListener.close();
-    };
-
-    notificationListener.onmessage = (event) => {
-      handleNotification(event);
-    };
-  };
+  const initListener = () => {};
 
   const handleNotification = (event) => {
     const jsonNotification = JSON.parse(event.data);
@@ -131,10 +113,28 @@ function Main() {
     window.location.href = url;
   };
 
-  //TODO init lister for new events
   useEffect(() => {
     if (state.loggedIn) {
-      initListener();
+      let notificationListener = new EventSource(
+        `https://localhost:444/notification-service/stream/${state.user.id}`
+      );
+
+      notificationListener.onopen = (e) => console.log("OPEN");
+      notificationListener.onerror = (e) => {
+        e.readyState === EventSource.CLOSED.valueOf()
+          ? console.log("ERROR")
+          : console.log(e);
+        notificationListener.close();
+      };
+
+      notificationListener.onmessage = (event) => {
+        handleNotification(event);
+      };
+
+      return () => {
+        notificationListener.close();
+        console.log("Component clean up - listener closed");
+      };
     }
   }, [state.loggedIn]);
 
