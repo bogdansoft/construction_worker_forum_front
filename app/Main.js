@@ -66,7 +66,6 @@ function Main() {
         state.user.isAdmin = false;
         state.user.isSupport = false;
         state.menuIsOpen = false;
-        notificationListener.close();
         break;
       case "openSearch":
         state.searchIsOpen = true;
@@ -137,7 +136,7 @@ function Main() {
     if (state.loggedIn) {
       initListener();
     }
-  });
+  }, [state.loggedIn]);
 
   useEffect(() => {
     if (state.loggedIn) {
