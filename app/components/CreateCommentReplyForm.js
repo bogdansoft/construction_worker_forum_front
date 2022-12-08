@@ -79,6 +79,7 @@ function CreateCommentReplyForm(props) {
         <form onSubmit={handleSubmit} className="d-flex ml-auto mr-auto align-items-center container">
           <div className="container mt-3">
             <input
+              autoFocus
               onChange={e =>
                 setState(draft => {
                   draft.commentToAdd.hasErrors = false

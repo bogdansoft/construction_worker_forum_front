@@ -120,7 +120,9 @@ function CreateCommentForm(props) {
           ></input>
         </div>
         <CSSTransition in={state.commentToAdd.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-          <div className="alert alert-danger small liveValidateMessage ml-3">{state.commentToAdd.message}</div>
+          <div className="alert alert-danger small liveValidateMessage ml-3" style={{ marginTop: "100px" }}>
+            {state.commentToAdd.message}
+          </div>
         </CSSTransition>
         <div className="ml-auto mr-4 mt-4">
           <button type="submit" className="material-symbols-outlined" data-tip="Send comment!" data-for="send">
