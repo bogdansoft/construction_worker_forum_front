@@ -138,12 +138,12 @@ function UserProfile() {
                 </div>
                 <div class="col d-flex align-self-center justify-content-center">
                   <NavLink className="tab-posts-user-profile-light-blue" to="comments">
-                    Following
+                    Followed
                   </NavLink>
                 </div>
                 <div class="col d-flex align-self-center justify-content-center">
                   <NavLink className="single-tab-user-profile-light-brown" to="posts">
-                    Following Posts
+                    Followed Posts
                   </NavLink>
                 </div>
               </div>
