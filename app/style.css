@@ -436,7 +436,7 @@ img {
 }
 .floating-alert {
   display: none;
-  position: absolute;
+  position: fixed;
   z-index: 999;
   top: 38px;
   left: 50%;
@@ -1279,7 +1279,7 @@ input:focus {
   border: 2px solid black;
   color: black;
   font-weight: bold;
-  width: 80%;
+  width: 100%;
   padding: 10px;
   background-color: var(--light-brown);
 }
@@ -1289,7 +1289,7 @@ input:focus {
   border: 2px solid black;
   color: black;
   font-weight: bold;
-  width: 80%;
+  width: 100%;
   padding: 10px;
 }
 
@@ -1311,4 +1311,10 @@ input:focus {
     left: 0px;
     font-size: 0.7rem;
   }
+}
+.delete-profile {
+  left: -260px;
+}
+.edit-comment-user-profile {
+  border: 2px solid black;
 }
