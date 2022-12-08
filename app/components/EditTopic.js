@@ -139,7 +139,12 @@ function EditTopic() {
             </CSSTransition>
           </span>
           <div className="mt-3 ml-auto mr-auto">
-            <textarea onChange={e => dispatch({ type: "descriptionChange", value: e.target.value })} value={state.description} className="post-textarea p-2 ml-5" rows="10" cols="100"></textarea>
+            <div className="mobile-toggle">
+              <textarea onChange={e => dispatch({ type: "descriptionChange", value: e.target.value })} value={state.description} className="post-textarea p-2 ml-5" rows="10" cols="100"></textarea>
+            </div>
+            <div className="mobile-toggle-inverse">
+              <textarea onChange={e => dispatch({ type: "descriptionChange", value: e.target.value })} value={state.description} className="post-textarea p-2" rows="10" cols="40"></textarea>
+            </div>
             <span className="form-group">
               <CSSTransition in={!state.description} timeout={330} classNames="liveValidateMessage" unmountOnExit>
                 <div className="alert alert-danger mt-3 liveValidateMessage">{"Empty description!"}</div>

@@ -197,51 +197,74 @@ function ViewSinglePost() {
       <Link className="text-primary medium font-weight-bold mb-3" to={`/topic/${post.topic.id}`}>
         &laquo; Back to topic [{post.topic.name}]
       </Link>
-      <h2 className="d-flex ml-auto col-2">
-        <text className="d-flex" style={{ fontSize: "20px", fontFamily: "Georgia" }}>
-          <a style={{ fontSize: "16px", fontVariantCaps: "small-caps", marginRight: ".5rem" }}>topic: </a>
-          <b className="ml-auto mr-5">{post.topic.name}</b>
-        </text>
-      </h2>
+      <div className="mobile-toggle">
+        <h2 className="d-flex ml-auto col-2 mobile-toggle">
+          <text className="d-flex" style={{ fontSize: "20px", fontFamily: "Georgia" }}>
+            <a style={{ fontSize: "16px", fontVariantCaps: "small-caps", marginRight: ".5rem" }}>topic: </a>
+            <b className="ml-auto mr-5">{post.topic.name}</b>
+          </text>
+        </h2>
+      </div>
       <div className="content d-flex flex-column mt-4">
-        <div className="content d-flex flex-row">
-          <div className="profile-avatar d-flex flex-column align-items-center">
-            <span className="material-symbols-outlined mr-3">
-              {" "}
-              <RenderAvatar isLoggedIn={false} />
-            </span>
-            <p className="mt-3">{post.user.username}</p>
-          </div>
-          <div className="post-content container mr-5">
-            <div className="ml-4">
-              <h5>{post.title}</h5>
-              <p>{post.content}</p>
+        <div className="content single-post-layout">
+          <div className="single-post-layout-row">
+            <div className="profile-avatar d-flex flex-column align-items-center">
+              <Link to={`/profile/${state.author.username}`}>
+                <RenderAvatar isLoggedIn={false} username={state.author.username} />{" "}
+              </Link>
+              <Link to={`/profile/${state.author.username}`}>
+                <p className="mt-3">{post.user.username}</p>
+              </Link>
+            </div>
+            <div className="mobile-toggle-inverse">
+              <div className="d-flex flex-row ml-5">
+                {showEditButton()}
+                {showDeleteButton()}
+              </div>
             </div>
           </div>
-          {showEditButton()}
-          {showDeleteButton()}
+          <div className="post-content container mr-5">
+            <h5>{post.title}</h5>
+            <p>{post.content}</p>
+          </div>
+          <div className="mobile-toggle">
+            {showEditButton()}
+            {showDeleteButton()}
+          </div>
         </div>
         {loggedIn ? (
           <div>
-            <div className="d-flex flex-row mt-3">
-              <div className="ml-auto"></div>
-              <div style={{ fontSize: "15px" }}>{state.postLikesCount}</div>
-              <a
-                onClick={
-                  !state.isPostOwnedByUser
-                    ? () =>
-                        setState(draft => {
-                          draft.like++
-                        })
-                    : null
-                }
-              >
-                <LikeButton isLiked={state.isPostLikedByUser} isOwner={state.isPostOwnedByUser}></LikeButton>
-              </a>
-              <span className="material-symbols-outlined mr-3"> chat </span>
-              <span className="material-symbols-outlined mr-3"> share </span>
-              <span className="material-symbols-outlined mr-3"> report </span>
-              <span className="material-symbols-outlined mr-3"> bookmark </span>
+            <div className="container d-flex flex-row mt-3">
+              <div className="d-flex keywords align-items-center">
+                {post.keywords.map(keyword => (
+                  <div className="mr-2" id="post-keyword">
+                    {keyword.name}
+                  </div>
+                ))}
+              </div>
+              <div className="ml-auto">
+                <div style={{ fontSize: "15px" }}>{state.postLikesCount}</div>
+                <a
+                  onClick={
+                    !state.isPostOwnedByUser
+                      ? () =>
+                          setState(draft => {
+                            draft.like++
+                          })
+                      : null
+                  }
+                >
+                  <LikeButton isLiked={state.isPostLikedByUser} isOwner={state.isPostOwnedByUser}></LikeButton>
+                </a>
+                <div className="mobile-toggle-inverse">
+                  <div className="container"></div>
+                </div>
+                <span className="material-symbols-outlined mr-3"> chat </span>
+
+                <span className="material-symbols-outlined mr-3"> share </span>
+                <span className="material-symbols-outlined mr-3"> report </span>
+                <span className="material-symbols-outlined mr-3"> bookmark </span>
+              </div>
             </div>
           </div>
         ) : null}

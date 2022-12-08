@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react"
 import Axios from "axios"
-import { useNavigate, Link, useLocation } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import { CSSTransition } from "react-transition-group"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
@@ -16,8 +16,13 @@ function CreatePost() {
   const navigate = useNavigate()
   const location = useLocation()
   const [tags, setTags] = useState([])
+  const [availableTags, setAvailableTags] = useState([])
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
+
+  useEffect(() => {
+    appDispatch({ type: "closeMenu" })
+  }, [])
 
   const handleSubmit = e => {
     e.preventDefault()
@@ -33,7 +38,7 @@ function CreatePost() {
 
     async function fetchData() {
       try {
-        const response = await Axios.post("/api/post", { title, content, userId: appState.user.id, topicId: selectedTopic.id }, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+        const response = await Axios.post("/api/post", { title, content, userId: appState.user.id, topicId: selectedTopic.id, keywords: tags }, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
         appDispatch({ type: "flashMessage", value: "Post successfully created !", messageType: "message-green" })
         navigate(`/post/${response.data.id}`)
       } catch (e) {
@@ -68,11 +73,27 @@ function CreatePost() {
     }
   }, [])
 
+  useEffect(() => {
+    const ourRequest = Axios.CancelToken.source()
+    async function fetchAvailableTags() {
+      try {
+        const response = await Axios.get("/api/keyword", { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+        setAvailableTags(prev => prev.concat(response.data))
+      } catch (e) {
+        console.log("There was a problem fetching tags" + e.message)
+      }
+    }
+    fetchAvailableTags()
+    return () => {
+      ourRequest.cancel()
+    }
+  }, [])
+
   function handleCheckbox(e) {
     if (e.target.checked) {
-      setTags(prev => prev.concat(e.target.value))
+      setTags(prev => prev.concat(availableTags.find(tag => tag.name == e.target.value)))
     } else {
-      setTags(prev => prev.filter(tag => tag != e.target.value))
+      setTags(prev => prev.filter(tag => tag.name != e.target.value))
     }
   }
 
@@ -100,13 +121,22 @@ function CreatePost() {
   }
   return (
     <form onSubmit={handleSubmit}>
-      <div className="main d-flex flex-column container">
-        <div className="content d-flex flex-column mt-4">
+      <div className="main d-flex flex-column container create-post">
+        <div className=" content d-flex flex-column mt-4">
+          <div className="mobile-toggle-inverse mb-4">
+            <select className="mr-3" name="Topics" id="topics" onChange={e => handleTopicSelect(e)}>
+              <option default>{selectedTopic ? selectedTopic.name : "Topics:"}</option>
+              {topics.map(topic => {
+                if (selectedTopic && topic.id === selectedTopic.id) return
+                return <option>{topic.name}</option>
+              })}
+            </select>
+          </div>
           <div className="d-flex flex-row">
             <div>
               {" "}
               <div className="ml-3 add-post-title">
-                Title: <input onChange={e => setTitle(e.target.value)} className="p-2 ml-3" type="text" />
+                Title: <input onChange={e => setTitle(e.target.value)} type="text" />
               </div>
               <span className="form-group ml-5 d-flex" style={{ fontSize: "13px" }}>
                 <CSSTransition in={!title || title.length < 3 || title.length > 50} timeout={330} classNames="liveValidateMessage" unmountOnExit>
@@ -114,7 +144,7 @@ function CreatePost() {
                 </CSSTransition>
               </span>
             </div>
-            <div className="mt-1 ml-auto">
+            <div className="mt-1 ml-auto mobile-toggle">
               <select className="mr-3" name="Topics" id="topics" onChange={e => handleTopicSelect(e)}>
                 <option default>{selectedTopic ? selectedTopic.name : "Topics:"}</option>
                 {topics.map(topic => {
@@ -125,49 +155,74 @@ function CreatePost() {
             </div>
           </div>
           {showWarningIfDefaultTopicIsChanged()}
-          <div className="mt-3 ml-auto mr-auto">
-            <textarea onChange={e => setContent(e.target.value)} className="post-textarea p-2 ml-5" rows="10" cols="100"></textarea>
+          <div className="mt-5 mobile-toggle-inverse">
+            <textarea onChange={e => setContent(e.target.value)} className="post-textarea p-2" rows="10" cols="40"></textarea>
+          </div>
+          <div className="mt-4 ml-auto mr-auto mobile-toggle">
+            <textarea onChange={e => setContent(e.target.value)} className="post-textarea p-2" rows="10" cols="100"></textarea>
           </div>
           <span className="form-group ml-5 d-flex" style={{ fontSize: "13px" }}>
             <CSSTransition in={!content || content.length > 1000} timeout={330} classNames="liveValidateMessage" unmountOnExit>
               <div className="alert alert-danger ml-5 liveValidateMessage">{"Empty description or too long (max. 1000 signs)"}</div>
             </CSSTransition>
           </span>
-          <div className="d-flex align-items-center mt-3">
-            <div className="d-flex mt-3">
-              <span className="mr-4">Tags: </span>
-              <div className="ml-2">
-                <input type="checkbox" id="tag1" name="tag1" checked />
-                <label for="scales">tag1</label>
+          <div className="d-flex  flex-colum mt-5">
+            <div>
+              <div className="mobile-toggle">
+                <div className="d-flex mt-3 d-flex">
+                  <span className="mr-4">Tags: </span>
+                  {availableTags.map(availableTag => (
+                    <div className="ml-2">
+                      <input
+                        type="checkbox"
+                        onClick={e => {
+                          handleCheckbox(e)
+                        }}
+                        value={availableTag.name}
+                        name="tags"
+                        className="mr-1"
+                      />
+                      <label htmlFor="scales"> {availableTag.name}</label>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="ml-2">
-                <input type="checkbox" id="tag2" name="tag2" checked />
-                <label for="scales">tag2</label>
+              <div className="mobile-toggle-inverse">
+                <div className="d-flex mt-3 flex-column">
+                  <span className="mr-4">Tags: </span>
+                  {availableTags.map(availableTag => (
+                    <div className="ml-2 d-flex flex-row align-items-center">
+                      <input
+                        type="checkbox"
+                        onClick={e => {
+                          handleCheckbox(e)
+                        }}
+                        value={availableTag.name}
+                        name="tags"
+                        className="mr-1"
+                      />
+                      <div className="mt-3">
+                        <p> {availableTag.name}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="ml-2">
-                <input type="checkbox" id="tag2" name="tag2" checked />
-                <label for="scales">tag2</label>
-              </div>
-              <div className="ml-2">
-                <input type="checkbox" id="tag3" name="tag3" checked />
-                <label for="scales">tag3</label>
-              </div>
-              <div className="ml-2">
-                <input type="checkbox" id="tag4" name="tag4" checked />
-                <label for="scales">tag4</label>
-              </div>
-              <div className="ml-2">
-                <input type="checkbox" id="tag5" name="tag5" checked />
-                <label for="scales">tag5</label>
-              </div>
-              <div className="ml-2">
-                <input type="checkbox" id="tag6" name="tag6" checked />
-                <label for="scales">tag6</label>
+              <div>
+                <p>
+                  Selected:{" "}
+                  {tags.map(tag => (
+                    <span className="mr-2">{"• " + tag.name}</span>
+                  ))}
+                </p>
               </div>
             </div>
-            <div className="ml-auto">
+            <div className="mobile-toggle ml-auto">
               <button className="nav-button">Create</button>
             </div>
+          </div>
+          <div className="mobile-toggle-inverse ml-auto">
+            <button className="nav-button">Create</button>
           </div>
         </div>
       </div>

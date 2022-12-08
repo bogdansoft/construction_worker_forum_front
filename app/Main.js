@@ -26,13 +26,13 @@ import NotFound from "./components/NotFound"
 import Logout from "./components/Logout"
 import Chat from "./components/chat/Chat"
 
-Axios.defaults.baseURL = "http://localhost:8080"
+Axios.defaults.baseURL = "https://localhost:443"
 
 function Main() {
-  //
   const initialState = {
     loggedIn: Boolean(localStorage.getItem("constructionForumUserId")),
     searchIsOpen: false,
+    menuIsOpen: false,
     user: {
       id: localStorage.getItem("constructionForumUserId"),
       username: localStorage.getItem("constructionForumUsername"),
@@ -54,6 +54,7 @@ function Main() {
         state.user.isUser = state.user.roles.includes("USER")
         state.user.isAdmin = state.user.roles.includes("ADMINISTRATOR")
         state.user.isSupport = state.user.roles.includes("SUPPORT")
+        state.menuIsOpen = false
         break
       case "logout":
         state.loggedIn = false
@@ -61,12 +62,20 @@ function Main() {
         state.user.isUser = false
         state.user.isAdmin = false
         state.user.isSupport = false
+        state.menuIsOpen = false
         break
       case "openSearch":
         state.searchIsOpen = true
+        state.menuIsOpen = false
         return
       case "closeSearch":
         state.searchIsOpen = false
+        return
+      case "toggleMenu":
+        state.menuIsOpen = !state.menuIsOpen
+        return
+      case "closeMenu":
+        state.menuIsOpen = false
         return
       case "flashMessage":
         state.flashMessages.push({

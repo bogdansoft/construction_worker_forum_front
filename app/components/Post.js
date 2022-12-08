@@ -42,7 +42,7 @@ function Post(props) {
       return (
         <div>
           <Link to={`/post/edit/${props.post.id}`} data-tip="Edit" data-for="edit" className="text-primary mr-2">
-            <span class="material-symbols-outlined link-black"> edit </span>
+            <span className="material-symbols-outlined link-black"> edit </span>
           </Link>
           <ReactTooltip id="edit" className="custom-tooltip" />
         </div>
@@ -58,7 +58,7 @@ function Post(props) {
             delete
           </span>
           <CSSTransition in={isDeleting} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-            <div class="delete-absolute container col-5 ml-1 mt-5">
+            <div className="delete-absolute container col-5 ml-1 mt-5">
               <div className="delete-pop col-5 p-2 liveValidateMessage-delete">
                 <DeleteModal delete={handleDelete} noDelete={deletePopup} relatedItemsLength={props.post.comments.length} relatedItemsType={"comment"} />
               </div>
@@ -72,26 +72,41 @@ function Post(props) {
 
   return (
     <div className="single-topic container d-flex mt-4">
-      <div className="profile-avatar">
+      <div className="profile-avatar mobile-toggle">
         <span className="material-symbols-outlined mr-3">
           {" "}
-          <RenderAvatar isLoggedIn={false} />{" "}
+          <Link to={`/profile/${props.author.username}`}>
+            <RenderAvatar isLoggedIn={false} username={props.author.username} />{" "}
+          </Link>
         </span>
       </div>
       <div className="single-topic-content container d-flex ml-3 p-2 align-items-center">
-        <div id="topic-name">
-          <Link to={`/post/${props.post.id}`}>
-            <h4>{props.post.title}</h4>
-          </Link>
+        <div className="d-flex flex-row container">
+          <div id="topic-name">
+            <Link to={`/post/${props.post.id}`}>
+              <h4>{props.post.title}</h4>
+            </Link>
+          </div>
+          <div className="mobile-toggle-inverse ml-auto">
+            <div className="d-flex">
+              {showEditButton()}
+              {showDeleteButton()}
+            </div>
+          </div>
         </div>
-        <div className="ml-auto mr-5">
+        <div className="container ml-auto mr-5">
           Comments: {props.post.comments.length}{" "}
           <span className="ml-3">
-            Created: {date} By {props.author.username}
+            Created: {date} By{" "}
+            <Link to={`/profile/${props.author.username}`}>
+              <h6>{props.author.username}</h6>
+            </Link>
           </span>
         </div>
-        {showEditButton()}
-        {showDeleteButton()}
+        <div className="mobile-toggle">
+          {showEditButton()}
+          {showDeleteButton()}
+        </div>
       </div>
     </div>
   )

@@ -6,9 +6,7 @@ import DeleteModal from "./DeleteModal"
 import { CSSTransition } from "react-transition-group"
 import { useImmer } from "use-immer"
 import LikeButton from "./LikeButton"
-import ReactTooltip from "react-tooltip"
-import CreateCommentReplyForm from "./CreateCommentReplyForm"
-import { Button } from "antd"
+import RenderAvatar from "./Avatar"
 
 function SingleComment(props) {
   const ref = useRef(null)
@@ -249,17 +247,24 @@ function SingleComment(props) {
           <div className="material-symbols-outlined mr-3"></div>
         </div>
 
-        <span>{props.comment.user.username}</span>
+        <div className="mobile-toggle">
+          <Link to={`/profile/${props.comment.user.username}`}>
+            <span>{props.comment.user.username}</span>
+          </Link>
+        </div>
 
         <div className="d-flex container">
-          <div className="single-topic-content container d-flex ml-3 p-2 align-items-center col-11">
+          <div className="single-topic-content container d-flex p-2 align-items-center col-11">
             {!isEdited && (
               <div className="d-flex align-items-center container">
                 {" "}
-                <div id="topic-name ">{props.comment.content}</div>
+                <div id="comment-content ">{props.comment.content}</div>
+                <div className="mobile-toggle-inverse">
+                  <div className="container"></div>
+                </div>
                 <div className="ml-auto mr-3">
-                  <span className="ml-3">
-                    Created: {date} <span className="ml-2">by {props.comment.user.username}</span>
+                  <span>
+                    Created: {date} <span>by {props.comment.user.username}</span>
                   </span>
                 </div>
                 {showReplyButton()}

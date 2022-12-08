@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react"
+import React, { useState, useContext, useEffect } from "react"
 import Cropper from "react-easy-crop"
 import Slider from "@material-ui/core/Slider"
 import Button from "@material-ui/core/Button"
@@ -10,6 +10,7 @@ import Axios from "axios"
 import { Buffer } from "buffer"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
+import { proposalPlugins } from "@babel/preset-env/lib/shipped-proposals"
 
 const useStyles = makeStyles({
   iconButton: {
@@ -30,6 +31,9 @@ export default function RenderCropper({ handleCropper, username, setAvatar }) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
   const classes = useStyles()
+  const [user, setUser] = useState({
+    avatarBytes: ""
+  })
 
   const inputRef = React.useRef()
 
@@ -66,16 +70,17 @@ export default function RenderCropper({ handleCropper, username, setAvatar }) {
     const canvas = await getCroppedImg(image, croppedArea)
     const canvasDataUrl = canvas.toDataURL("image/jpeg")
     const convertedUrlToFile = dataURLtoFile(canvasDataUrl, "cropped-image.jpeg")
-    console.log(convertedUrlToFile)
+    const fileSize = convertedUrlToFile.size / 1024 / 1024
+    if (fileSize > 1) {
+      appDispatch({ type: "flashMessage", value: "Size of the file is too big!", messageType: "message-red" })
+      return
+    }
     try {
       const formData = new FormData()
       formData.append("file", convertedUrlToFile)
       formData.append("username", username)
-      console.log(formData)
-      const response = await Axios.put(`/api/user/changeavatar`, formData, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { responseType: "arraybuffer" })
-      console.log("Response" + response)
-      let base64ImageString = Buffer.from(response.data, "binary").toString("base64")
-      console.log(base64ImageString)
+      const response = await Axios.put(`/api/user/changeavatar`, formData, { headers: { Authorization: `Bearer ${appState.user.token}` } })
+      setAvatar(response.data)
     } catch (e) {
       console.log("There was a problem " + e)
     }
