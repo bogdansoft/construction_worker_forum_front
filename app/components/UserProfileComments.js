@@ -8,6 +8,7 @@ function UserProfileComments() {
   const [comments, setComments] = useState([])
   const { username } = useParams()
   const appState = useContext(StateContext)
+  const [reloadCounter, setReloadCounter] = useState(1)
 
   useEffect(() => {
     const ourRequest = Axios.CancelToken.source()
@@ -24,12 +25,16 @@ function UserProfileComments() {
     return () => {
       ourRequest.cancel()
     }
-  }, [username])
+  }, [username, reloadCounter])
+
+  function reload() {
+    setReloadCounter((reloadCounter) => (reloadCounter += 1))
+  }
 
   return (
     <section id="content2">
-      {comments.map(comment => {
-        return <SingleCommentProfile comment={comment} key={comment.id} />
+      {comments.map((comment) => {
+        return <SingleCommentProfile comment={comment} key={comment.id} reload={reload} />
       })}
     </section>
   )

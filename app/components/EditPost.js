@@ -319,7 +319,7 @@ function EditPost() {
             </div>
           </div>
           <div className="ml-auto">
-            <button className="nav-button">Edit</button>
+            <button className="nav-button">Update</button>
           </div>
         </div>
       </div>

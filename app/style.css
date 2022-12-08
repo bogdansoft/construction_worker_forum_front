@@ -1315,3 +1315,6 @@ input:focus {
 .delete-profile {
   left: -260px;
 }
+.edit-comment-user-profile {
+  border: 2px solid black;
+}
