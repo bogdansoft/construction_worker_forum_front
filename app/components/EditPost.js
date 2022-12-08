@@ -33,7 +33,7 @@ function EditPost() {
     hasTitleErrors: false,
     hasContentErrors: false,
     massage: "",
-    tags: []
+    tags: [],
   }
 
   function ourReducer(draft, action) {
@@ -56,10 +56,10 @@ function EditPost() {
         draft.content = action.value
         return
       case "tagsAdd":
-        draft.tags = draft.tags.concat(availableTags.find(tag => tag.name == action.value))
+        draft.tags = draft.tags.concat(availableTags.find((tag) => tag.name == action.value))
         return
       case "tagsRemove":
-        draft.tags = draft.tags.filter(tag => tag.name != action.value)
+        draft.tags = draft.tags.filter((tag) => tag.name != action.value)
         return
       case "submitRequest":
         draft.sendCount++
@@ -127,7 +127,7 @@ function EditPost() {
               content: state.content,
               userId: state.userId,
               topicId: selectedTopic.id,
-              keywords: state.tags
+              keywords: state.tags,
             },
             { headers: { Authorization: `Bearer ${appState.user.token}` } }
           )
@@ -168,7 +168,7 @@ function EditPost() {
     async function fetchAvailableTags() {
       try {
         const response = await Axios.get("/api/keyword", { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
-        setAvailableTags(prev => prev.concat(response.data))
+        setAvailableTags((prev) => prev.concat(response.data))
       } catch (e) {
         console.log("There was a problem fetching tags" + e.message)
       }
@@ -188,7 +188,7 @@ function EditPost() {
   }
 
   function handleTopicSelect(e) {
-    const foundTopic = topics.find(obj => {
+    const foundTopic = topics.find((obj) => {
       return obj.name === e.target.value
     })
     setSelectedTopic(foundTopic)
@@ -234,9 +234,9 @@ function EditPost() {
             <ShowAuthor contentAuthor={state.postAuthor} onlyForAdmin={true} />
           </div>
           <div className="mobile-toggle-inverse mt-1 mb-2">
-            <select className="" name="Topics" id="topics" onChange={e => handleTopicSelect(e)}>
+            <select className="" name="Topics" id="topics" onChange={(e) => handleTopicSelect(e)}>
               <option default>{state.topic.name}</option>
-              {topics.map(topic => {
+              {topics.map((topic) => {
                 if (topic.id === state.topic.id) return
                 return <option>{topic.name}</option>
               })}
@@ -244,12 +244,12 @@ function EditPost() {
           </div>
           <div className="d-flex flex-row mt-2">
             <div className="ml-3 add-post-title">
-              Title: <input onChange={e => dispatch({ type: "titleChange", value: e.target.value })} value={state.title} className="p-2 ml-3" type="text" />
+              Title: <input onChange={(e) => dispatch({ type: "titleChange", value: e.target.value })} value={state.title} className="p-2 ml-3" type="text" />
             </div>
             <div className="mobile-toggle mt-1 ml-auto">
-              <select className="mr-3" name="Topics" id="topics" onChange={e => handleTopicSelect(e)}>
+              <select className="mr-3" name="Topics" id="topics" onChange={(e) => handleTopicSelect(e)}>
                 <option default>{state.topic.name}</option>
-                {topics.map(topic => {
+                {topics.map((topic) => {
                   if (topic.id === state.topic.id) return
                   return <option>{topic.name}</option>
                 })}
@@ -263,10 +263,10 @@ function EditPost() {
           </span>
           {showWarningIfDefaultTopicIsChanged()}
           <div className="mobile-toggle mt-3 ml-auto mr-auto">
-            <textarea onChange={e => dispatch({ type: "contentChange", value: e.target.value })} value={state.content} className="post-textarea p-2 ml-5" rows="10" cols="100"></textarea>
+            <textarea onChange={(e) => dispatch({ type: "contentChange", value: e.target.value })} value={state.content} className="post-textarea p-2 ml-5" rows="10" cols="100"></textarea>
           </div>
           <div className="mobile-toggle-inverse mt-3 ml-auto mr-auto">
-            <textarea onChange={e => dispatch({ type: "contentChange", value: e.target.value })} value={state.content} className="post-textarea p-2" rows="10" cols="40"></textarea>
+            <textarea onChange={(e) => dispatch({ type: "contentChange", value: e.target.value })} value={state.content} className="post-textarea p-2" rows="10" cols="40"></textarea>
           </div>
           <span className="form-group ml-5 d-flex" style={{ fontSize: "13px" }}>
             <CSSTransition in={!state.content || state.content.length > 1000} timeout={330} classNames="liveValidateMessage" unmountOnExit>
@@ -277,31 +277,31 @@ function EditPost() {
             <div>
               <div className="d-flex mt-3 flex-column">
                 <span className="mr-4">Tags: </span>
-                {availableTags.map(availableTag => (
+                {availableTags.map((availableTag) => (
                   <>
                     <div className="mobile-toggle ml-2">
                       <input
                         type="checkbox"
-                        onClick={e => {
+                        onClick={(e) => {
                           handleCheckbox(e)
                         }}
                         value={availableTag.name}
                         name="tags"
                         className="mr-1"
-                        checked={state.tags.find(tag => tag.name == availableTag.name)}
+                        checked={state.tags.find((tag) => tag.name == availableTag.name)}
                       />
                       <label htmlFor="scales"> {availableTag.name}</label>
                     </div>
                     <div className="mobile-toggle-inverse ml-2">
                       <input
                         type="checkbox"
-                        onClick={e => {
+                        onClick={(e) => {
                           handleCheckbox(e)
                         }}
                         value={availableTag.name}
                         name="tags"
                         className="mr-1"
-                        checked={state.tags.find(tag => tag.name == availableTag.name)}
+                        checked={state.tags.find((tag) => tag.name == availableTag.name)}
                       />
                       <p> {availableTag.name}</p>
                     </div>
@@ -311,7 +311,7 @@ function EditPost() {
               <div>
                 <p>
                   Selected:{" "}
-                  {state.tags.map(tag => (
+                  {state.tags.map((tag) => (
                     <span className="mr-2">{"• " + tag.name}</span>
                   ))}
                 </p>
@@ -319,7 +319,7 @@ function EditPost() {
             </div>
           </div>
           <div className="ml-auto">
-            <button className="nav-button">Create</button>
+            <button className="nav-button">Edit</button>
           </div>
         </div>
       </div>
