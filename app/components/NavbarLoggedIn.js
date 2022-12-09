@@ -63,17 +63,17 @@ function NavbarLoggedIn() {
 
   let notifications = [
     {
-      from: "Yoda",
+      senderName: "Yoda",
       message: "Sent a message.",
       isRead: false,
     },
     {
-      from: "Luke",
+      senderName: "Luke",
       message: "Liked your photo.",
       isRead: false,
     },
     {
-      from: "Han",
+      senderName: "Han",
       message: "Commented on your post.",
       isRead: false,
     },
@@ -81,12 +81,12 @@ function NavbarLoggedIn() {
 
   let newNotifications = [
     {
-      from: "Vader",
+      senderName: "Vader",
       message: "Sent a message.",
       isRead: true,
     },
     {
-      from: "Emperor",
+      senderName: "Emperor",
       message: "Liked your photo.",
       isRead: false,
     },
@@ -111,7 +111,7 @@ function NavbarLoggedIn() {
               if (item.isRead) e.currentTarget.style.backgroundColor = "white";
             }}
           >
-            <b>{item.from}</b> {item.message}
+            <b>{item.senderName}</b> {item.message}
           </List.Item>
         )}
       />

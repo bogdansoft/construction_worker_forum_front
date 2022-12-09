@@ -96,7 +96,7 @@ function Main() {
     notification.open({
       message: (
         <div>
-          <b>{jsonNotification.from}</b> {jsonNotification.message}
+          <b>{jsonNotification.senderName}</b> {jsonNotification.message}
         </div>
       ),
       placement: "topLeft",
