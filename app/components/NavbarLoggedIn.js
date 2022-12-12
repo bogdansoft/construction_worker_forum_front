@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import DispatchContext from "../DispatchContext";
 import { CSSTransition } from "react-transition-group";
@@ -6,12 +6,19 @@ import StateContext from "../StateContext";
 import { Badge, List, Popover } from "antd";
 import { BellOutlined } from "@ant-design/icons";
 
-function NavbarLoggedIn() {
+function NavbarLoggedIn(props) {
   const appDispatch = useContext(DispatchContext);
   const appState = useContext(StateContext);
   const navigate = useNavigate();
   const [profileOptions, setProfileOptions] = useState(false);
   const [addOptions, setAddOptions] = useState(false);
+  const [newNotifications, setNewNotifications] = useState(
+    props.newNotificationsArray
+  );
+
+  useEffect(() => {
+    setNewNotifications(props.newNotificationsArray);
+  }, [newNotifications]);
 
   function handleLoggedOut() {
     appDispatch({ type: "logout" });
@@ -61,37 +68,6 @@ function NavbarLoggedIn() {
     );
   }
 
-  let notifications = [
-    {
-      senderName: "Yoda",
-      message: "Sent a message.",
-      isRead: false,
-    },
-    {
-      senderName: "Luke",
-      message: "Liked your photo.",
-      isRead: false,
-    },
-    {
-      senderName: "Han",
-      message: "Commented on your post.",
-      isRead: false,
-    },
-  ];
-
-  let newNotifications = [
-    {
-      senderName: "Vader",
-      message: "Sent a message.",
-      isRead: true,
-    },
-    {
-      senderName: "Emperor",
-      message: "Liked your photo.",
-      isRead: false,
-    },
-  ];
-
   const notificationTitle = (
     <span>
       <b>Notifications</b>
@@ -101,8 +77,7 @@ function NavbarLoggedIn() {
   const notificationList = (
     <div>
       <List
-        bordered
-        dataSource={notifications}
+        dataSource={newNotifications}
         renderItem={(item) => (
           <List.Item
             className="item-not-read mt-2"

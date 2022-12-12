@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useImmerReducer } from "use-immer";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import jwtDecode from "jwt-decode";
@@ -88,10 +88,22 @@ function Main() {
   }
 
   const [state, dispatch] = useImmerReducer(ourReducer, initialState);
+  const [newNotifications, setNewNotifications] = useState([]);
 
   const handleNotification = (event) => {
     const jsonNotification = JSON.parse(event.data);
-    console.log(jsonNotification);
+    let newNotificationsArray = newNotifications;
+
+    newNotificationsArray.unshift({
+      senderName: jsonNotification.senderName,
+      message: jsonNotification.message,
+      redirectTo: jsonNotification.redirectTo,
+      isRead: jsonNotification.isRead,
+    });
+
+    setNewNotifications(newNotificationsArray);
+    console.log(newNotifications);
+    console.log(newNotificationsArray);
 
     notification.open({
       message: (
@@ -107,6 +119,7 @@ function Main() {
     });
   };
 
+  //TODO use navigate?
   const redirectTo = (url) => {
     window.location.href = url;
   };
@@ -160,7 +173,7 @@ function Main() {
       <DispatchContext.Provider value={dispatch}>
         <BrowserRouter>
           <FlashMessages messages={state.flashMessages} />
-          <Navbar />
+          <Navbar newNotificationsArray={newNotifications} />
           <CSSTransition
             timeout={330}
             in={state.searchIsOpen}
