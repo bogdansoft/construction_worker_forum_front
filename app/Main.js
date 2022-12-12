@@ -30,6 +30,8 @@ import { notification } from "antd";
 Axios.defaults.baseURL = "https://localhost:443";
 
 function Main() {
+  const [newNotifications, setNewNotifications] = useState([]);
+
   const initialState = {
     loggedIn: Boolean(localStorage.getItem("constructionForumUserId")),
     searchIsOpen: false,
@@ -44,6 +46,7 @@ function Main() {
       isSupport: false,
     },
     flashMessages: [],
+    badgeNumber: 0,
   };
 
   function ourReducer(state, action) {
@@ -78,6 +81,9 @@ function Main() {
       case "closeMenu":
         state.menuIsOpen = false;
         return;
+      case "refreshNotifications":
+        state.badgeNumber = newNotifications.length;
+        return;
       case "flashMessage":
         state.flashMessages.push({
           value: action.value,
@@ -88,7 +94,6 @@ function Main() {
   }
 
   const [state, dispatch] = useImmerReducer(ourReducer, initialState);
-  const [newNotifications, setNewNotifications] = useState([]);
 
   const handleNotification = (event) => {
     const jsonNotification = JSON.parse(event.data);
@@ -102,8 +107,7 @@ function Main() {
     });
 
     setNewNotifications(newNotificationsArray);
-    console.log(newNotifications);
-    console.log(newNotificationsArray);
+    dispatch({ type: "refreshNotifications" });
 
     notification.open({
       message: (

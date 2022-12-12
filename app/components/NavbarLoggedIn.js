@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import DispatchContext from "../DispatchContext";
 import { CSSTransition } from "react-transition-group";
@@ -12,13 +12,6 @@ function NavbarLoggedIn(props) {
   const navigate = useNavigate();
   const [profileOptions, setProfileOptions] = useState(false);
   const [addOptions, setAddOptions] = useState(false);
-  const [newNotifications, setNewNotifications] = useState(
-    props.newNotificationsArray
-  );
-
-  useEffect(() => {
-    setNewNotifications(props.newNotificationsArray);
-  }, [newNotifications]);
 
   function handleLoggedOut() {
     appDispatch({ type: "logout" });
@@ -77,7 +70,7 @@ function NavbarLoggedIn(props) {
   const notificationList = (
     <div>
       <List
-        dataSource={newNotifications}
+        dataSource={props.newNotificationsArray}
         renderItem={(item) => (
           <List.Item
             className="item-not-read mt-2"
@@ -95,6 +88,14 @@ function NavbarLoggedIn(props) {
 
   const handleItemClick = (notification) => {
     notification.isRead = true;
+  };
+
+  const rendererBadge = () => {
+    return (
+      <Badge offset={[-4, 6]} count={appState.badgeNumber}>
+        <BellOutlined style={{ fontSize: "34px", color: "" }} />
+      </Badge>
+    );
   };
 
   return (
@@ -150,9 +151,7 @@ function NavbarLoggedIn(props) {
                 content={notificationList}
                 trigger="click"
               >
-                <Badge offset={[-4, 6]} count={newNotifications.length}>
-                  <BellOutlined style={{ fontSize: "34px", color: "" }} />
-                </Badge>
+                {rendererBadge()}
               </Popover>
             </div>
             <div className="relative">
