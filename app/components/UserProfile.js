@@ -6,6 +6,7 @@ import Axios from "axios"
 import StateContext from "../StateContext"
 import RenderAvatar from "./Avatar"
 import DispatchContext from "../DispatchContext"
+import UserProfileFollowedUsers from "./UserProfileFollowedUsers"
 
 function UserProfile() {
   const navigate = useNavigate()
@@ -137,7 +138,7 @@ function UserProfile() {
                   </NavLink>
                 </div>
                 <div class="col d-flex align-self-center justify-content-center">
-                  <NavLink className="tab-posts-user-profile-light-blue" to="comments">
+                  <NavLink className="tab-posts-user-profile-light-blue" to="followedUsers">
                     Followed
                   </NavLink>
                 </div>
@@ -152,6 +153,7 @@ function UserProfile() {
             <Routes>
               <Route path="posts" element={<UserProfilePosts />} />
               <Route path="comments" element={<UserProfileComments />} />
+              <Route path="followedUsers" element={<UserProfileFollowedUsers />} />
             </Routes>
           </div>
         )}
