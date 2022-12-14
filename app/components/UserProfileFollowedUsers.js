@@ -1,10 +1,13 @@
 import React, { useEffect, useState, useContext } from "react"
 import Axios from "axios"
 import StateContext from "../StateContext"
+import { useParams } from "react-router-dom"
+import SingleFollowedUserProfile from "./SingleFollowedUserProfile"
 
 function UserProfileFollowedUsers() {
   const [reloadCounter, setReloadCounter] = useState()
-  const [followedUsers, setFollowedUsers] = useState()
+  const [followedUsers, setFollowedUsers] = useState([])
+  const { username } = useParams()
   const appState = useContext(StateContext)
 
   useEffect(() => {
@@ -12,7 +15,9 @@ function UserProfileFollowedUsers() {
 
     async function fetchFollowedUsers() {
       try {
-        const response = await Axios.get(`/api/comment/all_by_username/${username}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+        const response = await Axios.get(`/api/following/followed/${username}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+        setFollowedUsers(response.data)
+        console.log(response.data)
       } catch (e) {
         console.log("There was a problem" + e)
       }
@@ -23,10 +28,14 @@ function UserProfileFollowedUsers() {
     }
   }, [username, reloadCounter])
 
+  function reload() {
+    setReloadCounter((reloadCounter) => (reloadCounter += 1))
+  }
+
   return (
-    <section id="content3">
-      {posts.map((post) => {
-        return <SinglePostProfile post={post} key={post.id} comments={post.comments.length} reload={reload} />
+    <section id="content2">
+      {followedUsers.map((followedUser) => {
+        return <SingleFollowedUserProfile followedUser={followedUser} key={followedUser.id} reload={reload} />
       })}
     </section>
   )

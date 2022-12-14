@@ -15,6 +15,7 @@ function UserProfile() {
   const appState = useContext(StateContext)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const appDispatch = useContext(DispatchContext)
+  const loggedIn = Boolean(localStorage.getItem("constructionForumUserToken"))
 
   const [state, setState] = useState({
     avatar: "https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png",
@@ -58,7 +59,20 @@ function UserProfile() {
     }
   }
 
-  async function handleFollow() {}
+  async function handleFollow(e) {
+    e.preventDefault()
+    const ourRequest = Axios.CancelToken.source()
+    try {
+      const followerId = appState.user.id
+      Axios.post(`/api/following/${username}`, { headers: { Authorization: `Bearer ${appState.user.token}` }, params: { followerId } }, { cancelToken: ourRequest.token })
+    } catch (e) {
+      console.log("There was a problem following a user: " + e)
+    }
+
+    return () => {
+      ourRequest.cancel()
+    }
+  }
 
   useEffect(() => {
     appDispatch({ type: "closeMenu" })
@@ -109,7 +123,7 @@ function UserProfile() {
                 )}
               </div>
               <div className="row">
-                {isLoggedIn && (
+                {loggedIn && (
                   <button onClick={handleFollow} className="nav-bio-button">
                     Follow
                   </button>
@@ -118,7 +132,7 @@ function UserProfile() {
             </div>
           </div>
         </div>
-        {isLoggedIn && (
+        {loggedIn && (
           <div>
             <div class="container text-center tabs-user-profile mt-3">
               <div class="row">

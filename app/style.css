@@ -1318,3 +1318,6 @@ input:focus {
 .edit-comment-user-profile {
   border: 2px solid black;
 }
+.delete-profile-followed-users {
+  left: -160px;
+}

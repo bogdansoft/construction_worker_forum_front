@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext } from "react"
 import Axios from "axios"
-import Post from "./Post"
-import { useParams, Link } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import StateContext from "../StateContext"
 import SingleCommentProfile from "./SingleCommentProfile"
 function UserProfileComments() {

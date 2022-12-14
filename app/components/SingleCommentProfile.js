@@ -80,16 +80,17 @@ function SingleCommentProfile(props) {
           <span className="ml-3">Created: {date}</span>
         </div>
         <div className="icon-black">
-          <span onClick={handleUpdate} className="material-symbols-outlined">
+          <span onClick={handleUpdate} className="material-symbols-outlined" data-tip="Edit" data-for="edit">
             edit
           </span>
+          <ReactTooltip id="edit" className="custom-tooltip" />
           <span onClick={deletePopup} className="material-symbols-outlined" data-tip="Delete" data-for="delete">
             delete
           </span>
 
           <CSSTransition in={isDeleting} timeout={330} classNames="liveValidateMessage" unmountOnExit>
             <div className="delete-absolute container col-5 mt-2">
-              <div className="delete-pop delete-profile col-5 p-2 liveValidateMessage-delete">
+              <div className="delete-pop delete-profile-followed-users col-3 p-2 liveValidateMessage-delete">
                 <DeleteModal delete={handleDelete} noDelete={deletePopup} />
               </div>
             </div>
