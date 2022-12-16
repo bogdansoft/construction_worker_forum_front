@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react"
+import React, { useState, useContext } from "react"
 import { Link } from "react-router-dom"
 import ReactTooltip from "react-tooltip"
 import { CSSTransition } from "react-transition-group"
@@ -16,7 +16,14 @@ function SingleFollowedUserProfile(props) {
     const ourRequest = Axios.CancelToken.source()
     try {
       const followerId = appState.user.id
-      await Axios.delete(`/api/following/${props.followedUser.id}`, { headers: { Authorization: `Bearer ${appState.user.token}` }, params: { followerId } }, { cancelToken: ourRequest.token })
+      await Axios.delete(
+        `/api/following/${props.followedUser.id}`,
+        {
+          headers: { Authorization: `Bearer ${appState.user.token}` },
+          params: { followerId },
+        },
+        { cancelToken: ourRequest.token }
+      )
       appDispatch({ type: "flashMessage", value: "User successfully unfollowed !", messageType: "message-green" })
       props.reload()
     } catch (e) {
@@ -26,8 +33,6 @@ function SingleFollowedUserProfile(props) {
       ourRequest.cancel()
     }
   }
-
-  function handleFollowing() {}
 
   function deletePopup() {
     setIsUnFollowing((prev) => !prev)

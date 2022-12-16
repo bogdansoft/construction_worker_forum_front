@@ -7,13 +7,15 @@ import StateContext from "../StateContext"
 import RenderAvatar from "./Avatar"
 import DispatchContext from "../DispatchContext"
 import UserProfileFollowedUsers from "./UserProfileFollowedUsers"
+import UserProfileFollowers from "./UserProfileFollowers"
 
 function UserProfile() {
   const navigate = useNavigate()
   const { username } = useParams()
   const [isBioPresent, setIsBioPresent] = useState(false)
   const appState = useContext(StateContext)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isOwner, setIsOwner] = useState(false)
+  const [isFollowed, setIsFollowed] = useState(false)
   const appDispatch = useContext(DispatchContext)
   const loggedIn = Boolean(localStorage.getItem("constructionForumUserToken"))
 
@@ -22,17 +24,18 @@ function UserProfile() {
     bio: "There is no BIO yet",
     username: "",
   })
+
   useEffect(() => {
     const ourRequest = Axios.CancelToken.source()
 
     async function fetchData() {
       const loggedUsername = localStorage.getItem("constructionForumUsername")
       try {
+        setIsOwner(false)
         const response = await Axios.get(`/api/user/user?username=${username}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
         setState(response.data)
-        console.log(response.data)
         if (username === loggedUsername) {
-          setIsLoggedIn(true)
+          setIsOwner(true)
         }
         if (state.bio !== "") {
           setIsBioPresent(true)
@@ -64,7 +67,18 @@ function UserProfile() {
     const ourRequest = Axios.CancelToken.source()
     try {
       const followerId = appState.user.id
-      Axios.post(`/api/following/${username}`, { headers: { Authorization: `Bearer ${appState.user.token}` }, params: { followerId } }, { cancelToken: ourRequest.token })
+      console.log(followerId)
+      const response = await Axios.post(
+        `/api/following/${username}?followerId=${followerId}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${appState.user.token}` },
+          params: { followerId },
+        },
+        { cancelToken: ourRequest.token }
+      )
+      console.log(response)
+      appDispatch({ type: "flashMessage", value: "User successfully followed !", messageType: "message-green" })
     } catch (e) {
       console.log("There was a problem following a user: " + e)
     }
@@ -81,15 +95,20 @@ function UserProfile() {
     <div className="main d-flex flex-column container">
       <div className="content d-flex flex-column mt-4">
         <div className="mobile-toggle-inverse mb-5">
-          {isLoggedIn && (
+          {isOwner && (
             <Link className="nav-button mt-2" to={`/profile/changebio/${username}`}>
               Change BIO
             </Link>
           )}
-
-          {isLoggedIn && (
-            <button onClick={handleDelete} className="nav-button mt-3">
+          {isOwner && (
+            <button onClick={handleDelete} className="nav-button mt-2">
               Delete account
+            </button>
+          )}
+
+          {loggedIn && (
+            <button onClick={handleFollow} className="nav-button mt-2">
+              Follow
             </button>
           )}
         </div>
@@ -98,7 +117,7 @@ function UserProfile() {
             <div className="profile-avatar">
               <span className="material-symbols-outlined mr-3">
                 {" "}
-                <RenderAvatar username={state.username} isLoggedIn={isLoggedIn} />{" "}
+                <RenderAvatar username={state.username} isLoggedIn={isOwner} />{" "}
               </span>
             </div>
             <div className="" id="profile-username">
@@ -108,15 +127,15 @@ function UserProfile() {
           {state.bio ? <div className="bioField">About me : {state.bio.length > 3 ? state.bio : null}</div> : null}
           <div className="mobile-toggle">
             <div className="ml-4 d-flex flex-column">
-              <div className="row pt-3">
-                {isLoggedIn && (
+              <div className="row">
+                {isOwner && (
                   <Link className="nav-bio-button" to={`/profile/changebio/${username}`}>
                     Change BIO
                   </Link>
                 )}
               </div>
               <div className="row">
-                {isLoggedIn && (
+                {isOwner && (
                   <button onClick={handleDelete} className="nav-bio-button">
                     Delete account
                   </button>
@@ -147,7 +166,7 @@ function UserProfile() {
                   </NavLink>
                 </div>
                 <div class="col d-flex align-self-center justify-content-center">
-                  <NavLink className="single-tab-user-profile-light-brown" to="comments">
+                  <NavLink className="single-tab-user-profile-light-brown" to="followers">
                     Followers
                   </NavLink>
                 </div>
@@ -157,7 +176,7 @@ function UserProfile() {
                   </NavLink>
                 </div>
                 <div class="col d-flex align-self-center justify-content-center">
-                  <NavLink className="single-tab-user-profile-light-brown" to="posts">
+                  <NavLink className="single-tab-user-profile-light-brown" to="comments">
                     Followed Posts
                   </NavLink>
                 </div>
@@ -168,6 +187,7 @@ function UserProfile() {
               <Route path="posts" element={<UserProfilePosts />} />
               <Route path="comments" element={<UserProfileComments />} />
               <Route path="followedUsers" element={<UserProfileFollowedUsers />} />
+              <Route path="followers" element={<UserProfileFollowers />} />
             </Routes>
           </div>
         )}

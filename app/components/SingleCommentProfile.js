@@ -23,7 +23,14 @@ function SingleCommentProfile(props) {
     const ourRequest = Axios.CancelToken.source()
     try {
       const userId = props.comment.user.id
-      await Axios.delete(`/api/comment/${props.comment.id}`, { headers: { Authorization: `Bearer ${appState.user.token}` }, params: { userId } }, { cancelToken: ourRequest.token })
+      await Axios.delete(
+        `/api/comment/${props.comment.id}`,
+        {
+          headers: { Authorization: `Bearer ${appState.user.token}` },
+          params: { userId },
+        },
+        { cancelToken: ourRequest.token }
+      )
       appDispatch({ type: "flashMessage", value: "Comment succesfully deleted !", messageType: "message-green" })
       props.reload()
     } catch (e) {
