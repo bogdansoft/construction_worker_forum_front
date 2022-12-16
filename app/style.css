@@ -436,7 +436,7 @@ img {
 }
 .floating-alert {
   display: none;
-  position: absolute;
+  position: fixed;
   z-index: 999;
   top: 38px;
   left: 50%;
@@ -1240,4 +1240,81 @@ input:focus {
 .hamb-menu .material-symbols-outlined {
   font-weight: bold;
   font-size: 1.2rem;
+}
+.absolute {
+  position: absolute;
+}
+.bioField {
+  background-color: var(--light-brown);
+  height: 80%;
+  width: 50%;
+  text-align: justify;
+  margin: 10px;
+  padding: 1rem 0.5rem;
+  color: black;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 20px;
+  border: 2px solid black;
+  overflow: auto;
+}
+.nav-bio-button {
+  border-radius: 35px;
+  background-color: var(--dark-violet);
+  color: white;
+  margin-bottom: 15px;
+  margin-left: 30px;
+  padding: 5px 30px;
+  border: none;
+  font-size: 1.2rem;
+  width: 100%;
+}
+.tabs-user-profile {
+  background-color: var(--orange);
+  color: black;
+  font-weight: bold;
+}
+.single-tab-user-profile-light-brown {
+  border-radius: 20px;
+  border: 2px solid black;
+  color: black;
+  font-weight: bold;
+  width: 100%;
+  padding: 10px;
+  background-color: var(--light-brown);
+}
+.tab-posts-user-profile-light-blue {
+  background-color: var(--light-blue);
+  border-radius: 20px;
+  border: 2px solid black;
+  color: black;
+  font-weight: bold;
+  width: 100%;
+  padding: 10px;
+}
+
+.filters {
+  position: relative;
+  background-color: var(--ultra-light-blue);
+  color: black;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  top: 20px;
+  left: 100px;
+  border: 1px solid black;
+}
+
+@media screen and (max-width: 1000px) {
+  .filters {
+    left: 0px;
+    font-size: 0.7rem;
+  }
+}
+.delete-profile {
+  left: -260px;
+}
+.edit-comment-user-profile {
+  border: 2px solid black;
 }

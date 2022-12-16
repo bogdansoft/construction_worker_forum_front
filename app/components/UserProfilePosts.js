@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext } from "react"
 import Axios from "axios"
-import Post from "./Post"
-import { useParams, Link } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import SinglePostProfile from "./SinglePostProfile"
 import StateContext from "../StateContext"
 
@@ -9,6 +8,7 @@ function UserProfilePosts() {
   const [posts, setPosts] = useState([])
   const { username } = useParams()
   const appState = useContext(StateContext)
+  const [reloadCounter, setReloadCounter] = useState(1)
 
   useEffect(() => {
     const ourRequest = Axios.CancelToken.source()
@@ -25,12 +25,16 @@ function UserProfilePosts() {
     return () => {
       ourRequest.cancel()
     }
-  }, [username])
+  }, [username, reloadCounter])
+
+  function reload() {
+    setReloadCounter((reloadCounter) => (reloadCounter += 1))
+  }
 
   return (
     <section id="content1">
-      {posts.map(post => {
-        return <SinglePostProfile post={post} key={post.id} />
+      {posts.map((post) => {
+        return <SinglePostProfile post={post} key={post.id} comments={post.comments.length} reload={reload} />
       })}
     </section>
   )
