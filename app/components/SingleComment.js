@@ -6,7 +6,13 @@ import DeleteModal from "./DeleteModal"
 import { CSSTransition } from "react-transition-group"
 import { useImmer } from "use-immer"
 import LikeButton from "./LikeButton"
+import { Link } from "react-router-dom"
+import ReactTooltip from "react-tooltip"
 import RenderAvatar from "./Avatar"
+import CreateCommentReplyForm from "./CreateCommentReplyForm"
+import { Button } from "antd"
+import RefreshButton from "./RefreshButton"
+import { rgbToHex } from "@material-ui/core"
 
 function SingleComment(props) {
   const ref = useRef(null)
@@ -21,6 +27,8 @@ function SingleComment(props) {
   const [error, setError] = useState(false)
   const [maxWidth, setMaxWidth] = useState()
   const [isPrimaryComment, setIsPrimaryComment] = useState(props.comment.parentComment === null)
+  const [isInitialSubCommentsFetching, setIsInitialSubCommentsFetching] = useState(true)
+  const [refreshRequest, setRefreshRequest] = useState(false)
   const token = localStorage.getItem("constructionForumUserToken")
   const date = new Date(props.comment.createdAt).toLocaleDateString("utc", {
     year: "numeric",
@@ -44,13 +52,14 @@ function SingleComment(props) {
     const ourRequest = Axios.CancelToken.source()
     try {
       const userId = props.comment.user.id
-      await Axios.delete(`/api/comment/${props.comment.id}`, { headers: { Authorization: `Bearer ${appState.user.token}` }, params: { userId } }, { cancelToken: ourRequest.token })
+      const response = await Axios.delete(`/api/comment/${props.comment.id}`, { headers: { Authorization: `Bearer ${appState.user.token}` }, params: { userId } }, { cancelToken: ourRequest.token })
       appDispatch({ type: "flashMessage", value: "Comment succesfully deleted !", messageType: "message-green" })
       props.reload()
-      setState(draft => {
-        draft.subCommentsQuantity == 0 ? (draft.subCommentsQuantity = 0) : draft.subCommentsQuantity--
-      })
+      if (!isPrimaryComment && response.status === 200) props.handleSubCommentDelete(props.comment.id)
     } catch (e) {
+      if (e.response.status === 404) {
+        alert("Problem occured. Most probably this comment has been deleted. Please refresh the page.")
+      }
       console.log("There was a problem or the request was cancelled.")
     }
 
@@ -67,7 +76,7 @@ function SingleComment(props) {
     }
     const ourRequest = Axios.CancelToken.source()
     try {
-      await Axios.put(
+      const response = await Axios.put(
         `/api/comment/${props.comment.id}`,
         {
           userId: props.comment.user.id,
@@ -80,11 +89,49 @@ function SingleComment(props) {
       props.reload()
       appDispatch({ type: "flashMessage", value: "Comment edited !", messageType: "message-green" })
       setIsEdited(false)
+      if (!isPrimaryComment && response.status === 200) props.handleSubCommentEdit(props.comment.id, content)
     } catch (e) {
       console.log("There was a problem or the request was cancelled." + e)
     }
     return () => {
       ourRequest.cancel()
+    }
+  }
+
+  function handleSubCommentEdit(subCommentId, subCommentNewContent) {
+    if (isPrimaryComment) {
+      subComments.filter(comment => comment.id === subCommentId).at(0).content = subCommentNewContent
+    }
+  }
+
+  function handleSubCommentDelete(subCommentId) {
+    if (isPrimaryComment) {
+      const updatedSubCommentsList = subComments.filter(comment => comment.id != subCommentId)
+      setSubComments(updatedSubCommentsList)
+      setState(draft => {
+        draft.subCommentsQuantity > 0 ? draft.subCommentsQuantity-- : null
+      })
+    }
+  }
+
+  function handleSubCommentLike(operationType, subCommentId) {
+    if (isPrimaryComment) {
+      const subComment = subComments.filter(comment => comment.id === subCommentId).at(0)
+      if (operationType === true) {
+        const id = appState.user.id
+        const username = appState.user.username
+        subComment.likers = subComment.likers.concat({ id, username })
+      } else {
+        const updatedSubCommentLikersList = subComment.likers.filter(liker => liker.id != appState.user.id)
+        subComment.likers = updatedSubCommentLikersList
+      }
+    }
+  }
+
+  function handleRefreshContent(shouldRefreshContent) {
+    if (isPrimaryComment && shouldRefreshContent) {
+      setRefreshRequest(true)
+      reload()
     }
   }
 
@@ -173,6 +220,12 @@ function SingleComment(props) {
   }, [])
 
   useEffect(() => {
+    setState(draft => {
+      draft.commentLikesCount = props.comment.likers.length
+    })
+  }, [props.comment.likers.length])
+
+  useEffect(() => {
     if (newSubComment) {
       setSubComments(subComments.concat(newSubComment))
       setNewSubComment(null)
@@ -185,7 +238,7 @@ function SingleComment(props) {
   }, [newSubComment])
 
   useEffect(() => {
-    if (isPrimaryComment && state.subCommentsQuantity > 0 && state.loadSubComments) {
+    if ((isPrimaryComment && state.subCommentsQuantity > 0 && state.loadSubComments && isInitialSubCommentsFetching) || refreshRequest) {
       const ourRequest = Axios.CancelToken.source()
 
       async function fetchSubCommentsData() {
@@ -195,8 +248,8 @@ function SingleComment(props) {
           setState(draft => {
             draft.subCommentsQuantity = response.data.length
           })
-          setInitialSubCommentsLength(response.data.length)
-          setInitialSubCommentsLoading(false)
+          setIsInitialSubCommentsFetching(false)
+          setRefreshRequest(false)
         } catch (e) {
           console.log("There was a problem or the request was cancelled." + e)
         }
@@ -215,21 +268,26 @@ function SingleComment(props) {
       async function fetchLikeCommentData() {
         try {
           if (!state.isCommentLikedByUser) {
-            await Axios.post(`/api/comment/like?userId=${appState.user.id}&commentId=${state.commentId}`, {}, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+            const response = await Axios.post(`/api/comment/like?userId=${appState.user.id}&commentId=${state.commentId}`, {}, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
             appDispatch({ type: "flashMessage", value: "Comment liked successfully!", messageType: "message-green" })
             setState(draft => {
               draft.isCommentLikedByUser = true
               draft.commentLikesCount++
             })
+            if (!isPrimaryComment && response.status === 201) props.handleSubCommentLike(true, state.commentId)
           } else {
-            await Axios.delete(`/api/comment/like?userId=${appState.user.id}&commentId=${state.commentId}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+            const response = await Axios.delete(`/api/comment/like?userId=${appState.user.id}&commentId=${state.commentId}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
             appDispatch({ type: "flashMessage", value: "Comment unliked successfully!", messageType: "message-green" })
             setState(draft => {
               draft.isCommentLikedByUser = false
               draft.commentLikesCount--
             })
+            if (!isPrimaryComment && response.status === 200) props.handleSubCommentLike(false, state.commentId)
           }
         } catch (e) {
+          if (e.response.status === 404) {
+            alert("Problem occured. Most probably this comment has been deleted. Please refresh the page.")
+          }
           console.log("There was a problem or the request was cancelled." + e)
         }
       }
@@ -310,11 +368,10 @@ function SingleComment(props) {
           <CreateCommentReplyForm targetObject={props.comment} onSubmit={setNewSubComment} />
         </div>
       )}
-      {(state.subCommentsQuantity > 0 || subComments.length > 0) && (
+      {state.subCommentsQuantity > 0 && (
         <div className="p-1">
           <Button
-            className="btn btn-info d-flex ml-auto mr-auto"
-            style={{ fontSize: "13px", width: "150px", height: "25px", alignItems: "center" }}
+            className="btn d-flex ml-auto mr-auto sub-comment-button"
             onClick={
               !state.loadSubComments
                 ? () =>
@@ -333,8 +390,9 @@ function SingleComment(props) {
       )}
       {state.loadSubComments > 0 && (
         <div className="comments-reply-list" style={getSubCommentStyle()}>
+          <RefreshButton handleRefreshContent={handleRefreshContent} />
           {subComments.map(subComment => (
-            <SingleComment comment={subComment} key={subComment.id} reload={reload} />
+            <SingleComment comment={subComment} key={subComment.id} reload={reload} handleSubCommentEdit={handleSubCommentEdit} handleSubCommentDelete={handleSubCommentDelete} handleSubCommentLike={handleSubCommentLike} />
           ))}
         </div>
       )}

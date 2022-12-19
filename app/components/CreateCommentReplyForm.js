@@ -45,6 +45,9 @@ function CreateCommentReplyForm(props) {
             props.onSubmit(response.data)
           }
         } catch (e) {
+          if (e.response.status === 404) {
+            alert("Problem occured. Most probably this comment has been deleted. Please refresh the page.")
+          }
           console.log("There was a problem or the request was cancelled." + e)
         }
       }

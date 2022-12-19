@@ -102,7 +102,7 @@ function CreateCommentForm(props) {
   }
 
   return (
-    <div ref={ref} className="comments d-flex col-11 ml-auto mr-auto mt-5 align-items-center" style={fix ? { position: "sticky", left: 0, right: 0, top: 0, zIndex: 1, backgroundColor: "OrangeRed", width: maxWidth, transitionDuration: "2.5s" } : {}}>
+    <div ref={ref} className="comments d-flex col-11 ml-auto mr-auto mt-5 align-items-center" style={fix ? { position: "sticky", left: 0, right: 0, top: 0, zIndex: 1, border: "solid black", borderRadius: "15px", borderWidth: "2px", backgroundColor: "darkorange", width: maxWidth } : {}}>
       <form onSubmit={handleSubmit} className="d-flex ml-auto mr-auto align-items-center container">
         <div className="container mt-3">
           <input

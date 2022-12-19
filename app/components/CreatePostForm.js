@@ -136,7 +136,7 @@ function CreatePost() {
             <div>
               {" "}
               <div className="ml-3 add-post-title">
-                Title: <input onChange={e => setTitle(e.target.value)} type="text" />
+                Title: <input autoFocus onChange={e => setTitle(e.target.value)} type="text" />
               </div>
               <span className="form-group ml-5 d-flex" style={{ fontSize: "13px" }}>
                 <CSSTransition in={!title || title.length < 3 || title.length > 50} timeout={330} classNames="liveValidateMessage" unmountOnExit>

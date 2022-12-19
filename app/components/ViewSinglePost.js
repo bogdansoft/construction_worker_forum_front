@@ -107,6 +107,9 @@ function ViewSinglePost() {
             })
           }
         } catch (e) {
+          if (e.response.status === 404) {
+            alert("Problem occured. Most probably this post has been deleted. Please refresh the page.")
+          }
           console.log("There was a problem or the request was cancelled." + e)
         }
       }
@@ -179,7 +182,7 @@ function ViewSinglePost() {
           <CSSTransition in={isDeleting} timeout={330} classNames="liveValidateMessage" unmountOnExit>
             <div class="delete-absolute container col-5 ml-1 mt-5">
               <div className="delete-pop col-5 p-2 liveValidateMessage-delete">
-                <DeleteModal delete={handleDelete} noDelete={deletePopup} relatedItemsLength={comments.length} relatedItemsType={"comment"} />
+                <DeleteModal delete={handleDelete} noDelete={deletePopup} relatedItemsLength={comments.length} relatedItemsType={"primary comment"} />
               </div>
             </div>
           </CSSTransition>

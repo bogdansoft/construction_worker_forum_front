@@ -233,13 +233,13 @@ footer ul li {
 .comments-reply {
   border-radius: 15px;
   border: solid rgb(231, 109, 64);
-  background-color: #f8bd4e;
+  background-color: orange;
   border-width: 2px;
 }
 .comments-reply-list {
   border-radius: 15px;
   border: solid rgb(231, 109, 64);
-  background-color: #f8bd4e;
+  background-color: rgb(244, 187, 68);
   border-width: 2px;
   margin-top: 20px;
   margin-right: 20px;
@@ -261,11 +261,14 @@ footer ul li {
   background-color: var(--light-brown);
   border-radius: 20px;
   border: 2px solid black;
+  color: white;
+  padding-left: 10px;
 }
 .post-textarea {
   background-color: var(--light-brown);
   border-radius: 20px;
   border: 2px solid black;
+  color: white;
 }
 #post-keyword {
   color: rgba(0, 0, 0, 0.5);
@@ -1329,4 +1332,30 @@ input:focus {
     left: 0px;
     font-size: 0.7rem;
   }
+}
+
+.refresh-button-div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 5px;
+}
+
+.refresh-button-itself {
+  background-color: black;
+  color: white;
+  font-size: 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.sub-comment-button {
+  font-size: 13px;
+  width: 150px;
+  height: 25px;
+  align-items: center;
+  background-color: darkorange;
+  color: white;
+  border-radius: 5px;
+  border-color: #000;
 }
