@@ -70,7 +70,7 @@ function NavbarLoggedIn(props) {
   const notificationList = (
     <div>
       <List
-        dataSource={props.newNotificationsArray}
+        dataSource={appState.notificationList}
         renderItem={(item) => (
           <List.Item
             className="item-not-read mt-2"

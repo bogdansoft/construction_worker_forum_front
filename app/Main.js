@@ -47,6 +47,7 @@ function Main() {
     },
     flashMessages: [],
     badgeNumber: 0,
+    notificationList: [],
   };
 
   function ourReducer(state, action) {
@@ -82,7 +83,10 @@ function Main() {
         state.menuIsOpen = false;
         return;
       case "refreshNotifications":
-        state.badgeNumber = newNotifications.length;
+        state.badgeNumber = state.notificationList.length;
+        return;
+      case "fetchNotifications":
+        state.notificationList = action.data;
         return;
       case "flashMessage":
         state.flashMessages.push({
@@ -97,6 +101,7 @@ function Main() {
 
   const handleNotification = (event) => {
     const jsonNotification = JSON.parse(event.data);
+    console.log(newNotifications);
     let newNotificationsArray = newNotifications;
 
     newNotificationsArray.unshift({
@@ -143,6 +148,7 @@ function Main() {
       };
 
       notificationListener.onmessage = (event) => {
+        console.log("NOTIFICATION ARRIVED" + event);
         handleNotification(event);
       };
 
