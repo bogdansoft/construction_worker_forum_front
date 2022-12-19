@@ -8,6 +8,7 @@ import RenderAvatar from "./Avatar"
 import DispatchContext from "../DispatchContext"
 import UserProfileFollowedUsers from "./UserProfileFollowedUsers"
 import UserProfileFollowers from "./UserProfileFollowers"
+import FollowingUserButton from "./FollowingUserButton"
 
 function UserProfile() {
   const navigate = useNavigate()
@@ -18,6 +19,7 @@ function UserProfile() {
   const [isFollowed, setIsFollowed] = useState(false)
   const appDispatch = useContext(DispatchContext)
   const loggedIn = Boolean(localStorage.getItem("constructionForumUserToken"))
+  const [reloadCounter, setReloadCounter] = useState(0)
 
   const [state, setState] = useState({
     avatar: "https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png",
@@ -31,15 +33,22 @@ function UserProfile() {
     async function fetchData() {
       const loggedUsername = localStorage.getItem("constructionForumUsername")
       try {
-        setIsOwner(false)
         const response = await Axios.get(`/api/user/user?username=${username}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
         setState(response.data)
-        if (username === loggedUsername) {
-          setIsOwner(true)
-        }
+        setIsOwner(username === loggedUsername ? true : false)
         if (state.bio !== "") {
           setIsBioPresent(true)
         }
+        const followerId = appState.user.id
+        const responseFollowing = await Axios.get(
+          `/api/following/${username}`,
+          {
+            headers: { Authorization: `Bearer ${appState.user.token}` },
+            params: { followerId },
+          },
+          { cancelToken: ourRequest.token }
+        )
+        setIsFollowed(responseFollowing.data)
       } catch (e) {
         console.log("There was a problem" + e.message)
         navigate(`/notfound`)
@@ -49,7 +58,7 @@ function UserProfile() {
     return () => {
       ourRequest.cancel()
     }
-  }, [username])
+  }, [username, reloadCounter])
 
   async function handleDelete(e) {
     e.preventDefault()
@@ -62,35 +71,14 @@ function UserProfile() {
     }
   }
 
-  async function handleFollow(e) {
-    e.preventDefault()
-    const ourRequest = Axios.CancelToken.source()
-    try {
-      const followerId = appState.user.id
-      console.log(followerId)
-      const response = await Axios.post(
-        `/api/following/${username}?followerId=${followerId}`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${appState.user.token}` },
-          params: { followerId },
-        },
-        { cancelToken: ourRequest.token }
-      )
-      console.log(response)
-      appDispatch({ type: "flashMessage", value: "User successfully followed !", messageType: "message-green" })
-    } catch (e) {
-      console.log("There was a problem following a user: " + e)
-    }
-
-    return () => {
-      ourRequest.cancel()
-    }
+  function reload() {
+    setReloadCounter((reloadCounter) => (reloadCounter += 1))
   }
 
   useEffect(() => {
     appDispatch({ type: "closeMenu" })
   }, [])
+
   return (
     <div className="main d-flex flex-column container">
       <div className="content d-flex flex-column mt-4">
@@ -106,11 +94,7 @@ function UserProfile() {
             </button>
           )}
 
-          {loggedIn && (
-            <button onClick={handleFollow} className="nav-button mt-2">
-              Follow
-            </button>
-          )}
+          {!isOwner && <FollowingUserButton username={username} loggedIn={loggedIn} isFollowed={isFollowed} reload={reload} />}
         </div>
         <div className="d-flex text-center align-items-start">
           <div className="d-flex flex-column align-items-center">
@@ -141,13 +125,7 @@ function UserProfile() {
                   </button>
                 )}
               </div>
-              <div className="row">
-                {loggedIn && (
-                  <button onClick={handleFollow} className="nav-bio-button">
-                    Follow
-                  </button>
-                )}
-              </div>
+              {!isOwner && <FollowingUserButton username={username} loggedIn={loggedIn} isFollowed={isFollowed} reload={reload} />}
             </div>
           </div>
         </div>

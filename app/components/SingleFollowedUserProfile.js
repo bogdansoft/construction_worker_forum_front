@@ -12,12 +12,13 @@ function SingleFollowedUserProfile(props) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
-  async function handleUnfollow() {
+  async function handleUnfollow(e) {
+    e.preventDefault()
     const ourRequest = Axios.CancelToken.source()
     try {
       const followerId = appState.user.id
       await Axios.delete(
-        `/api/following/${props.followedUser.id}`,
+        `/api/following/${props.followedUser.username}`,
         {
           headers: { Authorization: `Bearer ${appState.user.token}` },
           params: { followerId },

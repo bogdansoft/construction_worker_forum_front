@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom"
 import SingleFollowedUserProfile from "./SingleFollowedUserProfile"
 
 function UserProfileFollowedUsers() {
-  const [reloadCounter, setReloadCounter] = useState()
+  const [reloadCounter, setReloadCounter] = useState(0)
   const [followedUsers, setFollowedUsers] = useState([])
   const { username } = useParams()
   const appState = useContext(StateContext)
