@@ -19,7 +19,8 @@ function SingleCommentProfile(props) {
   const [error, setError] = useState(false)
   const [content, setContent] = useState(props.comment.content)
 
-  async function handleDelete() {
+  async function handleDelete(e) {
+    e.preventDefault()
     const ourRequest = Axios.CancelToken.source()
     try {
       const userId = props.comment.user.id

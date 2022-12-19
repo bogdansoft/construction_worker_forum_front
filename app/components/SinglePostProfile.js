@@ -17,7 +17,8 @@ function SingleCommentProfile(props) {
   const appDispatch = useContext(DispatchContext)
   const [isDeleting, setIsDeleting] = useState(false)
 
-  async function handleDelete() {
+  async function handleDelete(e) {
+    e.preventDefault()
     const ourRequest = Axios.CancelToken.source()
     try {
       await Axios.delete(`/api/post/${props.post.id}`, { headers: { Authorization: `Bearer ${appState.user.token}` } })
