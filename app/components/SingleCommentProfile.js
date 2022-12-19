@@ -19,11 +19,19 @@ function SingleCommentProfile(props) {
   const [error, setError] = useState(false)
   const [content, setContent] = useState(props.comment.content)
 
-  async function handleDelete() {
+  async function handleDelete(e) {
+    e.preventDefault()
     const ourRequest = Axios.CancelToken.source()
     try {
       const userId = props.comment.user.id
-      await Axios.delete(`/api/comment/${props.comment.id}`, { headers: { Authorization: `Bearer ${appState.user.token}` }, params: { userId } }, { cancelToken: ourRequest.token })
+      await Axios.delete(
+        `/api/comment/${props.comment.id}`,
+        {
+          headers: { Authorization: `Bearer ${appState.user.token}` },
+          params: { userId },
+        },
+        { cancelToken: ourRequest.token }
+      )
       appDispatch({ type: "flashMessage", value: "Comment succesfully deleted !", messageType: "message-green" })
       props.reload()
     } catch (e) {
@@ -80,16 +88,17 @@ function SingleCommentProfile(props) {
           <span className="ml-3">Created: {date}</span>
         </div>
         <div className="icon-black">
-          <span onClick={handleUpdate} className="material-symbols-outlined">
+          <span onClick={handleUpdate} className="material-symbols-outlined" data-tip="Edit" data-for="edit">
             edit
           </span>
+          <ReactTooltip id="edit" className="custom-tooltip" />
           <span onClick={deletePopup} className="material-symbols-outlined" data-tip="Delete" data-for="delete">
             delete
           </span>
 
           <CSSTransition in={isDeleting} timeout={330} classNames="liveValidateMessage" unmountOnExit>
             <div className="delete-absolute container col-5 mt-2">
-              <div className="delete-pop delete-profile col-5 p-2 liveValidateMessage-delete">
+              <div className="delete-pop delete-profile-followed-users col-3 p-2 liveValidateMessage-delete">
                 <DeleteModal delete={handleDelete} noDelete={deletePopup} />
               </div>
             </div>
