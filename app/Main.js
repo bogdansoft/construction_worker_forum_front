@@ -33,6 +33,7 @@ function Main() {
     loggedIn: Boolean(localStorage.getItem("constructionForumUserId")),
     searchIsOpen: false,
     menuIsOpen: false,
+    isMobileDevice: window.innerWidth < 900,
     user: {
       id: localStorage.getItem("constructionForumUserId"),
       username: localStorage.getItem("constructionForumUsername"),

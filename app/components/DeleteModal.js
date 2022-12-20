@@ -12,6 +12,8 @@ function DeleteModal(props) {
     }
   }
 
+  console.log("MODAL")
+
   return (
     <div className="d-flex flex-column">
       <h6 className="align-self-center">Are you sure ?</h6>

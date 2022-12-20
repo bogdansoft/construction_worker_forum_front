@@ -245,28 +245,30 @@ function ViewSinglePost() {
                   </div>
                 ))}
               </div>
+
               <div className="ml-auto">
-                <div style={{ fontSize: "15px" }}>{state.postLikesCount}</div>
-                <a
-                  onClick={
-                    !state.isPostOwnedByUser
-                      ? () =>
-                          setState(draft => {
-                            draft.like++
-                          })
-                      : null
-                  }
-                >
-                  <LikeButton isLiked={state.isPostLikedByUser} isOwner={state.isPostOwnedByUser}></LikeButton>
-                </a>
                 <div className="mobile-toggle-inverse">
                   <div className="container"></div>
                 </div>
-                <span className="material-symbols-outlined mr-3"> chat </span>
+                <span className={appState.isMobileDevice ? "" : "d-flex"}>
+                  <a
+                    onClick={
+                      !state.isPostOwnedByUser
+                        ? () =>
+                            setState(draft => {
+                              draft.like++
+                            })
+                        : null
+                    }
+                  >
+                    <LikeButton isLiked={state.isPostLikedByUser} isOwner={state.isPostOwnedByUser} likesCount={state.postLikesCount}></LikeButton>
+                  </a>
 
-                <span className="material-symbols-outlined mr-3"> share </span>
-                <span className="material-symbols-outlined mr-3"> report </span>
-                <span className="material-symbols-outlined mr-3"> bookmark </span>
+                  <span className="material-symbols-outlined mr-3"> chat </span>
+                  <span className="material-symbols-outlined mr-3"> share </span>
+                  <span className="material-symbols-outlined mr-3"> report </span>
+                  <span className="material-symbols-outlined mr-3"> bookmark </span>
+                </span>
               </div>
             </div>
           </div>

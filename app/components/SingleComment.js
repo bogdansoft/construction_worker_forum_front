@@ -13,6 +13,7 @@ import CreateCommentReplyForm from "./CreateCommentReplyForm"
 import { Button } from "antd"
 import RefreshButton from "./RefreshButton"
 import { rgbToHex } from "@material-ui/core"
+import CommentInfoButton from "./CommentInfoButton"
 
 function SingleComment(props) {
   const ref = useRef(null)
@@ -30,11 +31,6 @@ function SingleComment(props) {
   const [isInitialSubCommentsFetching, setIsInitialSubCommentsFetching] = useState(true)
   const [refreshRequest, setRefreshRequest] = useState(false)
   const token = localStorage.getItem("constructionForumUserToken")
-  const date = new Date(props.comment.createdAt).toLocaleDateString("utc", {
-    year: "numeric",
-    month: "short",
-    day: "numeric"
-  })
 
   const [state, setState] = useImmer({
     commentId: props.comment.id,
@@ -55,7 +51,7 @@ function SingleComment(props) {
       const response = await Axios.delete(`/api/comment/${props.comment.id}`, { headers: { Authorization: `Bearer ${appState.user.token}` }, params: { userId } }, { cancelToken: ourRequest.token })
       appDispatch({ type: "flashMessage", value: "Comment succesfully deleted !", messageType: "message-green" })
       props.reload()
-      if (!isPrimaryComment && response.status === 200) props.handleSubCommentDelete(props.comment.id)
+      if (response.status === 200) props.handleSubCommentDelete(props.comment.id)
     } catch (e) {
       if (e.response.status === 404) {
         alert("Problem occured. Most probably this comment has been deleted. Please refresh the page.")
@@ -89,7 +85,7 @@ function SingleComment(props) {
       props.reload()
       appDispatch({ type: "flashMessage", value: "Comment edited !", messageType: "message-green" })
       setIsEdited(false)
-      if (!isPrimaryComment && response.status === 200) props.handleSubCommentEdit(props.comment.id, content)
+      if (response.status === 200) props.handleSubCommentEdit(props.comment.id, content)
     } catch (e) {
       console.log("There was a problem or the request was cancelled." + e)
     }
@@ -99,13 +95,13 @@ function SingleComment(props) {
   }
 
   function handleSubCommentEdit(subCommentId, subCommentNewContent) {
-    if (isPrimaryComment) {
+    if (subComments.length > 0) {
       subComments.filter(comment => comment.id === subCommentId).at(0).content = subCommentNewContent
     }
   }
 
   function handleSubCommentDelete(subCommentId) {
-    if (isPrimaryComment) {
+    if (subComments.length > 0) {
       const updatedSubCommentsList = subComments.filter(comment => comment.id != subCommentId)
       setSubComments(updatedSubCommentsList)
       setState(draft => {
@@ -115,7 +111,7 @@ function SingleComment(props) {
   }
 
   function handleSubCommentLike(operationType, subCommentId) {
-    if (isPrimaryComment) {
+    if (subComments.length > 0) {
       const subComment = subComments.filter(comment => comment.id === subCommentId).at(0)
       if (operationType === true) {
         const id = appState.user.id
@@ -129,7 +125,7 @@ function SingleComment(props) {
   }
 
   function handleRefreshContent(shouldRefreshContent) {
-    if (isPrimaryComment && shouldRefreshContent) {
+    if (shouldRefreshContent) {
       setRefreshRequest(true)
       reload()
     }
@@ -202,8 +198,14 @@ function SingleComment(props) {
   }
 
   function getSubCommentStyle() {
-    return {
-      maxWidth: maxWidth - 100
+    if (!appState.isMobileDevice) {
+      return {
+        maxWidth: maxWidth - 100
+      }
+    } else {
+      return {
+        width: "80%"
+      }
     }
   }
 
@@ -216,7 +218,7 @@ function SingleComment(props) {
   }, [state.subCommentsQuantity])
 
   useEffect(() => {
-    if (isPrimaryComment && ref.current) setMaxWidth(ref.current.getBoundingClientRect().width)
+    if (ref.current) setMaxWidth(ref.current.getBoundingClientRect().width)
   }, [])
 
   useEffect(() => {
@@ -238,7 +240,7 @@ function SingleComment(props) {
   }, [newSubComment])
 
   useEffect(() => {
-    if ((isPrimaryComment && state.subCommentsQuantity > 0 && state.loadSubComments && isInitialSubCommentsFetching) || refreshRequest) {
+    if ((state.subCommentsQuantity > 0 && state.loadSubComments && isInitialSubCommentsFetching) || refreshRequest) {
       const ourRequest = Axios.CancelToken.source()
 
       async function fetchSubCommentsData() {
@@ -274,7 +276,7 @@ function SingleComment(props) {
               draft.isCommentLikedByUser = true
               draft.commentLikesCount++
             })
-            if (!isPrimaryComment && response.status === 201) props.handleSubCommentLike(true, state.commentId)
+            if (response.status === 201) props.handleSubCommentLike(true, state.commentId)
           } else {
             const response = await Axios.delete(`/api/comment/like?userId=${appState.user.id}&commentId=${state.commentId}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
             appDispatch({ type: "flashMessage", value: "Comment unliked successfully!", messageType: "message-green" })
@@ -282,7 +284,7 @@ function SingleComment(props) {
               draft.isCommentLikedByUser = false
               draft.commentLikesCount--
             })
-            if (!isPrimaryComment && response.status === 200) props.handleSubCommentLike(false, state.commentId)
+            if (response.status === 200) props.handleSubCommentLike(false, state.commentId)
           }
         } catch (e) {
           if (e.response.status === 404) {
@@ -314,20 +316,18 @@ function SingleComment(props) {
         <div className="d-flex container">
           <div className="single-topic-content container d-flex p-2 align-items-center col-11">
             {!isEdited && (
-              <div className="d-flex align-items-center container">
-                {" "}
-                <div id="comment-content ">{props.comment.content}</div>
+              <div className={appState.isMobileDevice ? "d-sm-flex container" : "d-flex align-items-center container"}>
+                <div id="comment-content">{props.comment.content}</div>
                 <div className="mobile-toggle-inverse">
                   <div className="container"></div>
                 </div>
-                <div className="ml-auto mr-3">
-                  <span>
-                    Created: {date} <span>by {props.comment.user.username}</span>
-                  </span>
+                <div className="ml-auto mr-3"></div>
+                <div className="d-flex pl-1 mt-2 align-items-center justify-content-center">
+                  <CommentInfoButton createdAt={props.comment.createdAt} updatedAt={props.comment.updatedAt} />
+                  {showReplyButton()}
+                  {showEditButton()}
+                  {showDeleteButton()}
                 </div>
-                {showReplyButton()}
-                {showEditButton()}
-                {showDeleteButton()}
               </div>
             )}
             {isEdited && (
@@ -347,7 +347,6 @@ function SingleComment(props) {
             )}
           </div>
           <div className="col-1 d-flex">
-            <div style={{ fontSize: "15px" }}>{state.commentLikesCount}</div>
             <a
               onClick={
                 !state.isCommentOwnedByUser
@@ -358,13 +357,13 @@ function SingleComment(props) {
                   : null
               }
             >
-              <LikeButton isLiked={state.isCommentLikedByUser} isOwner={state.isCommentOwnedByUser}></LikeButton>
+              <LikeButton isLiked={state.isCommentLikedByUser} isOwner={state.isCommentOwnedByUser} isCommentType={true} likesCount={state.commentLikesCount}></LikeButton>
             </a>
           </div>
         </div>
       </div>
       {isReplied && (
-        <div className="ml-5 col-11">
+        <div className="container">
           <CreateCommentReplyForm targetObject={props.comment} onSubmit={setNewSubComment} />
         </div>
       )}

@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react"
+import React, { useEffect, useContext, useState, useRef } from "react"
 import ReactTooltip from "react-tooltip"
 import Axios from "axios"
 import { useImmer } from "use-immer"
@@ -7,8 +7,11 @@ import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 
 function CreateCommentReplyForm(props) {
+  const ref = useRef(this)
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
+  const [maxWidth, setMaxWidth] = useState()
+
   const [state, setState] = useImmer({
     commentToAdd: {
       content: "",
@@ -22,6 +25,17 @@ function CreateCommentReplyForm(props) {
     },
     newComment: null
   })
+
+  useEffect(() => {
+    if (ref.current) {
+      const currentWidth = ref.current.getBoundingClientRect().width
+
+      appState.isMobileDevice ? setMaxWidth(currentWidth) : setMaxWidth(currentWidth - 200)
+      console.log("Div width = ", ref.current.getBoundingClientRect())
+      console.log("Windows size = ", window.innerWidth)
+      console.log("Is mobile device = ", appState.isMobileDevice)
+    }
+  }, [])
 
   useEffect(() => {
     if (state.commentToAdd.listener) {
@@ -76,10 +90,13 @@ function CreateCommentReplyForm(props) {
     })
   }
 
+  //style={{ height: "100px" }}
+  //style={{ width: "600px" }}
+
   return (
-    <div className="p-2 ml-4" style={{ height: "100px" }}>
-      <div className="comments-reply mr-auto ml-auto mt-auto" style={{ width: "600px" }}>
-        <form onSubmit={handleSubmit} className="d-flex ml-auto mr-auto align-items-center container">
+    <div className="p-2 ml-4" ref={ref} style={{ height: "100px" }}>
+      <div className="comments-reply ml-auto mr-auto mt-auto" style={{ width: maxWidth }}>
+        <form onSubmit={handleSubmit} className="d-flex align-items-center container">
           <div className="container mt-3">
             <input
               autoFocus

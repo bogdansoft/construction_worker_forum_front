@@ -1,10 +1,35 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useContext } from "react"
 import { useState } from "react"
+import StateContext from "../StateContext"
 
 function LikeButton(props) {
+  const appState = useContext(StateContext)
   const [color, setColor] = useState()
   const [animation, setAnimation] = useState()
   const [animationTrigger, setAnimationTrigger] = useState(0)
+  const [buttonSize, setButtonSize] = useState()
+  const [counterSize, setCounterSize] = useState()
+
+  function adjustButtonSize() {
+    if (appState.isMobileDevice && props.isCommentType) {
+      setButtonSize("18px")
+    } else {
+      setButtonSize("30px")
+    }
+  }
+
+  function adjustCounterSize() {
+    if (appState.isMobileDevice && props.isCommentType) {
+      setCounterSize("13px")
+    } else {
+      setCounterSize("18px")
+    }
+  }
+
+  useEffect(() => {
+    adjustButtonSize()
+    adjustCounterSize()
+  }, [])
 
   useEffect(() => {
     props.isLiked ? setColor("blue") : setColor("black")
@@ -20,16 +45,22 @@ function LikeButton(props) {
 
   if (props.isOwner) {
     return (
-      <span type="like" className="material-symbols-outlined mr-3" style={{ color: "gray", cursor: "none" }}>
-        thumb_up
-      </span>
+      <div className={appState.isMobileDevice ? "" : "d-flex"}>
+        <a style={{ fontSize: counterSize }}>{props.likesCount}</a>
+        <span type="like" className="material-symbols-outlined mr-3" style={{ color: "gray", cursor: "none", fontSize: buttonSize }}>
+          thumb_up
+        </span>
+      </div>
     )
   }
 
   return (
-    <span type="like" className="material-symbols-outlined mr-3" data-tip="Like post!" data-for="like" style={{ animation: animation, color: color }} anim>
-      thumb_up
-    </span>
+    <div className={appState.isMobileDevice ? "" : "d-flex"}>
+      <a style={{ fontSize: counterSize }}>{props.likesCount}</a>
+      <span type="like" className="material-symbols-outlined mr-3" data-tip="Like post!" data-for="like" style={{ animation: animation, color: color, fontSize: buttonSize }} anim>
+        thumb_up
+      </span>
+    </div>
   )
 }
 
