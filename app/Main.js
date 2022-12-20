@@ -118,6 +118,7 @@ function Main() {
 
     setNewNotifications(newNotificationsArray);
     dispatch({ type: "updateNotifications", data: jsonNotification });
+    console.log("STATE NOTIFICATIONS AFTER UPDATE", state.notificationList);
     dispatch({ type: "refreshNotifications" });
 
     notification.open({
@@ -158,7 +159,7 @@ function Main() {
       };
 
       return () => {
-        notificationListener.close();
+        // notificationListener.close();
         console.log("Component clean up - listener closed");
       };
     }

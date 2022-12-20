@@ -17,7 +17,7 @@ function Login() {
     try {
       const response = await Axios.post("/api/login", { username, password });
       const notifications = await Axios.get(
-        `https://localhost:444/notification-service/all?userId=${appState.user.id}`
+        `https://localhost:444/notification-service/all?userId=${response.data.id}`
       );
       console.log("AFTER AXIOS", notifications.data);
 
