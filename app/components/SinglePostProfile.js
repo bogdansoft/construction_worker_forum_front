@@ -7,7 +7,7 @@ import DeleteModal from "./DeleteModal"
 import ReactTooltip from "react-tooltip"
 import { CSSTransition } from "react-transition-group"
 
-function SingleCommentProfile(props) {
+function SinglePostProfile(props) {
   const date = new Date(props.post.createdAt).toLocaleDateString("utc", {
     year: "numeric",
     month: "short",
@@ -70,4 +70,4 @@ function SingleCommentProfile(props) {
   )
 }
 
-export default SingleCommentProfile
+export default SinglePostProfile
