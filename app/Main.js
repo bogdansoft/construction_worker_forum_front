@@ -47,6 +47,7 @@ function Main() {
     },
     flashMessages: [],
     badgeNumber: 0,
+    notificationList: [],
   };
 
   function ourReducer(state, action) {
@@ -84,6 +85,20 @@ function Main() {
       case "refreshNotifications":
         state.badgeNumber = newNotifications.length;
         return;
+      case "fetchNotifications":
+        console.log("In Reducer", action.data);
+        state.notificationList = action.data;
+        return;
+      case "updateNotifications":
+        console.log("UPDATE NOTIFICATION", action);
+        state.notificationList.unshift({
+          senderName: action.data.senderName,
+          message: action.data.message,
+          redirectTo: action.redirectTo,
+          isRead: action.data.isRead,
+        });
+
+        return;
       case "flashMessage":
         state.flashMessages.push({
           value: action.value,
@@ -99,14 +114,10 @@ function Main() {
     const jsonNotification = JSON.parse(event.data);
     let newNotificationsArray = newNotifications;
 
-    newNotificationsArray.unshift({
-      senderName: jsonNotification.senderName,
-      message: jsonNotification.message,
-      redirectTo: jsonNotification.redirectTo,
-      isRead: jsonNotification.isRead,
-    });
+    console.log("STATE NOTIFICATIONS", state.notificationList);
 
     setNewNotifications(newNotificationsArray);
+    dispatch({ type: "updateNotifications", data: jsonNotification });
     dispatch({ type: "refreshNotifications" });
 
     notification.open({
