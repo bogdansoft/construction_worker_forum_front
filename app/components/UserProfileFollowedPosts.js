@@ -14,7 +14,8 @@ export const UserProfileFollowedPosts = () => {
 
         async function fetchPosts() {
             try {
-                const response = await Axios.get(`/api/user/following_posts?userId=${appState.user.id}`, {headers: {Authorization: `Bearer ${appState.user.token}`}}, {cancelToken: ourRequest.token})
+                const userId = appState.user.id;
+                const response = await Axios.get(`/api/user/following_posts`, {headers: {Authorization: `Bearer ${appState.user.token}`}, params: {userId}}, {cancelToken: ourRequest.token})
                 setPosts(response.data)
             } catch (e) {
                 console.log("There was a problem" + e)
