@@ -9,6 +9,7 @@ import DispatchContext from "../DispatchContext"
 import UserProfileFollowedUsers from "./UserProfileFollowedUsers"
 import UserProfileFollowers from "./UserProfileFollowers"
 import FollowingUserButton from "./FollowingUserButton"
+import {UserProfileFollowedPosts} from "./UserProfileFollowedPosts";
 
 function UserProfile() {
   const navigate = useNavigate()
@@ -154,7 +155,7 @@ function UserProfile() {
                   </NavLink>
                 </div>
                 <div class="col d-flex align-self-center justify-content-center">
-                  <NavLink className="single-tab-user-profile-light-brown" to="comments">
+                  <NavLink className="single-tab-user-profile-light-brown" to="followedPosts">
                     Followed Posts
                   </NavLink>
                 </div>
@@ -166,6 +167,7 @@ function UserProfile() {
               <Route path="comments" element={<UserProfileComments />} />
               <Route path="followedUsers" element={<UserProfileFollowedUsers />} />
               <Route path="followers" element={<UserProfileFollowers />} />
+              <Route path="followedPosts" element={<UserProfileFollowedPosts />} />
             </Routes>
           </div>
         )}
