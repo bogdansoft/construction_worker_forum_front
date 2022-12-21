@@ -1,10 +1,11 @@
-import React, { useMemo } from "react";
-import { localStorageService } from "../../services/localStorageService/localStorage.service";
+import React, { useContext } from "react";
 import { NotificationProvider } from "./Notification.context";
 import { NotificationBell } from "./NotificationBell";
+import StateContext from "../../StateContext";
 
 function Notifications() {
-  const currentUser = useMemo(() => localStorageService.getUser(), []);
+  const appState = useContext(StateContext);
+  const currentUser = appState.user;
 
   return (
     <NotificationProvider>
