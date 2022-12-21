@@ -3,10 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import DispatchContext from "../DispatchContext";
 import { CSSTransition } from "react-transition-group";
 import StateContext from "../StateContext";
-import { Badge, List, Popover } from "antd";
-import { BellOutlined } from "@ant-design/icons";
+import Notifications from "./notifications/Notifications";
 
-function NavbarLoggedIn(props) {
+function NavbarLoggedIn() {
   const appDispatch = useContext(DispatchContext);
   const appState = useContext(StateContext);
   const navigate = useNavigate();
@@ -61,43 +60,6 @@ function NavbarLoggedIn(props) {
     );
   }
 
-  const notificationTitle = (
-    <span>
-      <b>Notifications</b>
-    </span>
-  );
-
-  const notificationList = (
-    <div>
-      <List
-        dataSource={props.newNotificationsArray}
-        renderItem={(item) => (
-          <List.Item
-            className="item-not-read mt-2"
-            onClick={(e) => {
-              handleItemClick(item);
-              if (item.isRead) e.currentTarget.style.backgroundColor = "white";
-            }}
-          >
-            <b>{item.senderName}</b> {item.message}
-          </List.Item>
-        )}
-      />
-    </div>
-  );
-
-  const handleItemClick = (notification) => {
-    notification.isRead = true;
-  };
-
-  const rendererBadge = () => {
-    return (
-      <Badge offset={[-4, 6]} count={appState.badgeNumber}>
-        <BellOutlined style={{ fontSize: "34px", color: "" }} />
-      </Badge>
-    );
-  };
-
   return (
     <div className="mt-3">
       <nav className="nav container d-flex flex-row p-4">
@@ -144,16 +106,7 @@ function NavbarLoggedIn(props) {
                 chat{" "}
               </span>
             </Link>
-            <div className="mr-3">
-              <Popover
-                placement="bottomRight"
-                title={notificationTitle}
-                content={notificationList}
-                trigger="click"
-              >
-                {rendererBadge()}
-              </Popover>
-            </div>
+            <Notifications />
             <div className="relative">
               <span
                 onClick={toggleProfileOptions}

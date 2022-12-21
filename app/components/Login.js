@@ -2,24 +2,18 @@ import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Axios from "axios";
 import DispatchContext from "../DispatchContext";
-import StateContext from "../StateContext";
 
 function Login() {
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
   const navigate = useNavigate();
   const appDispatch = useContext(DispatchContext);
-  const appState = useContext(StateContext);
 
   async function handleSubmit(e) {
     e.preventDefault();
 
     try {
       const response = await Axios.post("/api/login", { username, password });
-      const notifications = await Axios.get(
-        `https://localhost:444/notification-service/all?userId=${response.data.id}`
-      );
-      console.log("AFTER AXIOS", notifications.data);
 
       if (response.data) {
         appDispatch({ type: "login", data: response.data });
@@ -29,10 +23,6 @@ function Login() {
           messageType: "message-green",
         });
         navigate("/");
-      }
-      if (notifications.data) {
-        console.log("BEFORE APP DISPATCH", notifications.data);
-        appDispatch({ type: "fetchNotifications", data: notifications.data });
       }
     } catch (e) {
       if (e.response.status === 401 || e.response.status === 400) {

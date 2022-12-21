@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useImmerReducer } from "use-immer";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import jwtDecode from "jwt-decode";
@@ -25,13 +25,10 @@ import ViewSingleTopic from "./components/ViewSingleTopic";
 import NotFound from "./components/NotFound";
 import Logout from "./components/Logout";
 import Chat from "./components/chat/Chat";
-import { notification } from "antd";
 
 Axios.defaults.baseURL = "https://localhost:443";
 
 function Main() {
-  const [newNotifications, setNewNotifications] = useState([]);
-
   const initialState = {
     loggedIn: Boolean(localStorage.getItem("constructionForumUserId")),
     searchIsOpen: false,
@@ -46,8 +43,6 @@ function Main() {
       isSupport: false,
     },
     flashMessages: [],
-    badgeNumber: 0,
-    notificationList: [],
   };
 
   function ourReducer(state, action) {
@@ -82,23 +77,6 @@ function Main() {
       case "closeMenu":
         state.menuIsOpen = false;
         return;
-      case "refreshNotifications":
-        state.badgeNumber = newNotifications.length;
-        return;
-      case "fetchNotifications":
-        console.log("In Reducer", action.data);
-        state.notificationList = action.data;
-        return;
-      case "updateNotifications":
-        console.log("UPDATE NOTIFICATION", action);
-        state.notificationList.unshift({
-          senderName: action.data.senderName,
-          message: action.data.message,
-          redirectTo: action.redirectTo,
-          isRead: action.data.isRead,
-        });
-
-        return;
       case "flashMessage":
         state.flashMessages.push({
           value: action.value,
@@ -109,61 +87,6 @@ function Main() {
   }
 
   const [state, dispatch] = useImmerReducer(ourReducer, initialState);
-
-  const handleNotification = (event) => {
-    const jsonNotification = JSON.parse(event.data);
-    let newNotificationsArray = newNotifications;
-
-    console.log("STATE NOTIFICATIONS", state.notificationList);
-
-    setNewNotifications(newNotificationsArray);
-    dispatch({ type: "updateNotifications", data: jsonNotification });
-    console.log("STATE NOTIFICATIONS AFTER UPDATE", state.notificationList);
-    dispatch({ type: "refreshNotifications" });
-
-    notification.open({
-      message: (
-        <div>
-          <b>{jsonNotification.senderName}</b> {jsonNotification.message}
-        </div>
-      ),
-      placement: "topLeft",
-      duration: 5,
-      onClick: () => {
-        redirectTo(jsonNotification.redirectTo);
-      },
-    });
-  };
-
-  //TODO use navigate?
-  const redirectTo = (url) => {
-    window.location.href = url;
-  };
-
-  useEffect(() => {
-    if (state.loggedIn) {
-      let notificationListener = new EventSource(
-        `https://localhost:444/notification-service/stream/${state.user.id}`
-      );
-
-      notificationListener.onopen = (e) => console.log("OPEN");
-      notificationListener.onerror = (e) => {
-        e.readyState === EventSource.CLOSED.valueOf()
-          ? console.log("ERROR")
-          : console.log(e);
-        notificationListener.close();
-      };
-
-      notificationListener.onmessage = (event) => {
-        handleNotification(event);
-      };
-
-      return () => {
-        // notificationListener.close();
-        console.log("Component clean up - listener closed");
-      };
-    }
-  }, [state.loggedIn]);
 
   useEffect(() => {
     if (state.loggedIn) {
@@ -189,7 +112,7 @@ function Main() {
       <DispatchContext.Provider value={dispatch}>
         <BrowserRouter>
           <FlashMessages messages={state.flashMessages} />
-          <Navbar newNotificationsArray={newNotifications} />
+          <Navbar />
           <CSSTransition
             timeout={330}
             in={state.searchIsOpen}
