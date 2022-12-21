@@ -14,12 +14,15 @@ import { Button } from "antd"
 import RefreshButton from "./RefreshButton"
 import { rgbToHex } from "@material-ui/core"
 import CommentInfoButton from "./CommentInfoButton"
+import CommentInputMobileForm from "./CommentReplyInputMobileForm"
+import CommentReplyInputMobileForm from "./CommentReplyInputMobileForm"
 
 function SingleComment(props) {
   const ref = useRef(null)
   const appDispatch = useContext(DispatchContext)
   const appState = useContext(StateContext)
   const [isEdited, setIsEdited] = useState(false)
+  const [isMobileEdited, setIsMobileEdited] = useState(false)
   const [isReplied, setIsReplied] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
   const [content, setContent] = useState(props.comment.content)
@@ -85,6 +88,7 @@ function SingleComment(props) {
       props.reload()
       appDispatch({ type: "flashMessage", value: "Comment edited !", messageType: "message-green" })
       setIsEdited(false)
+      setIsMobileEdited(false)
       if (response.status === 200) props.handleSubCommentEdit(props.comment.id, content)
     } catch (e) {
       console.log("There was a problem or the request was cancelled." + e)
@@ -96,7 +100,15 @@ function SingleComment(props) {
 
   function handleSubCommentEdit(subCommentId, subCommentNewContent) {
     if (subComments.length > 0) {
-      subComments.filter(comment => comment.id === subCommentId).at(0).content = subCommentNewContent
+      let editedSubComment = subComments.filter(comment => comment.id === subCommentId).at(0)
+      editedSubComment.content = subCommentNewContent
+      editedSubComment.updatedAt = new Date().toLocaleDateString("utc", {
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric"
+      })
     }
   }
 
@@ -138,7 +150,11 @@ function SingleComment(props) {
   }
 
   function handleUpdate() {
-    setIsEdited(prevState => !prevState)
+    if (!appState.isMobileDevice) {
+      setIsEdited(prevState => !prevState)
+    } else {
+      setIsMobileEdited(prevState => !prevState)
+    }
     reload()
     setError(false)
   }
@@ -160,7 +176,7 @@ function SingleComment(props) {
           <span onClick={deletePopup} data-for="deleteComment" data-tip="delete comment" className="material-symbols-outlined">
             delete
             <CSSTransition in={isDeleting} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-              <div class="delete-absolute col-7">
+              <div className="delete-absolute col-7">
                 <div className="delete-pop liveValidateMessage-delete ml-3">
                   <DeleteModal delete={handleDelete} noDelete={() => false} relatedItemsLength={state.subCommentsQuantity} relatedItemsType={"sub-comment"} />
                 </div>
@@ -197,14 +213,34 @@ function SingleComment(props) {
       )
   }
 
+  function showLikeButton() {
+    return (
+      <div className="pl-2 d-flex">
+        <a
+          onClick={
+            !state.isCommentOwnedByUser
+              ? () =>
+                  setState(draft => {
+                    draft.like++
+                  })
+              : null
+          }
+        >
+          <LikeButton isLiked={state.isCommentLikedByUser} isOwner={state.isCommentOwnedByUser} isCommentType={true} likesCount={state.commentLikesCount}></LikeButton>
+        </a>
+      </div>
+    )
+  }
+
   function getSubCommentStyle() {
     if (!appState.isMobileDevice) {
       return {
-        maxWidth: maxWidth - 100
+        maxWidth: maxWidth - 100,
+        minWidth: maxWidth - 170
       }
     } else {
       return {
-        width: "80%"
+        width: maxWidth - 45
       }
     }
   }
@@ -218,7 +254,9 @@ function SingleComment(props) {
   }, [state.subCommentsQuantity])
 
   useEffect(() => {
-    if (ref.current) setMaxWidth(ref.current.getBoundingClientRect().width)
+    if (ref.current) {
+      setMaxWidth(ref.current.getBoundingClientRect().width)
+    }
   }, [])
 
   useEffect(() => {
@@ -303,16 +341,16 @@ function SingleComment(props) {
   return (
     <div>
       <div ref={ref} className="single-topic container d-flex mt-4">
-        <div className="profile-avatar">
-          <div className="material-symbols-outlined mr-3"></div>
-        </div>
-
+        {!appState.isMobileDevice ? (
+          <div className="profile-avatar">
+            <div className="material-symbols-outlined mr-3"></div>
+          </div>
+        ) : null}
         <div className="mobile-toggle">
           <Link to={`/profile/${props.comment.user.username}`}>
             <span>{props.comment.user.username}</span>
           </Link>
         </div>
-
         <div className="d-flex container">
           <div className="single-topic-content container d-flex p-2 align-items-center col-11">
             {!isEdited && (
@@ -322,55 +360,52 @@ function SingleComment(props) {
                   <div className="container"></div>
                 </div>
                 <div className="ml-auto mr-3"></div>
+                {appState.isMobileDevice ? <div className="mt-2" style={{ border: "1px solid black" }}></div> : null}
                 <div className="d-flex pl-1 mt-2 align-items-center justify-content-center">
                   <CommentInfoButton createdAt={props.comment.createdAt} updatedAt={props.comment.updatedAt} />
                   {showReplyButton()}
                   {showEditButton()}
                   {showDeleteButton()}
+                  {appState.isMobileDevice ? showLikeButton() : null}
                 </div>
               </div>
             )}
-            {isEdited && (
-              <form onSubmit={handleEditSubmit} className="d-flex ml-auto mr-auto align-items-center container">
-                <div className="container">
-                  <input onChange={e => setContent(e.target.value)} value={content} type="text" className="container single-topic-content"></input>
-                  <CSSTransition in={error} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-                    <div className="alert alert-danger small liveValidateMessage">Comment must be at least 2 characters long</div>
-                  </CSSTransition>
-                </div>
-                <div className="ml-auto mr-4">
-                  <button type="submit" className="material-symbols-outlined">
-                    send
-                  </button>
-                </div>
-              </form>
-            )}
+            {isEdited ||
+              (isMobileEdited &&
+                (!appState.isMobileDevice ? (
+                  <form onSubmit={handleEditSubmit} className="d-flex ml-auto mr-auto align-items-center container">
+                    <div className="container">
+                      <input onChange={e => setContent(e.target.value)} value={content} type="text" className="container single-topic-content" style={{ backgroundColor: "black", border: "1px solid orange", borderRadius: "15px" }}></input>
+                      <CSSTransition in={error} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+                        <div className="alert alert-danger small liveValidateMessage">Comment must be at least 2 characters long</div>
+                      </CSSTransition>
+                    </div>
+                    <div className="ml-auto mr-4">
+                      <button type="submit" className="material-symbols-outlined">
+                        send
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  <CommentReplyInputMobileForm />
+                )))}
           </div>
-          <div className="col-1 d-flex">
-            <a
-              onClick={
-                !state.isCommentOwnedByUser
-                  ? () =>
-                      setState(draft => {
-                        draft.like++
-                      })
-                  : null
-              }
-            >
-              <LikeButton isLiked={state.isCommentLikedByUser} isOwner={state.isCommentOwnedByUser} isCommentType={true} likesCount={state.commentLikesCount}></LikeButton>
-            </a>
-          </div>
+          {!appState.isMobileDevice ? showLikeButton() : null}
         </div>
       </div>
-      {isReplied && (
-        <div className="container">
-          <CreateCommentReplyForm targetObject={props.comment} onSubmit={setNewSubComment} />
-        </div>
-      )}
+      {isReplied &&
+        (!appState.isMobileDevice ? (
+          <div className="container">
+            <CreateCommentReplyForm targetObject={props.comment} onSubmit={setNewSubComment} />
+          </div>
+        ) : (
+          <CommentReplyInputMobileForm targetObject={props.comment} onSubmit={setNewSubComment} />
+        ))}
       {state.subCommentsQuantity > 0 && (
         <div className="p-1">
           <Button
-            className="btn d-flex ml-auto mr-auto sub-comment-button"
+            className="btn d-flex ml-auto mr-auto sub-comment-button justify-content-center"
+            style={appState.isMobileDevice ? { width: "130px", height: "20px", fontSize: "10px", color: "white" } : null}
             onClick={
               !state.loadSubComments
                 ? () =>

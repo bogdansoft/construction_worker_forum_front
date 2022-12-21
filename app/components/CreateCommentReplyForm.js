@@ -29,11 +29,7 @@ function CreateCommentReplyForm(props) {
   useEffect(() => {
     if (ref.current) {
       const currentWidth = ref.current.getBoundingClientRect().width
-
-      appState.isMobileDevice ? setMaxWidth(currentWidth) : setMaxWidth(currentWidth - 200)
-      console.log("Div width = ", ref.current.getBoundingClientRect())
-      console.log("Windows size = ", window.innerWidth)
-      console.log("Is mobile device = ", appState.isMobileDevice)
+      appState.isMobileDevice ? setMaxWidth(currentWidth - 50) : setMaxWidth(currentWidth - 200)
     }
   }, [])
 
@@ -90,11 +86,8 @@ function CreateCommentReplyForm(props) {
     })
   }
 
-  //style={{ height: "100px" }}
-  //style={{ width: "600px" }}
-
   return (
-    <div className="p-2 ml-4" ref={ref} style={{ height: "100px" }}>
+    <div className="p-2" ref={ref} style={{ height: "100px" }}>
       <div className="comments-reply ml-auto mr-auto mt-auto" style={{ width: maxWidth }}>
         <form onSubmit={handleSubmit} className="d-flex align-items-center container">
           <div className="container mt-3">

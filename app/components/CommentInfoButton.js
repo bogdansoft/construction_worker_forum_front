@@ -10,12 +10,16 @@ function CommentInfoButton(props) {
   function prepareDate(date) {
     if (!date) {
       return "N/A"
+    } else if (/^\d{2}.\d{2}.\d{4}, \d{2}:\d{2}/gm.test(date)) {
+      return date
     }
 
     return new Date(date).toLocaleDateString("utc", {
       year: "numeric",
       month: "numeric",
-      day: "numeric"
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric"
     })
   }
 

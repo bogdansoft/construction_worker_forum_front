@@ -1,10 +1,13 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useContext } from "react"
 import { useState } from "react"
 import ReactTooltip from "react-tooltip"
+import StateContext from "../StateContext"
 
 function RefreshButton(props) {
+  const appState = useContext(StateContext)
   const [isDisabled, setIsDisabled] = useState(false)
   const [opacity, setOpacity] = useState(1)
+  const [buttonSize, setButtonSize] = useState()
 
   function makeButtonUnavailableFor30seconds() {
     setIsDisabled(true)
@@ -15,6 +18,12 @@ function RefreshButton(props) {
       setOpacity(1)
     }, 10000)
   }
+
+  useEffect(() => {
+    if (appState.isMobileDevice) {
+      setButtonSize("25px")
+    }
+  }, [])
 
   return (
     <div className="refresh-button-div">
@@ -27,7 +36,7 @@ function RefreshButton(props) {
         data-for="refresh"
         data-tip="refresh content"
         disabled={isDisabled}
-        style={{ opacity: opacity }}
+        style={{ opacity: opacity, fontSize: buttonSize }}
       >
         refresh
       </button>

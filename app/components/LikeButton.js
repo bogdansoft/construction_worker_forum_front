@@ -9,6 +9,8 @@ function LikeButton(props) {
   const [animationTrigger, setAnimationTrigger] = useState(0)
   const [buttonSize, setButtonSize] = useState()
   const [counterSize, setCounterSize] = useState()
+  const counterStyle = { fontSize: counterSize, fontFamily: "Cursive", color: "black" }
+  const mobileStyle = { paddingLeft: "15px", backgroundColor: "orange", border: "1px solid black", borderRadius: "15px" }
 
   function adjustButtonSize() {
     if (appState.isMobileDevice && props.isCommentType) {
@@ -20,7 +22,7 @@ function LikeButton(props) {
 
   function adjustCounterSize() {
     if (appState.isMobileDevice && props.isCommentType) {
-      setCounterSize("13px")
+      setCounterSize("10px")
     } else {
       setCounterSize("18px")
     }
@@ -45,9 +47,11 @@ function LikeButton(props) {
 
   if (props.isOwner) {
     return (
-      <div className={appState.isMobileDevice ? "" : "d-flex"}>
-        <a style={{ fontSize: counterSize }}>{props.likesCount}</a>
-        <span type="like" className="material-symbols-outlined mr-3" style={{ color: "gray", cursor: "none", fontSize: buttonSize }}>
+      <div className="d-flex" style={appState.isMobileDevice && props.isCommentType ? mobileStyle : null}>
+        <a className="mr-1" style={counterStyle}>
+          {props.likesCount}
+        </a>
+        <span type="like" className="material-symbols-outlined mr-3" style={{ color: "gray", cursor: "not-allowed", fontSize: buttonSize }}>
           thumb_up
         </span>
       </div>
@@ -55,8 +59,10 @@ function LikeButton(props) {
   }
 
   return (
-    <div className={appState.isMobileDevice ? "" : "d-flex"}>
-      <a style={{ fontSize: counterSize }}>{props.likesCount}</a>
+    <div className="d-flex" style={appState.isMobileDevice && props.isCommentType ? mobileStyle : null}>
+      <a className="mr-1" style={counterStyle}>
+        {props.likesCount}
+      </a>
       <span type="like" className="material-symbols-outlined mr-3" data-tip="Like post!" data-for="like" style={{ animation: animation, color: color, fontSize: buttonSize }} anim>
         thumb_up
       </span>
