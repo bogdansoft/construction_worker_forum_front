@@ -16,6 +16,8 @@ import { rgbToHex } from "@material-ui/core"
 import CommentInfoButton from "./CommentInfoButton"
 import CommentInputMobileForm from "./CommentReplyInputMobileForm"
 import CommentReplyInputMobileForm from "./CommentReplyInputMobileForm"
+import CommentEditInputMobileForm from "./CommentEditInputMobileForm"
+import { useCallback } from "react"
 
 function SingleComment(props) {
   const ref = useRef(null)
@@ -33,6 +35,7 @@ function SingleComment(props) {
   const [isPrimaryComment, setIsPrimaryComment] = useState(props.comment.parentComment === null)
   const [isInitialSubCommentsFetching, setIsInitialSubCommentsFetching] = useState(true)
   const [refreshRequest, setRefreshRequest] = useState(false)
+  const [iconsStyleForMobile, setIconsStyleForMobile] = useState({})
   const token = localStorage.getItem("constructionForumUserToken")
 
   const [state, setState] = useImmer({
@@ -67,9 +70,12 @@ function SingleComment(props) {
     }
   }
 
-  async function handleEditSubmit(e) {
+  async function handleEditSubmit(e, contentFromMobileComponent) {
     e.preventDefault()
-    if (content.length <= 2) {
+    let editedContent = content
+    if (contentFromMobileComponent != null) {
+      editedContent = contentFromMobileComponent
+    } else if (content.length <= 2) {
       setError(true)
       return
     }
@@ -79,7 +85,7 @@ function SingleComment(props) {
         `/api/comment/${props.comment.id}`,
         {
           userId: props.comment.user.id,
-          content,
+          content: editedContent,
           postId: props.comment.post.id
         },
         { headers: { Authorization: `Bearer ${token}` } },
@@ -89,8 +95,15 @@ function SingleComment(props) {
       appDispatch({ type: "flashMessage", value: "Comment edited !", messageType: "message-green" })
       setIsEdited(false)
       setIsMobileEdited(false)
-      if (response.status === 200) props.handleSubCommentEdit(props.comment.id, content)
+
+      if (response.status === 200) {
+        setContent(editedContent)
+        props.handleSubCommentEdit(props.comment.id, editedContent)
+      }
     } catch (e) {
+      if (e.response.status === 404) {
+        alert("Problem occured. Most probably this comment has been deleted. Please refresh the page.")
+      }
       console.log("There was a problem or the request was cancelled." + e)
     }
     return () => {
@@ -153,7 +166,7 @@ function SingleComment(props) {
     if (!appState.isMobileDevice) {
       setIsEdited(prevState => !prevState)
     } else {
-      setIsMobileEdited(prevState => !prevState)
+      setIsMobileEdited(true)
     }
     reload()
     setError(false)
@@ -192,7 +205,7 @@ function SingleComment(props) {
     if (appState.user.id == props.comment.user.id) {
       return (
         <div className="icon-black" data-for="edit" data-tip="edit comment">
-          <span onClick={handleUpdate} className="material-symbols-outlined">
+          <span onClick={handleUpdate} className="material-symbols-outlined" style={iconsStyleForMobile}>
             edit
           </span>
           <ReactTooltip id="edit" className="custom-tooltip" />
@@ -205,7 +218,7 @@ function SingleComment(props) {
     if (isPrimaryComment)
       return (
         <div className="icon-black" data-for="reply" data-tip="reply to comment">
-          <span onClick={handleReply} className="material-symbols-outlined">
+          <span onClick={handleReply} className="material-symbols-outlined" style={iconsStyleForMobile}>
             reply
           </span>
           <ReactTooltip id="reply" className="custom-tooltip" />
@@ -244,6 +257,21 @@ function SingleComment(props) {
       }
     }
   }
+
+  useEffect(() => {
+    if (props.parentRefreshRequest) {
+      setRefreshRequest(true)
+      reload()
+    }
+  }, [props.parentRefreshRequest])
+
+  useEffect(() => {
+    if (appState.mobileInputRenderCounter > 0) {
+      setIconsStyleForMobile({ pointerEvents: "none", opacity: "0.4" })
+    } else {
+      setIconsStyleForMobile({})
+    }
+  }, [appState.mobileInputRenderCounter])
 
   useEffect(() => {
     if (state.subCommentsQuantity == 0) {
@@ -370,25 +398,24 @@ function SingleComment(props) {
                 </div>
               </div>
             )}
-            {isEdited ||
-              (isMobileEdited &&
-                (!appState.isMobileDevice ? (
-                  <form onSubmit={handleEditSubmit} className="d-flex ml-auto mr-auto align-items-center container">
-                    <div className="container">
-                      <input onChange={e => setContent(e.target.value)} value={content} type="text" className="container single-topic-content" style={{ backgroundColor: "black", border: "1px solid orange", borderRadius: "15px" }}></input>
-                      <CSSTransition in={error} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-                        <div className="alert alert-danger small liveValidateMessage">Comment must be at least 2 characters long</div>
-                      </CSSTransition>
-                    </div>
-                    <div className="ml-auto mr-4">
-                      <button type="submit" className="material-symbols-outlined">
-                        send
-                      </button>
-                    </div>
-                  </form>
-                ) : (
-                  <CommentReplyInputMobileForm />
-                )))}
+            {(isEdited || isMobileEdited) &&
+              (!appState.isMobileDevice ? (
+                <form onSubmit={handleEditSubmit} className="d-flex ml-auto mr-auto align-items-center container">
+                  <div className="container">
+                    <input onChange={e => setContent(e.target.value)} value={content} type="text" className="container single-topic-content" style={{ backgroundColor: "black", border: "1px solid darkorange", borderRadius: "15px" }}></input>
+                    <CSSTransition in={error} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+                      <div className="alert alert-danger small liveValidateMessage">Comment must be at least 2 characters long</div>
+                    </CSSTransition>
+                  </div>
+                  <div className="ml-auto mr-4">
+                    <button type="submit" className="material-symbols-outlined">
+                      send
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <CommentEditInputMobileForm handleEditSubmit={handleEditSubmit} value={content} setIsMobileEdited={setIsMobileEdited} />
+              ))}
           </div>
           {!appState.isMobileDevice ? showLikeButton() : null}
         </div>

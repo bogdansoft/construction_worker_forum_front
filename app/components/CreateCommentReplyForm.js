@@ -29,7 +29,7 @@ function CreateCommentReplyForm(props) {
   useEffect(() => {
     if (ref.current) {
       const currentWidth = ref.current.getBoundingClientRect().width
-      appState.isMobileDevice ? setMaxWidth(currentWidth - 50) : setMaxWidth(currentWidth - 200)
+      setMaxWidth(currentWidth - 200)
     }
   }, [])
 

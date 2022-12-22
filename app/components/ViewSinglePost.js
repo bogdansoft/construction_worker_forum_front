@@ -13,6 +13,7 @@ import LikeButton from "./LikeButton"
 import RenderAvatar from "./Avatar"
 import DeleteModal from "./DeleteModal"
 import CreateCommentForm from "./CreateCommentForm"
+import RefreshButton from "./RefreshButton"
 
 function ViewSinglePost() {
   const navigate = useNavigate()
@@ -20,6 +21,7 @@ function ViewSinglePost() {
   const [post, setPost] = useState([])
   const [comments, setComments] = useState([])
   const [newComment, setNewComment] = useState()
+  const [refreshRequest, setRefreshRequest] = useState(false)
   const loggedIn = Boolean(localStorage.getItem("constructionForumUserToken"))
   const appDispatch = useContext(DispatchContext)
   const appState = useContext(StateContext)
@@ -75,6 +77,7 @@ function ViewSinglePost() {
       try {
         const response = await Axios.get(`/api/comment/post/${id}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
         setComments(extractOnlyPrimaryComments(response.data))
+        setRefreshRequest(false)
       } catch (e) {
         console.log("There was a problem or the request was cancelled." + e)
       }
@@ -147,6 +150,13 @@ function ViewSinglePost() {
 
   function handleFocus(componentOnFocus) {
     setFocus(componentOnFocus)
+  }
+
+  function handleRefreshContent(shouldRefreshContent) {
+    if (shouldRefreshContent) {
+      setRefreshRequest(true)
+      reload()
+    }
   }
 
   function reload() {
@@ -278,7 +288,8 @@ function ViewSinglePost() {
         <>
           <CreateCommentForm targetId={id} onSubmit={setNewComment} handleFocus={handleFocus} />
           <div className="comments d-flex flex-column ml-auto mr-auto col-11 mt-5" style={focus ? { opacity: 0.5 } : {}}>
-            {comments.length > 0 ? comments.map(comment => <SingleComment comment={comment} key={comment.id} reload={reload} />) : <div className="single-topic container d-flex mt-4">No comments yet!</div>}
+            <RefreshButton handleRefreshContent={handleRefreshContent} />
+            {comments.length > 0 ? comments.map(comment => <SingleComment comment={comment} key={comment.id} reload={reload} parentRefreshRequest={refreshRequest} />) : <div className="single-topic container d-flex mt-4 justify-content-center">No comments yet!</div>}
           </div>
         </>
       ) : null}

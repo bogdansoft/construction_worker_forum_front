@@ -34,6 +34,7 @@ function Main() {
     searchIsOpen: false,
     menuIsOpen: false,
     isMobileDevice: window.innerWidth < 900,
+    mobileInputRenderCounter: 0,
     user: {
       id: localStorage.getItem("constructionForumUserId"),
       username: localStorage.getItem("constructionForumUsername"),
@@ -71,6 +72,14 @@ function Main() {
         return
       case "closeSearch":
         state.searchIsOpen = false
+        return
+      case "openMobileInput":
+        state.mobileInputRenderCounter = 1
+        console.log("I SHOULD INCREASE COUNTER", state.mobileInputRenderCounter)
+        return
+      case "closeMobileInput":
+        state.mobileInputRenderCounter = 0
+        console.log("I SHOULD DECREASE COUNTER", state.mobileInputRenderCounter)
         return
       case "toggleMenu":
         state.menuIsOpen = !state.menuIsOpen
