@@ -106,7 +106,9 @@ function NavbarLoggedIn() {
                 chat{" "}
               </span>
             </Link>
-            <Notifications />
+            <div className="mr-3">
+              <Notifications />
+            </div>
             <div className="relative">
               <span
                 onClick={toggleProfileOptions}
