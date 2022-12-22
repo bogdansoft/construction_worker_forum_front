@@ -27,12 +27,23 @@ function ViewSinglePost() {
   const appState = useContext(StateContext)
   const [isDeleting, setIsDeleting] = useState(false)
   const [focus, setFocus] = useState(true)
-
+  const [color, setColor] = useState("")
   const [state, setState] = useImmer({
     author: "",
     postLikesCount: 0,
     isPostLikedByUser: false,
     isPostOwnedByUser: false,
+    isPostBookmarkedByUser: false,
+    commentToAdd: {
+      content: "",
+      userId: localStorage.getItem("constructionForumUserId"),
+      token: localStorage.getItem("constructionForumUserToken"),
+      postId: id,
+      listener: 0,
+      sendCount: 0,
+      hasErrors: false,
+      message: ""
+    },
     isLoading: true,
     notFound: false,
     reloadCounter: 0,
@@ -42,6 +53,7 @@ function ViewSinglePost() {
   useEffect(() => {
     appDispatch({ type: "closeSearch" })
     const ourRequest = Axios.CancelToken.source()
+
     async function fetchPost() {
       try {
         const response = await Axios.get(`/api/post/${id}`, { cancelToken: ourRequest.token })
@@ -51,6 +63,7 @@ function ViewSinglePost() {
           draft.postLikesCount = response.data.likers.length
           draft.isPostLikedByUser = response.data.likers.filter(user => user.id == appState.user.id).length > 0
           draft.isPostOwnedByUser = response.data.user.id == appState.user.id
+          draft.isPostBookmarkedByUser = response.data.followers.filter(user => user.id == appState.user.id).length > 0
           draft.isLoading = false
         })
       } catch (e) {
@@ -64,7 +77,9 @@ function ViewSinglePost() {
           navigate(`/`)
         }
       }
+      console.log(state.isPostBookmarkedByUser)
     }
+
     fetchPost()
     return () => {
       ourRequest.cancel()
@@ -88,6 +103,43 @@ function ViewSinglePost() {
       ourRequest.cancel()
     }
   }, [id, state.reloadCounter])
+
+  useEffect(() => {
+    if (state.commentToAdd.listener) {
+      const ourRequest = Axios.CancelToken.source()
+
+      async function postComment() {
+        try {
+          const response = await Axios.post(
+            `/api/comment`,
+            {
+              content: state.commentToAdd.content,
+              postId: state.commentToAdd.postId,
+              userId: state.commentToAdd.userId
+            },
+            { headers: { Authorization: `Bearer ${state.commentToAdd.token}` } },
+            { cancelToken: ourRequest.token }
+          )
+          appDispatch({
+            type: "flashMessage",
+            value: "Comment successfully created !",
+            messageType: "message-green"
+          })
+          setComments(comments.concat(response.data))
+        } catch (e) {
+          console.log("There was a problem or the request was cancelled." + e)
+        }
+      }
+
+      setState(draft => {
+        draft.commentToAdd.content = ""
+      })
+      postComment()
+      return () => {
+        ourRequest.cancel()
+      }
+    }
+  }, [state.commentToAdd.listener])
 
   useEffect(() => {
     if (state.like) {
@@ -123,18 +175,47 @@ function ViewSinglePost() {
     }
   }, [state.like])
 
-  useEffect(() => {
-    if (newComment) {
-      setComments(comments.concat(newComment))
-      setNewComment(null)
+  async function changeBookmark() {
+    const ourRequest = Axios.CancelToken.source()
+    try {
+      if (!state.isPostBookmarkedByUser) {
+        await Axios.post(`/api/post/follow?userId=${appState.user.id}&postId=${id}`, {}, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+        appDispatch({
+          type: "flashMessage",
+          value: "Post bookmarked successfully!",
+          messageType: "message-green"
+        })
+        setState(draft => {
+          draft.isPostBookmarkedByUser = true
+        })
+      } else {
+        await Axios.delete(`/api/post/follow?userId=${appState.user.id}&postId=${id}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
+        appDispatch({
+          type: "flashMessage",
+          value: "Post unbookmarked successfully!",
+          messageType: "message-green"
+        })
+        setState(draft => {
+          draft.isPostBookmarkedByUser = false
+        })
+      }
+    } catch (e) {
+      console.log("There was a problem or the request was cancelled." + e)
     }
-  }, [newComment])
+    return () => {
+      ourRequest.cancel()
+    }
+  }
+
+  useEffect(() => {
+    state.isPostBookmarkedByUser ? setColor("grey") : setColor("black")
+  }, [state.isPostBookmarkedByUser])
 
   async function handleDelete() {
     const ourRequest = Axios.CancelToken.source()
     try {
       await Axios.delete(`/api/post/${id}`, { headers: { Authorization: `Bearer ${appState.user.token}` } })
-      appDispatch({ type: "flashMessage", value: "Post succesfully deleted !", messageType: "message-green" })
+      appDispatch({ type: "flashMessage", value: "Post successfully deleted !", messageType: "message-green" })
       navigate("/")
     } catch (e) {
       console.log("there was a problem deleting post" + e)
@@ -142,6 +223,20 @@ function ViewSinglePost() {
     return () => {
       ourRequest.cancel()
     }
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault()
+    if (state.commentToAdd.content.length < 2) {
+      setState(draft => {
+        draft.commentToAdd.hasErrors = true
+        draft.commentToAdd.message = "Must be at least 2 characters long"
+      })
+      return
+    }
+    setState(draft => {
+      draft.commentToAdd.listener++
+    })
   }
 
   function extractOnlyPrimaryComments(postComments) {
@@ -277,7 +372,9 @@ function ViewSinglePost() {
                   <span className="material-symbols-outlined mr-3"> chat </span>
                   <span className="material-symbols-outlined mr-3"> share </span>
                   <span className="material-symbols-outlined mr-3"> report </span>
-                  <span className="material-symbols-outlined mr-3"> bookmark </span>
+                  <span type="bookmarked" className="material-symbols-outlined mr-3" data-for="bookmark" style={{ color: color }} onClick={() => changeBookmark()}>
+                    bookmark
+                  </span>
                 </span>
               </div>
             </div>
