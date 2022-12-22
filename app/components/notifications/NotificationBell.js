@@ -17,7 +17,7 @@ export const NotificationBell = ({ currentUser }) => {
       isRead: jsonNotification.isRead,
     });
 
-    setNotifications((n) => newNotificationsArray.concat(n));
+    setNotifications((prev) => newNotificationsArray.concat(prev));
 
     notification.open({
       message: (
