@@ -14,12 +14,13 @@ function UserProfile() {
   const appState = useContext(StateContext)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const appDispatch = useContext(DispatchContext)
-
   const [state, setState] = useState({
     avatar: "https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png",
     bio: "There is no BIO yet",
     username: "",
+    accountStatus: "ACTIVE"
   })
+
   useEffect(() => {
     const ourRequest = Axios.CancelToken.source()
 
@@ -29,6 +30,7 @@ function UserProfile() {
         const response = await Axios.get(`/api/user/user?username=${username}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
         setState(response.data)
         console.log(response.data)
+        console.log(state.accountStatus)
         if (username === loggedUsername) {
           setIsLoggedIn(true)
         }
@@ -49,8 +51,9 @@ function UserProfile() {
   async function handleDelete(e) {
     e.preventDefault()
     try {
-      Axios.delete(`/api/user?username=${username}`)
+      await Axios.delete(`/api/user/delete?username=${username}`, { headers: { Authorization: `Bearer ${appState.user.token}` } })
       navigate(`/`)
+      appDispatch({ type: "logout" })
       console.log("Account deleted")
     } catch {
       console.log("There was a problem")
@@ -62,8 +65,14 @@ function UserProfile() {
   useEffect(() => {
     appDispatch({ type: "closeMenu" })
   }, [])
+
   return (
     <div className="main d-flex flex-column container">
+      {state.accountStatus === "DELETED" && (
+        <div className="relative container">
+          <div className="delete-background search-overlay">Account deleted</div>
+        </div>
+      )}
       <div className="content d-flex flex-column mt-4">
         <div className="mobile-toggle-inverse mb-5">
           {isLoggedIn && (
@@ -72,12 +81,13 @@ function UserProfile() {
             </Link>
           )}
 
-          {isLoggedIn && (
+          {isLoggedIn && state.accountStatus === "ACTIVE" && (
             <button onClick={handleDelete} className="nav-button mt-3">
               Delete account
             </button>
           )}
         </div>
+        +
         <div className="d-flex text-center align-items-start">
           <div className="d-flex flex-column align-items-center">
             <div className="profile-avatar">
@@ -90,25 +100,25 @@ function UserProfile() {
               {state.username}
             </div>
           </div>
-          {state.bio ? <div className="bioField">About me : {state.bio.length > 3 ? state.bio : null}</div> : null}
+          {state.bio ? <div className="bioField">About me : {state.bio}</div> : <div className="bioField">No BIO yet</div>}
           <div className="mobile-toggle">
             <div className="ml-4 d-flex flex-column">
               <div className="row pt-3">
-                {isLoggedIn && (
+                {isLoggedIn && state.accountStatus === "ACTIVE" && (
                   <Link className="nav-bio-button" to={`/profile/changebio/${username}`}>
                     Change BIO
                   </Link>
                 )}
               </div>
               <div className="row">
-                {isLoggedIn && (
+                {isLoggedIn && state.accountStatus === "ACTIVE" && (
                   <button onClick={handleDelete} className="nav-bio-button">
                     Delete account
                   </button>
                 )}
               </div>
               <div className="row">
-                {isLoggedIn && (
+                {isLoggedIn && state.accountStatus === "ACTIVE" && (
                   <button onClick={handleFollow} className="nav-bio-button">
                     Follow
                   </button>
@@ -117,7 +127,7 @@ function UserProfile() {
             </div>
           </div>
         </div>
-        {isLoggedIn && (
+        {isLoggedIn && state.accountStatus === "ACTIVE" && (
           <div>
             <div class="container text-center tabs-user-profile mt-3">
               <div class="row">
