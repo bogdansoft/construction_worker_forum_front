@@ -10,17 +10,14 @@ export const NotificationBell = ({ currentUser }) => {
 
   const handleServerEvent = (event) => {
     const jsonNotification = JSON.parse(event.data);
-    let newNotificationsArray = notifications;
-
-    //TODO tutaj coś nie bangla z tym unshiftem
-    newNotificationsArray.unshift({
+    let newNotificationsArray = new Array({
       senderName: jsonNotification.senderName,
       message: jsonNotification.message,
       redirectTo: jsonNotification.redirectTo,
       isRead: jsonNotification.isRead,
     });
 
-    setNotifications(newNotificationsArray);
+    setNotifications((n) => newNotificationsArray.concat(n));
 
     notification.open({
       message: (
