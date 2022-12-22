@@ -75,11 +75,9 @@ function Main() {
         return
       case "openMobileInput":
         state.mobileInputRenderCounter = 1
-        console.log("I SHOULD INCREASE COUNTER", state.mobileInputRenderCounter)
         return
       case "closeMobileInput":
         state.mobileInputRenderCounter = 0
-        console.log("I SHOULD DECREASE COUNTER", state.mobileInputRenderCounter)
         return
       case "toggleMenu":
         state.menuIsOpen = !state.menuIsOpen

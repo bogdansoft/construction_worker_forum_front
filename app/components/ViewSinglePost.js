@@ -335,7 +335,7 @@ function ViewSinglePost() {
         </div>
         {loggedIn ? (
           <div>
-            <div className="container d-flex flex-row mt-3">
+            <div className="container d-flex flex-row mt-3 ">
               <div className="d-flex keywords align-items-center">
                 {post.keywords.map(keyword => (
                   <div className="mr-2" id="post-keyword">
@@ -344,11 +344,11 @@ function ViewSinglePost() {
                 ))}
               </div>
 
-              <div className="ml-auto">
+              <div className="ml-auto" style={appState.isMobileDevice ? {} : {}}>
                 <div className="mobile-toggle-inverse">
                   <div className="container"></div>
                 </div>
-                <span className={appState.isMobileDevice ? "" : "d-flex"}>
+                <span className={appState.isMobileDevice ? "" : "d-flex"} style={appState.isMobileDevice ? { display: "inline-block", justifyItems: "center" } : {}}>
                   <a
                     onClick={
                       !state.isPostOwnedByUser
@@ -361,13 +361,14 @@ function ViewSinglePost() {
                   >
                     <LikeButton isLiked={state.isPostLikedByUser} isOwner={state.isPostOwnedByUser} likesCount={state.postLikesCount}></LikeButton>
                   </a>
-
-                  <span className="material-symbols-outlined mr-3"> chat </span>
-                  <span className="material-symbols-outlined mr-3"> share </span>
-                  <span className="material-symbols-outlined mr-3"> report </span>
+                  {appState.isMobileDevice ? <div>---------------</div> : null}
                   <span type="bookmarked" className="material-symbols-outlined mr-3" data-for="bookmark" style={{ color: color }} onClick={() => changeBookmark()}>
                     bookmark
                   </span>
+                  <span className="material-symbols-outlined mr-3"> chat </span>
+                  {appState.isMobileDevice ? <div></div> : null}
+                  <span className="material-symbols-outlined mr-3"> share </span>
+                  <span className="material-symbols-outlined mr-3"> report </span>
                 </span>
               </div>
             </div>
