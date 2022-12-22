@@ -175,6 +175,13 @@ function ViewSinglePost() {
     }
   }, [state.like])
 
+  useEffect(() => {
+    if (newComment) {
+      setComments(comments.concat(newComment))
+      setNewComment(null)
+    }
+  }, [newComment])
+
   async function changeBookmark() {
     const ourRequest = Axios.CancelToken.source()
     try {
@@ -223,20 +230,6 @@ function ViewSinglePost() {
     return () => {
       ourRequest.cancel()
     }
-  }
-
-  function handleSubmit(e) {
-    e.preventDefault()
-    if (state.commentToAdd.content.length < 2) {
-      setState(draft => {
-        draft.commentToAdd.hasErrors = true
-        draft.commentToAdd.message = "Must be at least 2 characters long"
-      })
-      return
-    }
-    setState(draft => {
-      draft.commentToAdd.listener++
-    })
   }
 
   function extractOnlyPrimaryComments(postComments) {
