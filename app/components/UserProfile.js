@@ -29,8 +29,6 @@ function UserProfile() {
       try {
         const response = await Axios.get(`/api/user/user?username=${username}`, { headers: { Authorization: `Bearer ${appState.user.token}` } }, { cancelToken: ourRequest.token })
         setState(response.data)
-        console.log(response.data)
-        console.log(state.accountStatus)
         if (username === loggedUsername) {
           setIsLoggedIn(true)
         }
