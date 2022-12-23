@@ -221,6 +221,7 @@ footer ul li {
   padding: 20px;
   border-radius: 15px;
   margin-left: 20px;
+  color: white;
 }
 .post-content h5 {
   font-weight: 600;
@@ -965,6 +966,7 @@ input:focus {
   font-size: 1em;
   font-family: "Roboto", sans-serif;
   position: absolute;
+  z-index: 1;
 }
 .delete-pop {
   background-color: white;
@@ -1021,6 +1023,7 @@ input:focus {
     margin-left: auto;
     margin-right: auto;
     font-size: 0.8rem;
+    color: white;
   }
   .single-post-layout-row {
     display: flex;

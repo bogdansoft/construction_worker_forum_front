@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useRef } from "react"
+import React, { useEffect, useState, useContext } from "react"
 import { Link, useParams, useNavigate } from "react-router-dom"
 import ReactTooltip from "react-tooltip"
 import Axios from "axios"
@@ -272,14 +272,25 @@ function ViewSinglePost() {
 
   function showDeleteButton() {
     if (loggedIn && (appState.user.id == state.author.id || appState.user.isAdmin || appState.user.isSupport)) {
+      const windowStyle = appState.isMobileDevice
+        ? {
+            position: "absolute",
+            left: "90%",
+            top: "90%",
+            maxWidth: "75%",
+            transform: "translate(-200%, 5%)",
+            border: "1px solid black"
+          }
+        : { position: "absolute", left: "-40%", top: "-50%", border: "1px solid black" }
+
       return (
         <a>
           <span onClick={deletePopup} className="material-symbols-outlined link-black" data-tip="Delete" data-for="delete">
             delete
           </span>
           <CSSTransition in={isDeleting} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-            <div class="delete-absolute container col-5 ml-1 mt-5">
-              <div className="delete-pop col-5 p-2 liveValidateMessage-delete">
+            <div className={appState.isMobileDevice ? "delete-absolute container" : "delete-absolute container col-5 mt-2"}>
+              <div className="delete-pop col-6 liveValidateMessage-delete" style={windowStyle}>
                 <DeleteModal delete={handleDelete} noDelete={deletePopup} relatedItemsLength={comments.length} relatedItemsType={"primary comment"} />
               </div>
             </div>

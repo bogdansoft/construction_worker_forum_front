@@ -89,6 +89,10 @@ function CommentReplyInputMobileForm(props) {
     setState(draft => {
       draft.commentToAdd.listener++
     })
+    if (!state.hasErrors) {
+      appDispatch({ type: "closeMobileInput" })
+      setCanBeRendered(true)
+    }
   }
 
   if (isFocused && canBeRendered) {
@@ -126,15 +130,7 @@ function CommentReplyInputMobileForm(props) {
               <div className="alert alert-danger small liveValidateMessage ml-3">{state.commentToAdd.message}</div>
             </CSSTransition>
             <div className="ml-auto mr-4 mt-4">
-              <button
-                onClick={() => {
-                  appDispatch({ type: "closeMobileInput" })
-                  setCanBeRendered(true)
-                }}
-                type="submit"
-                className="material-symbols-outlined"
-                style={{ fontSize: "40px", marginBottom: "25px" }}
-              >
+              <button type="submit" className="material-symbols-outlined" style={{ fontSize: "40px", marginBottom: "25px" }}>
                 send
               </button>
             </div>

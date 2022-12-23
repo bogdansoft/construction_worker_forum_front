@@ -14,10 +14,8 @@ import { Button } from "antd"
 import RefreshButton from "./RefreshButton"
 import { rgbToHex } from "@material-ui/core"
 import CommentInfoButton from "./CommentInfoButton"
-import CommentInputMobileForm from "./CommentReplyInputMobileForm"
 import CommentReplyInputMobileForm from "./CommentReplyInputMobileForm"
 import CommentEditInputMobileForm from "./CommentEditInputMobileForm"
-import { useCallback } from "react"
 
 function SingleComment(props) {
   const ref = useRef(null)
@@ -183,14 +181,24 @@ function SingleComment(props) {
   }
 
   function showDeleteButton() {
-    if (appState.user.id == props.comment.user.id || appState.user.isAdmin || appState.user.isSupport)
+    if (appState.user.id == props.comment.user.id || appState.user.isAdmin || appState.user.isSupport) {
+      const windowStyle = appState.isMobileDevice
+        ? {
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-46%, 5%)",
+            border: "1px solid black"
+          }
+        : {}
+
       return (
         <div className="icon-black">
           <span onClick={deletePopup} data-for="deleteComment" data-tip="delete comment" className="material-symbols-outlined">
             delete
             <CSSTransition in={isDeleting} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-              <div className="delete-absolute col-7">
-                <div className="delete-pop liveValidateMessage-delete ml-3">
+              <div className={appState.isMobileDevice ? "delete-absolute" : "delete-absolute col-6"}>
+                <div className="delete-pop liveValidateMessage-delete d-xl-inline-flex mt-1" style={windowStyle}>
                   <DeleteModal delete={handleDelete} noDelete={() => false} relatedItemsLength={state.subCommentsQuantity} relatedItemsType={"sub-comment"} />
                 </div>
               </div>
@@ -199,6 +207,7 @@ function SingleComment(props) {
           <ReactTooltip id="deleteComment" className="custom-tooltip" />
         </div>
       )
+    }
   }
 
   function showEditButton() {

@@ -26,7 +26,7 @@ function CommentInfoButton(props) {
   function showInfoArea() {
     if (showInfo)
       return (
-        <div className="delete-pop liveValidateMessage-delete" style={{ border: "1px solid black", fontSize: "15px" }}>
+        <div className="delete-pop liveValidateMessage-delete" style={{ border: "1px solid black", fontSize: "15px", zIndex: 1 }}>
           <div>
             Created: <b>{prepareDate(createDate)}</b>
           </div>
@@ -40,7 +40,7 @@ function CommentInfoButton(props) {
 
   return (
     <div className="icon-black">
-      <span onMouseEnter={() => setShowInfo(true)} onMouseLeave={() => setShowInfo(false)} data-for="info" data-tip="info" className="material-symbols-outlined">
+      <span onMouseEnter={() => setShowInfo(true)} onMouseLeave={() => setShowInfo(false)} data-for="info" data-tip="info" className="material-symbols-outlined" style={{ cursor: "default" }}>
         info
         <CSSTransition in={showInfo} timeout={330} classNames="liveValidateMessage" unmountOnExit>
           <div class="delete-absolute">
