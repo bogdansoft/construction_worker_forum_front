@@ -29,6 +29,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-easy-crop": "^4.6.1",
+    "react-infinite-scroll-component": "^6.1.0",
     "react-router": "^6.4.2",
     "react-router-dom": "^6.4.2",
     "react-stomp": "^5.1.0",
