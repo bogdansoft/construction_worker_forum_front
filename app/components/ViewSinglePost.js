@@ -281,7 +281,7 @@ function ViewSinglePost() {
             transform: "translate(-200%, 5%)",
             border: "1px solid black"
           }
-        : { position: "absolute", left: "-40%", top: "-50%", border: "1px solid black" }
+        : { position: "absolute", left: "-42%", top: "-50%", border: "1px solid black" }
 
       return (
         <a>
