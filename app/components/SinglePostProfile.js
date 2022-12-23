@@ -7,7 +7,7 @@ import DeleteModal from "./DeleteModal"
 import ReactTooltip from "react-tooltip"
 import { CSSTransition } from "react-transition-group"
 
-function SingleCommentProfile(props) {
+function SinglePostProfile(props) {
   const date = new Date(props.post.createdAt).toLocaleDateString("utc", {
     year: "numeric",
     month: "short",
@@ -17,7 +17,8 @@ function SingleCommentProfile(props) {
   const appDispatch = useContext(DispatchContext)
   const [isDeleting, setIsDeleting] = useState(false)
 
-  async function handleDelete() {
+  async function handleDelete(e) {
+    e.preventDefault()
     const ourRequest = Axios.CancelToken.source()
     try {
       await Axios.delete(`/api/post/${props.post.id}`, { headers: { Authorization: `Bearer ${appState.user.token}` } })
@@ -45,8 +46,10 @@ function SingleCommentProfile(props) {
           <span className="ml-3">Created: {date}</span>
         </div>
         <div className="icon-black">
-          <Link to={`/post/edit/${props.post.id}`} data-tip="Edit" data-for="edit" className="text-primary mr-2">
-            <span className="material-symbols-outlined link-black"> edit </span>
+          <Link to={`/post/edit/${props.post.id}`} className="text-primary mr-2">
+            <span className="material-symbols-outlined link-black" data-tip="Edit" data-for="edit">
+              edit
+            </span>
           </Link>
           <ReactTooltip id="edit" className="custom-tooltip" />
           <span onClick={deletePopup} className="material-symbols-outlined link-black" data-tip="Delete" data-for="delete">
@@ -67,4 +70,4 @@ function SingleCommentProfile(props) {
   )
 }
 
-export default SingleCommentProfile
+export default SinglePostProfile

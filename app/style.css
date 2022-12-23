@@ -1354,3 +1354,7 @@ input:focus {
     height: 600px;
   }
 }
+
+.delete-profile-followed-users {
+  left: -160px;
+}
