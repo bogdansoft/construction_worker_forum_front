@@ -1,37 +1,50 @@
 import React, { useContext, useEffect, useState } from "react";
 import NotificationContext from "./Notification.context";
-import { Badge, Divider, List, notification, Popover } from "antd";
+import { Badge, Button, List, notification, Popover } from "antd";
 import { useNavigate } from "react-router-dom";
 import { BellOutlined } from "@ant-design/icons";
-import InfiniteScroll from "react-infinite-scroll-component";
+import Axios from "axios";
 
 export const NotificationBell = ({ currentUser }) => {
   const { notifications, setNotifications } = useContext(NotificationContext);
+  const [initLoading, setInitLoading] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
-  const [pageCounter, setPageCounter] = useState(0);
+  const [list, setList] = useState([]);
+  const [pageNum, setPageNum] = useState(1);
   const navigate = useNavigate();
 
-  const loadMoreData = () => {
-    if (loading) return;
+  const url = `https://localhost:444/notification-service/notifications?userId=${currentUser.id}&page=${pageNum}`;
 
-    setLoading(true);
-    fetch(
-      `https://localhost:444/notification-service/notifications?userId=
-      ${currentUser.id}&page=${pageCounter + 1}`
-    )
-      .then((response) => response.json())
-      .then((body) => {
-        setData((prevState) => prevState.concat(body));
-        setLoading(false);
-        setPageCounter((prevState) => prevState + 1);
-      })
-      .catch(() => setLoading(false));
-  };
+  async function fetchData() {
+    Axios.get(url).then((response) => {
+      setInitLoading(false);
+      setList((prev) => [...prev, ...response.data]);
+      setPageNum((prev) => prev + 1);
+    });
+  }
 
   useEffect(() => {
-    loadMoreData();
+    fetchData();
   }, []);
+
+  const onLoadMore = () => {
+    setLoading(true);
+    fetchData().then(() => setLoading(false));
+  };
+
+  const loadMore =
+    !initLoading && !loading ? (
+      <div
+        style={{
+          textAlign: "center",
+          marginTop: 12,
+          height: 32,
+          lineHeight: "32px",
+        }}
+      >
+        <Button onClick={onLoadMore}>load more</Button>
+      </div>
+    ) : null;
 
   const handleServerEvent = (event) => {
     const jsonNotification = JSON.parse(event.data);
@@ -43,6 +56,7 @@ export const NotificationBell = ({ currentUser }) => {
     });
 
     setNotifications((prev) => newNotificationsArray.concat(prev));
+    setList((prev) => newNotificationsArray.concat(prev));
 
     notification.open({
       message: (
@@ -68,7 +82,7 @@ export const NotificationBell = ({ currentUser }) => {
       e.readyState === EventSource.CLOSED.valueOf()
         ? console.log("ERROR")
         : console.log(e);
-      connectEventListener();
+      notificationListener.close();
     };
 
     notificationListener.onmessage = (event) => {
@@ -100,38 +114,28 @@ export const NotificationBell = ({ currentUser }) => {
 
   const notificationList = (
     <div
-      id="scrollableDiv"
       style={{
-        height: 200,
+        height: 350,
+        width: 300,
         overflow: "auto",
-        padding: "0 16px",
-        border: "1px solid rgba(140, 140, 140, 0.35)",
       }}
     >
-      <InfiniteScroll
-        next={loadMoreData}
-        hasMore={data.length <= notifications.length}
-        loader={<i>Loading...</i>}
-        dataLength={data.length}
-        endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
-        scrollableTarget="scrollableDiv"
-      >
-        <List
-          dataSource={data}
-          renderItem={(item) => (
-            <List.Item
-              className="item-not-read mt-2"
-              onClick={(e) => {
-                handleItemClick(item);
-                if (item.isRead)
-                  e.currentTarget.style.backgroundColor = "white";
-              }}
-            >
-              <b>{item.senderName}</b> {item.message}
-            </List.Item>
-          )}
-        />
-      </InfiniteScroll>
+      <List
+        loading={initLoading}
+        loadMore={loadMore}
+        dataSource={list}
+        renderItem={(item) => (
+          <List.Item
+            className="item-not-read mt-2"
+            onClick={(e) => {
+              handleItemClick(item);
+              if (item.isRead) e.currentTarget.style.backgroundColor = "white";
+            }}
+          >
+            <b>{item.senderName}</b> {item.message}
+          </List.Item>
+        )}
+      />
     </div>
   );
 
