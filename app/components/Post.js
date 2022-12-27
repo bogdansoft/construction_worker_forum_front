@@ -96,11 +96,11 @@ function Post(props) {
         </div>
         <div className="container ml-auto mr-5">
           Comments: {props.post.comments.length}{" "}
-          <span className="ml-3">
-            Created: {date} By{" "}
-            <Link to={`/profile/${props.author.username}`}>
-              <h6>{props.author.username}</h6>
-            </Link>
+          <span className="ml-3 ">
+            Created: {date}
+            <h6 className="mt-2">
+              By <Link to={`/profile/${props.author.username}`}>{props.author.username}</Link>
+            </h6>
           </span>
         </div>
         <div className="mobile-toggle">

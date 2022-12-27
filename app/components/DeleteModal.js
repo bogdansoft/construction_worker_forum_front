@@ -1,3 +1,4 @@
+import { Divider } from "@material-ui/core"
 import React, { useEffect } from "react"
 
 function DeleteModal(props) {
@@ -6,7 +7,7 @@ function DeleteModal(props) {
       return (
         <h6 className="align-self-center">
           {" "}
-          You will also delete: <text style={{ color: "red", fontWeight: "bold" }}>{props.relatedItemsLength}</text> {props.relatedItemsType + "(s)!"}
+          <h6>You will also delete:</h6> <text style={{ color: "red", fontWeight: "bold" }}>{props.relatedItemsLength}</text> {props.relatedItemsType + "(s)!"}
         </h6>
       )
     }
