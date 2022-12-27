@@ -37,7 +37,7 @@ export const NotificationBell = ({ currentUser }) => {
   };
 
   const loadMore =
-    !initLoading && !loading ? (
+    !initLoading && !loading && notifications.length !== list.length ? (
       <div
         style={{
           textAlign: "center",
@@ -46,7 +46,7 @@ export const NotificationBell = ({ currentUser }) => {
           lineHeight: "32px",
         }}
       >
-        <Button onClick={onLoadMore}>load more</Button>
+        <Button onClick={onLoadMore}>load more...</Button>
       </div>
     ) : null;
 
