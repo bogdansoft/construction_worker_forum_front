@@ -4,22 +4,26 @@ import { Badge, Button, List, notification, Popover } from "antd";
 import { useNavigate } from "react-router-dom";
 import { BellOutlined } from "@ant-design/icons";
 import Axios from "axios";
+import StateContext from "../../StateContext";
 
 export const NotificationBell = ({ currentUser }) => {
   const { notifications, setNotifications } = useContext(NotificationContext);
   const [initLoading, setInitLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
-  const [pageNum, setPageNum] = useState(1);
+  const [pageNum, setPageNum] = useState(0);
+  const appState = useContext(StateContext);
   const navigate = useNavigate();
 
   const url = `https://localhost:444/notification-service/notifications?userId=${currentUser.id}&page=${pageNum}`;
 
   async function fetchData() {
     Axios.get(url).then((response) => {
+      console.log("FETCHING NOTIFICATIONS");
       setInitLoading(false);
       setList((prev) => [...prev, ...response.data]);
       setPageNum((prev) => prev + 1);
+      console.log("Notifications:", list);
     });
   }
 
@@ -127,9 +131,9 @@ export const NotificationBell = ({ currentUser }) => {
         renderItem={(item) => (
           <List.Item
             className="item-not-read mt-2"
-            onClick={(e) => {
+            onClick={() => {
               handleItemClick(item);
-              if (item.isRead) e.currentTarget.style.backgroundColor = "white";
+              navigate(item.redirectTo);
             }}
           >
             <b>{item.senderName}</b> {item.message}
