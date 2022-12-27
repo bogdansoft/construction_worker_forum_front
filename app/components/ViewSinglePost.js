@@ -12,6 +12,7 @@ import NotFound from "./NotFound"
 import LikeButton from "./LikeButton"
 import RenderAvatar from "./Avatar"
 import DeleteModal from "./DeleteModal"
+import {BookmarkedButton} from "./BookmarkedButton";
 
 function ViewSinglePost() {
     const navigate = useNavigate()
@@ -22,7 +23,7 @@ function ViewSinglePost() {
     const appDispatch = useContext(DispatchContext)
     const appState = useContext(StateContext)
     const [isDeleting, setIsDeleting] = useState(false)
-    const [color, setColor] = useState("")
+    /*const [color, setColor] = useState("")*/
     const [state, setState] = useImmer({
         author: "",
         postLikesCount: 0,
@@ -208,11 +209,10 @@ function ViewSinglePost() {
             ourRequest.cancel()
         }
     }
-
+/*
     useEffect(() => {
         state.isPostBookmarkedByUser ? setColor("grey") : setColor("black")
-    }, [state.isPostBookmarkedByUser])
-
+    }, [state.isPostBookmarkedByUser])*/
     async function handleDelete() {
         const ourRequest = Axios.CancelToken.source()
         try {
@@ -353,10 +353,11 @@ function ViewSinglePost() {
                                 <span className="material-symbols-outlined mr-3"> chat </span>
                                 <span className="material-symbols-outlined mr-3"> share </span>
                                 <span className="material-symbols-outlined mr-3"> report </span>
-                                <span type="bookmarked" className="material-symbols-outlined mr-3" data-for="bookmark"
+                               {/* <span type="bookmarked" className="material-symbols-outlined mr-3" data-for="bookmark"
                                       style={{color: color}} onClick={() => changeBookmark()}>
                                      bookmark
-                                  </span>
+                                  </span>*/}
+                                <BookmarkedButton isBookmarked={state.isPostBookmarkedByUser}/>
                             </div>
                         </div>
                     </div>) : null}
