@@ -10,7 +10,7 @@ export const Message = ({ message, isSenderMessage, sender }) => {
         </div>
         <img
           className="chat-avatar avatar-tiny"
-          src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128"
+          src="https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png"
           alt=""
         />
       </div>
@@ -21,7 +21,7 @@ export const Message = ({ message, isSenderMessage, sender }) => {
       <Link to={`/profile/${sender}`}>
         <img
           className="avatar-tiny"
-          src="https://gravatar.com/avatar/b9216295c1e3931655bae6574ac0e4c2?s=128"
+          src="https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png"
           alt=""
         />
       </Link>

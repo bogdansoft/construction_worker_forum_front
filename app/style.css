@@ -1387,6 +1387,22 @@ input:focus {
   left: -160px;
 }
 
+/* NOTIFICATIONS */
+.item-read {
+  background-color: white;
+}
+
+.item-not-read {
+  background-color: var(--orange);
+}
+
+.icon-dimmed {
+  color: black;
+}
+
+.icon-active {
+  color: whitesmoke;
+
 .refresh-button-div {
   display: flex;
   align-items: center;

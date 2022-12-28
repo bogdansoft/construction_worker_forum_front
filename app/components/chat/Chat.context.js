@@ -8,9 +8,10 @@ export const ChatProvider = ({ children }) => {
   const [contacts, setContacts] = useState([]);
   const [activeContact, setActiveContact] = useState();
   const appState = useContext(StateContext);
+  const currentId = appState.user.id;
 
   useEffect(() => {
-    Axios.get("/users/summaries", {
+    Axios.get("/users/summaries?currentId=" + currentId, {
       headers: { Authorization: `Bearer ${appState.user.token}` },
     }).then((response) => {
       setContacts(response.data);

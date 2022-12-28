@@ -1,52 +1,63 @@
-import React, { useContext, useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import DispatchContext from "../DispatchContext"
-import { CSSTransition } from "react-transition-group"
-import StateContext from "../StateContext"
+import React, { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import DispatchContext from "../DispatchContext";
+import { CSSTransition } from "react-transition-group";
+import StateContext from "../StateContext";
+import Notifications from "./notifications/Notifications";
 
 function NavbarLoggedIn() {
-  const appDispatch = useContext(DispatchContext)
-  const appState = useContext(StateContext)
-  const navigate = useNavigate()
-  const [profileOptions, setProfileOptions] = useState(false)
-  const [addOptions, setAddOptions] = useState(false)
+  const appDispatch = useContext(DispatchContext);
+  const appState = useContext(StateContext);
+  const navigate = useNavigate();
+  const [profileOptions, setProfileOptions] = useState(false);
+  const [addOptions, setAddOptions] = useState(false);
 
   function handleLoggedOut() {
-    appDispatch({ type: "logout" })
-    appDispatch({ type: "flashMessage", value: "Succesfully logged out !", messageType: "message-green" })
-    navigate("/")
+    appDispatch({ type: "logout" });
+    appDispatch({
+      type: "flashMessage",
+      value: "Succesfully logged out !",
+      messageType: "message-green",
+    });
+    navigate("/");
   }
 
   function toggleProfileOptions() {
-    setProfileOptions(prev => !prev)
+    setProfileOptions((prev) => !prev);
   }
 
   function toggleAddOptions() {
-    setAddOptions(prev => !prev)
+    setAddOptions((prev) => !prev);
   }
 
   function showAddOptionsDependingOnUserRole() {
     const postLink = (
-      <Link onClick={() => setAddOptions(prev => !prev)} to={`/post/create`}>
+      <Link onClick={() => setAddOptions((prev) => !prev)} to={`/post/create`}>
         <div className="mt-4">Post</div>
       </Link>
-    )
+    );
 
     if (appState.user.isAdmin || appState.user.isSupport) {
       return (
         <div className="option-box small userOptions ml-3">
-          <Link onClick={() => setAddOptions(prev => !prev)} to={`/topic/create`}>
+          <Link
+            onClick={() => setAddOptions((prev) => !prev)}
+            to={`/topic/create`}
+          >
             <div>Topic</div>
           </Link>
           {postLink}
         </div>
-      )
+      );
     }
     return (
-      <div className="option-box small userOptions ml-3" style={{ padding: "2px 50px 20px 20px" }}>
+      <div
+        className="option-box small userOptions ml-3"
+        style={{ padding: "2px 50px 20px 20px" }}
+      >
         {postLink}
       </div>
-    )
+    );
   }
 
   return (
@@ -65,33 +76,58 @@ function NavbarLoggedIn() {
         <div className="nav-right d-flex ml-auto align-items-center">
           <div className="mobile-toggle">
             <div className="relative">
-              <span onClick={toggleAddOptions} className="material-symbols-outlined mr-3">
+              <span
+                onClick={toggleAddOptions}
+                className="material-symbols-outlined mr-3"
+              >
                 add
               </span>
-              <CSSTransition in={addOptions} timeout={330} classNames="userOptions" unmountOnExit>
+              <CSSTransition
+                in={addOptions}
+                timeout={330}
+                classNames="userOptions"
+                unmountOnExit
+              >
                 {showAddOptionsDependingOnUserRole()}
               </CSSTransition>
             </div>
             <span
               onClick={() => {
-                appDispatch({ type: "openSearch" })
+                appDispatch({ type: "openSearch" });
               }}
               className="material-symbols-outlined mr-3"
             >
               {" "}
               search{" "}
             </span>
-            <Link to="chat" className="mr-auto p-3">
-              <span className="material-symbols-outlined mr-3 mt-1"> chat </span>
+            <Link to="chat" className="mr-1 p-1">
+              <span className="material-symbols-outlined mr-3 mt-1">
+                {" "}
+                chat{" "}
+              </span>
             </Link>
+            <div className="mr-3">
+              <Notifications />
+            </div>
             <div className="relative">
-              <span onClick={toggleProfileOptions} className="material-symbols-outlined mr-3">
+              <span
+                onClick={toggleProfileOptions}
+                className="material-symbols-outlined mr-3"
+              >
                 {" "}
                 account_circle{" "}
               </span>
-              <CSSTransition in={profileOptions} timeout={330} classNames="userOptions" unmountOnExit>
+              <CSSTransition
+                in={profileOptions}
+                timeout={330}
+                classNames="userOptions"
+                unmountOnExit
+              >
                 <div className="option-box small userOptions ml-3">
-                  <Link onClick={() => setProfileOptions(prev => !prev)} to={`/profile/${appState.user.username}`}>
+                  <Link
+                    onClick={() => setProfileOptions((prev) => !prev)}
+                    to={`/profile/${appState.user.username}`}
+                  >
                     <div>Profile</div>
                   </Link>
                   <div onClick={handleLoggedOut} className="mt-4">
@@ -103,7 +139,7 @@ function NavbarLoggedIn() {
           </div>
           <span
             onClick={() => {
-              appDispatch({ type: "toggleMenu" })
+              appDispatch({ type: "toggleMenu" });
             }}
             className="material-symbols-outlined mobile-toggle-inverse"
           >
@@ -125,7 +161,7 @@ function NavbarLoggedIn() {
           </Link>
           <span
             onClick={() => {
-              appDispatch({ type: "openSearch" })
+              appDispatch({ type: "openSearch" });
             }}
           >
             <span> Search </span>
@@ -133,14 +169,17 @@ function NavbarLoggedIn() {
           <Link to="chat" className="">
             <span> Chat </span>
           </Link>
-          <Link onClick={() => setProfileOptions(prev => !prev)} to={`/profile/${appState.user.username}`}>
+          <Link
+            onClick={() => setProfileOptions((prev) => !prev)}
+            to={`/profile/${appState.user.username}`}
+          >
             <div>Profile</div>
           </Link>
           <div onClick={handleLoggedOut}>Logout</div>
         </div>
       ) : null}
     </div>
-  )
+  );
 }
 
-export default NavbarLoggedIn
+export default NavbarLoggedIn;

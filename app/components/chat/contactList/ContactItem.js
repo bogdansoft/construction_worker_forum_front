@@ -11,7 +11,7 @@ export const ContactItem = ({ contact }) => {
     >
       <img
         className="chat-avatar avatar-tiny"
-        src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128"
+        src="https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png"
         alt=""
       />
       <div className="align-self-center">{contact.username}</div>

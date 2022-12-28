@@ -1,31 +1,39 @@
-import React, { useContext, useEffect, useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import Axios from "axios"
-import DispatchContext from "../DispatchContext"
+import React, { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Axios from "axios";
+import DispatchContext from "../DispatchContext";
 
 function Login() {
-  const [username, setUsername] = useState()
-  const [password, setPassword] = useState()
-  const navigate = useNavigate()
-  const appDispatch = useContext(DispatchContext)
+  const [username, setUsername] = useState();
+  const [password, setPassword] = useState();
+  const navigate = useNavigate();
+  const appDispatch = useContext(DispatchContext);
 
   async function handleSubmit(e) {
-    e.preventDefault()
+    e.preventDefault();
 
     try {
-      const response = await Axios.post("/api/login", { username, password })
+      const response = await Axios.post("/api/login", { username, password });
 
       if (response.data) {
-        appDispatch({ type: "login", data: response.data })
-        appDispatch({ type: "flashMessage", value: "Succesfully logged in !", messageType: "message-green" })
-        navigate("/")
+        appDispatch({ type: "login", data: response.data });
+        appDispatch({
+          type: "flashMessage",
+          value: "Succesfully logged in !",
+          messageType: "message-green",
+        });
+        navigate("/");
       }
     } catch (e) {
       if (e.response.status === 401 || e.response.status === 400) {
-        appDispatch({ type: "flashMessage", value: "Wrong credentials !", messageType: "message-red" })
-        console.log("Incorrect user credentials!")
+        appDispatch({
+          type: "flashMessage",
+          value: "Wrong credentials !",
+          messageType: "message-red",
+        });
+        console.log("Incorrect user credentials!");
       } else {
-        console.log("There was a problem!" + e)
+        console.log("There was a problem!" + e);
       }
     }
   }
@@ -41,15 +49,27 @@ function Login() {
               Worker forum
             </h6>
           </div>
-          <form onSubmit={handleSubmit} className="d-flex flex-column container">
+          <form
+            onSubmit={handleSubmit}
+            className="d-flex flex-column container"
+          >
             <div className="ml-5 form-label mt-4">
               <span>Username</span>
               <br />
-              <input onChange={e => setUsername(e.target.value)} type="text" className="form-button" />
+              <input
+                onChange={(e) => setUsername(e.target.value)}
+                type="text"
+                className="form-button"
+              />
               <br />
               <span>Password</span>
               <br />
-              <input onChange={e => setPassword(e.target.value)} type="password" className="form-button" data-testid="password-field" />
+              <input
+                onChange={(e) => setPassword(e.target.value)}
+                type="password"
+                className="form-button"
+                data-testid="password-field"
+              />
             </div>
             <div className="mt-4 mr-5 centered">
               <button type="submit" className="nav-button ">
@@ -71,7 +91,7 @@ function Login() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default Login
+export default Login;
