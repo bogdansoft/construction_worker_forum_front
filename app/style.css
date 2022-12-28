@@ -221,6 +221,7 @@ footer ul li {
   padding: 20px;
   border-radius: 15px;
   margin-left: 20px;
+  color: white;
 }
 .post-content h5 {
   font-weight: 600;
@@ -229,6 +230,28 @@ footer ul li {
   background-color: var(--orange);
   border-radius: 15px;
   padding-bottom: 20px;
+}
+.comments-reply {
+  border-radius: 15px;
+  border: solid rgb(231, 109, 64);
+  background-color: orange;
+  border-width: 2px;
+}
+.comments-reply-mobile {
+  border: solid rgb(0, 0, 0);
+  background-color: rgb(214, 120, 4);
+  border-width: 2px;
+}
+.comments-reply-list {
+  border-radius: 15px;
+  border: solid rgb(231, 109, 64);
+  background-color: rgb(244, 187, 68);
+  border-width: 2px;
+  margin-top: 20px;
+  margin-right: 20px;
+  margin-bottom: 10px;
+  padding-bottom: 20px;
+  float: right;
 }
 
 .add-post-title {
@@ -243,11 +266,14 @@ footer ul li {
   background-color: var(--light-brown);
   border-radius: 20px;
   border: 2px solid black;
+  color: white;
+  padding-left: 10px;
 }
 .post-textarea {
   background-color: var(--light-brown);
   border-radius: 20px;
   border: 2px solid black;
+  color: white;
 }
 #post-keyword {
   color: rgba(0, 0, 0, 0.5);
@@ -940,6 +966,7 @@ input:focus {
   font-size: 1em;
   font-family: "Roboto", sans-serif;
   position: absolute;
+  z-index: 1;
 }
 .delete-pop {
   background-color: white;
@@ -996,6 +1023,7 @@ input:focus {
     margin-left: auto;
     margin-right: auto;
     font-size: 0.8rem;
+    color: white;
   }
   .single-post-layout-row {
     display: flex;
@@ -1318,6 +1346,43 @@ input:focus {
 .edit-comment-user-profile {
   border: 2px solid black;
 }
+
+.shadow-background {
+  background: rgba(76, 175, 80, 0.3);
+}
+
+.delete-background {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 370px;
+  background-color: rgba(45, 48, 45, 0.7);
+  color: crimson;
+  z-index: 2000;
+  text-align: center;
+  line-height: 200px;
+  font-size: 120px;
+}
+
+@media screen and (max-width: 1000px) {
+  .delete-background {
+    height: 500px;
+  }
+}
+
+@media screen and (max-width: 770px) {
+  .delete-background {
+    height: 550px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .delete-background {
+    height: 600px;
+  }
+}
+
 .delete-profile-followed-users {
   left: -160px;
 }
@@ -1337,4 +1402,29 @@ input:focus {
 
 .icon-active {
   color: whitesmoke;
+
+.refresh-button-div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 5px;
+}
+
+.refresh-button-itself {
+  background-color: black;
+  color: white;
+  font-size: 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.sub-comment-button {
+  font-size: 13px;
+  width: 150px;
+  height: 25px;
+  align-items: center;
+  background-color: darkorange;
+  color: white;
+  border-radius: 5px;
+  border-color: #000;
 }

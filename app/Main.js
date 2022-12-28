@@ -33,6 +33,8 @@ function Main() {
     loggedIn: Boolean(localStorage.getItem("constructionForumUserId")),
     searchIsOpen: false,
     menuIsOpen: false,
+    isMobileDevice: window.innerWidth < 900,
+    mobileInputRenderCounter: 0,
     user: {
       id: localStorage.getItem("constructionForumUserId"),
       username: localStorage.getItem("constructionForumUsername"),
@@ -71,6 +73,12 @@ function Main() {
       case "closeSearch":
         state.searchIsOpen = false;
         return;
+      case "openMobileInput":
+        state.mobileInputRenderCounter = 1
+        return
+      case "closeMobileInput":
+        state.mobileInputRenderCounter = 0
+        return
       case "toggleMenu":
         state.menuIsOpen = !state.menuIsOpen;
         return;

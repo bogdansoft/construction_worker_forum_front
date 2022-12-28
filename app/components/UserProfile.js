@@ -9,7 +9,7 @@ import DispatchContext from "../DispatchContext"
 import UserProfileFollowedUsers from "./UserProfileFollowedUsers"
 import UserProfileFollowers from "./UserProfileFollowers"
 import FollowingUserButton from "./FollowingUserButton"
-import {UserProfileFollowedPosts} from "./UserProfileFollowedPosts";
+import { UserProfileFollowedPosts } from "./UserProfileFollowedPosts"
 
 function UserProfile() {
   const navigate = useNavigate()
@@ -21,11 +21,11 @@ function UserProfile() {
   const appDispatch = useContext(DispatchContext)
   const loggedIn = Boolean(localStorage.getItem("constructionForumUserToken"))
   const [reloadCounter, setReloadCounter] = useState(0)
-
   const [state, setState] = useState({
     avatar: "https://www.nirix.com/uploads/files/Images/general/misc-marketing/avatar-2@2x.png",
     bio: "There is no BIO yet",
     username: "",
+    accountStatus: "ACTIVE"
   })
 
   useEffect(() => {
@@ -45,7 +45,7 @@ function UserProfile() {
           `/api/following/${username}`,
           {
             headers: { Authorization: `Bearer ${appState.user.token}` },
-            params: { followerId },
+            params: { followerId }
           },
           { cancelToken: ourRequest.token }
         )
@@ -64,8 +64,9 @@ function UserProfile() {
   async function handleDelete(e) {
     e.preventDefault()
     try {
-      Axios.delete(`/api/user?username=${username}`)
+      await Axios.delete(`/api/user/delete?username=${username}`, { headers: { Authorization: `Bearer ${appState.user.token}` } })
       navigate(`/`)
+      appDispatch({ type: "logout" })
       console.log("Account deleted")
     } catch {
       console.log("There was a problem")
@@ -73,7 +74,7 @@ function UserProfile() {
   }
 
   function reload() {
-    setReloadCounter((reloadCounter) => (reloadCounter += 1))
+    setReloadCounter(reloadCounter => (reloadCounter += 1))
   }
 
   useEffect(() => {
@@ -82,6 +83,11 @@ function UserProfile() {
 
   return (
     <div className="main d-flex flex-column container">
+      {state.accountStatus === "DELETED" && (
+        <div className="relative container">
+          <div className="delete-background search-overlay">Account deleted</div>
+        </div>
+      )}
       <div className="content d-flex flex-column mt-4">
         <div className="mobile-toggle-inverse mb-5">
           {isOwner && (
@@ -89,14 +95,16 @@ function UserProfile() {
               Change BIO
             </Link>
           )}
-          {isOwner && (
+
+          {isOwner && state.accountStatus === "ACTIVE" && (
             <button onClick={handleDelete} className="nav-button mt-2">
               Delete account
             </button>
           )}
 
-          {!isOwner && <FollowingUserButton username={username} loggedIn={loggedIn} isFollowed={isFollowed} reload={reload} />}
+          {!isOwner && state.accountStatus === "ACTIVE" && <FollowingUserButton username={username} loggedIn={loggedIn} isFollowed={isFollowed} reload={reload} />}
         </div>
+        +
         <div className="d-flex text-center align-items-start">
           <div className="d-flex flex-column align-items-center">
             <div className="profile-avatar">
@@ -109,24 +117,24 @@ function UserProfile() {
               {state.username}
             </div>
           </div>
-          {state.bio ? <div className="bioField">About me : {state.bio.length > 3 ? state.bio : null}</div> : null}
+          {state.bio ? <div className="bioField">About me : {state.bio}</div> : <div className="bioField">No BIO yet</div>}
           <div className="mobile-toggle">
             <div className="ml-4 d-flex flex-column">
               <div className="row">
-                {isOwner && (
+                {isOwner && state.accountStatus === "ACTIVE" && (
                   <Link className="nav-bio-button" to={`/profile/changebio/${username}`}>
                     Change BIO
                   </Link>
                 )}
               </div>
               <div className="row">
-                {isOwner && (
+                {isOwner && state.accountStatus === "ACTIVE" && (
                   <button onClick={handleDelete} className="nav-bio-button">
                     Delete account
                   </button>
                 )}
               </div>
-              {!isOwner && <FollowingUserButton username={username} loggedIn={loggedIn} isFollowed={isFollowed} reload={reload} />}
+              {!isOwner && state.accountStatus === "ACTIVE" && <FollowingUserButton username={username} loggedIn={loggedIn} isFollowed={isFollowed} reload={reload} />}
             </div>
           </div>
         </div>
